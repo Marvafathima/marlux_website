@@ -22,7 +22,7 @@
                                     
                                 </tr>
                             </thead>
-                            <tbody>
+                            <!-- <tbody>
                                 {% for user in userlist%}
                                 <tr>
                                     <td><input type="checkbox" class="check_select"></td>
@@ -44,8 +44,49 @@
                         <li><a href="">← Previous</a></li>
                         <li><a href="">1</a></li>
                         <li><a href="">Next → </a></li>
-                    </ul>
-               
+                    </ul> -->
+          <!-- ... (other parts of your template) ... -->
+
+<tbody>
+    {% for user in userlist %}
+    <tr>
+        <td><input type="checkbox" class="check_select"></td>
+        <td></td>
+        <td>{{ user.is_active }}</td>
+        <td>{{ user.user_name }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.phone_number }}</td>
+        <td>{{ user.date_joined }}</td>
+    </tr>
+    {% endfor %}
+</tbody>
+
+<tfoot>
+    <tr>
+        <td colspan="7">
+            <div class="pagination_table">
+                <span class="step-links">
+                    {% if userlist.has_previous %}
+                        <a href="?page=1">&laquo; first</a>
+                        <a href="?page={{ userlist.previous_page_number }}">previous</a>
+                    {% endif %}
+
+                    <span class="current">
+                        Page {{ userlist.number }} of {{ userlist.paginator.num_pages }}.
+                    </span>
+
+                    {% if userlist.has_next %}
+                        <a href="?page={{ userlist.next_page_number }}">next</a>
+                        <a href="?page={{ userlist.paginator.num_pages }}">last &raquo;</a>
+                    {% endif %}
+                </span>
+            </div>
+        </td>
+    </tr>
+</tfoot>
+
+<!-- ... (other parts of your template) ... -->
+     
     <script>
         $(document).ready(function () {
 
