@@ -1,0 +1,8 @@
+<!-- for select with input
+<script src="plugin/select/js/select2.min.js"></script>
+<link rel="stylesheet" href="plugin/select/css/select2.min.css"> -->
+{% load static %}
+For Table
+<link rel="stylesheet" type="text/css" href="{% static 'tem_three/plugin/table/datatables.css' %}">
+<script type="text/javascript" charset="utf8" src="{% static 'tem_three/plugin/table/datatables.js' %}"></script>
+

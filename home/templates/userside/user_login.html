@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Login Page{% endblock title%}
+{% block content %}
+{% if messages %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    {% for message in messages%}
+    <strong>ERROR:</strong> {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  {% endfor %}
+</div>
+{% endif %}
+<div class="wrapper" style="background-image: url('images/bg-registration-form-2.jpg');">
+    <div class="inner">
+        <form action="{% url 'login' %}" method="POST">
+            {% csrf_token %}
+            <h3>Login</h3>
+           
+            <div class="form-wrapper">
+                <label for="">Email</label>
+                <input type="text" class="form-control" id="email" name="email">
+            </div>
+            <div class="form-wrapper">
+                <label for="">Password</label>
+                <input type="password" class="form-control" id="passw" name="passw">
+            </div>
+           
+            <button type="submit">Log In</button>
+            <a href="{% url 'signup' %} " >Create a account</a>
+        </form>
+    </div>
+</div>
+{% endblock content %}

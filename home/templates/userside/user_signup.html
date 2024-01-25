@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}SignUp page{% endblock title %}
+{% block content %}
+{% if messages %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    {% for message in messages%}
+    <strong>ERROR:</strong> {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  {% endfor %}
+</div>
+{% endif %}
+<div class="wrapper" style="background-image: url('images/bg-registration-form-2.jpg');">
+    <div class="inner">
+        <form action="{% url 'signup' %}" method="POST">
+            {% csrf_token %}
+            <h3>SignUp</h3>
+            <div class="form-group">
+                <div class="form-wrapper">
+                    <label for="">User Name</label>
+                    <input type="text" id="user_name" name="user_name"class="form-control">
+                </div>
+                <div class="form-wrapper">
+                    <label for="">Phone Number</label>
+                    <input type="text" id="phone_number" name="phone_number"class="form-control">
+                </div>
+            </div>
+            <div class="form-wrapper">
+                <label for="">Email</label>
+                <input type="text" class="form-control" id="email" name="email">
+            </div>
+            <div class="form-wrapper">
+                <label for="">Password</label>
+                <input type="password" class="form-control" id="pass1" name="pass1">
+            </div>
+            <div class="form-wrapper">
+                <label for="">Confirm Password</label>
+                <input type="password" class="form-control" id="pass2" name="pass2">
+            </div>
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox"> I accept the Terms of Use & Privacy Policy.
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+            <button type="submit">SignUp</button>
+            <a href="{% url 'login' %} " >i have already account</a>
+        </form>
+    </div>
+</div>
+
+
+{% endblock content %}
