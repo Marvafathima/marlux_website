@@ -88,3 +88,6 @@ def custom_admin(request):
 def admin_dashboard(request):
     return render(request,"adminside/dashboard.html")
 # Create your views here.
+def admin_userlist(request):
+    userlist=User.objects.values('email','user_name','phone_number','is_active','date_joined')
+    return render(request, "adminside/userlist.html",{'userlist':userlist})
