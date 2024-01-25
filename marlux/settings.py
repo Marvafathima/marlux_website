@@ -81,7 +81,7 @@ WSGI_APPLICATION = 'marlux.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'newmarlux',
+        'NAME': 'marva',
         'HOST':'localhost',
         'PORT':'5433',
         'USER':'postgres',
@@ -108,6 +108,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = "home.CustomUser"
 
 
 
