@@ -26,11 +26,11 @@
             <p class="pstart">Sign in to start your session</p>
 
             <div class="form_box">
-                <form action="{% url 'admin' %}" method="post">
+                <form action="{% url 'adminapp:admin' %}" method="post">
                     {% csrf_token %}
 
                     <div class="form_group">
-                        <input type="text" placeholder="Enter username" name="name" required>
+                        <input type="text" placeholder="Enter Email" name="email" required>
                         <i class="fa-solid fa-user"></i>
                     </div>
 
@@ -44,7 +44,7 @@
                         <a href="">Forgot password?</a>
                     </div>
 
-                    <button class="btn_submit w-100" href="{% url 'dashboard' %}">Sign in</button>
+                    <button class="btn_submit w-100" href="{% url 'adminapp:dashboard' %}">Sign in</button>
                    
                 </form>
             </div>

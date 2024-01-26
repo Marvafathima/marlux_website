@@ -27,7 +27,7 @@
             <ul>
                 <li class="removeres">admin</li>
                 <li><i class="fa-solid fa-laptop"></i> notification</li>
-                <li><a class="text-white" href="{% url 'admin' %}">LOG OUT </a> </li>
+                <li><a class="text-white" href="{% url 'adminapp:alogout' %}">LOG OUT </a> </li>
             </ul>
         </nav>
     </div>
@@ -63,12 +63,12 @@
                         </a>
                     </li>
 
-                    <li>
-                        <a href="{% url 'userlist' %}">
+                    <!-- <li>
+                        <a href="">
                             <i class="fa fa-users"></i>
                            Users
                         </a>
-                    </li>
+                    </li> -->
 
 
                     <!-- <li>
@@ -549,7 +549,7 @@
                 </ul>
             </div>
         </aside>
-        {%block userlist %} {% endblock userlist %}
+        <!-- {%block userlist %} {% endblock userlist %} -->
 
         <!-- <div class="content_body" id="content_body">
             <div class="wrapper_content_body"> -->
