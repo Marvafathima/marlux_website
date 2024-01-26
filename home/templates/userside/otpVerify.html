@@ -11,13 +11,14 @@
 {% endif %}
 <div class="wrapper" style="background-image: url('images/bg-registration-form-2.jpg');">
     <div class="inner">
-        <form action="/otp/{{id}}/" method="POST">
+        <form action="{% url 'otp' %}" method="POST">
             {% csrf_token %}
             <h3>OTP VERIFICATION</h3>
            
             <div class="form-wrapper">
                 <label for="otp">Enter your OTP</label>
-                <input type="text" class="form-control" id="otp" name="otp">
+                <input type="text" class="form-control" id="otp" name="otp" required>
+                <input type="hidden" class="form-control"  name="email" value="{{ email }}">
             </div>
             
             <button type="submit">Continue</button>

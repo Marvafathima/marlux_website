@@ -2,9 +2,9 @@
 {% block title %}SignUp page{% endblock title %}
 {% block content %}
 {% if messages %}
-<div class="alert alert-warning alert-dismissible fade show" role="alert">
+<div class="alert {% if message.tags == 'error' %}alert-danger alert-dismissible fade show{% elif message.tags == 'success' %}alert-success alert-dismissible fade show {% endif %}" role="alert">
     {% for message in messages%}
-    <strong>ERROR:</strong> {{ message }}
+    <strong>{{ message.tags }}</strong> {{ message }}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   {% endfor %}
 </div>

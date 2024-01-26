@@ -139,8 +139,15 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
+# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# ACCOUNT_SID='AC3756fe9fca5e7574994869edf87ae146'
+# AUTH_TOKEN='d87f51facb2ab921434ed65df59ae161'
+# COUNTRY_CODE='+91'
+# TWILIO_PHONE_NUMBER='+16029623589'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-ACCOUNT_SID='AC3756fe9fca5e7574994869edf87ae146'
-AUTH_TOKEN='d87f51facb2ab921434ed65df59ae161'
-COUNTRY_CODE='+91'
-TWILIO_PHONE_NUMBER='+16029623589'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'marvafathima62@gmail.com'
+EMAIL_HOST_PASSWORD = 'choa kmab vgur armg'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587

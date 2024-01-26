@@ -31,10 +31,11 @@ def custom_admin(request):
             return redirect('adminapp:admin')
 
     return render(request, "adminside/index.html")
-          
+@login_required(login_url='adminapp:admin')         
 def admin_dashboard(request):
     return render(request,"adminside/dashboard.html")
 def admin_logout(request):
+    
     logout(request)
     return redirect('adminapp:admin')
 # # Create your views here.

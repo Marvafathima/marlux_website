@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
-
+from django.core.mail import send_mail
 @login_required(login_url='login')
 def index(request):
     return render(request,'userside/index.html')
@@ -48,10 +48,26 @@ def user_signup(request):
         elif CustomUser.objects.filter(email=email).exists():
             messages.error(request, "This email is already registered")
             return redirect('signup')
-        else:
-            user=CustomUser.objects.create_user(email=request.POST['email'],password=request.POST['pass1'])
-            messages.success(request, "User created successfully")
-            return redirect('login')
+       
+        otp=str(random.randint(10000,99999))
+        print(otp)
+
+        subject = 'OTP Verification'
+        message = f'Your OTP for registration is: {otp}'
+        sender = 'marvafathima62@gmail.com'  # Replace with your email
+        recipient = [email]
+
+        try:
+            send_mail(subject, message, sender, recipient, fail_silently=False)
+        except Exception as e:
+            return HttpResponse(f"Error sending email: {e}")
+
+        # Store OTP in session
+        request.session['otp'] = otp
+        request.session['password'] = pass1
+        # Redirect to the OTP verification page
+        return render(request, 'userside/otpVerify.html', {'email': email})
+       
     return render(request,'userside/user_signup.html')
 
 
@@ -78,6 +94,29 @@ def user_signup(request):
     #     red.set_cookie("can_otp_enter",True,max_age=600)
     #     return red
     # return render(request,'userside/user_signup.html')
+
+def otpVerify(request):
+    if request.method == 'POST':
+        entered_otp = request.POST.get('otp')
+        email = request.POST.get('email')
+        stored_otp = request.session.get('otp')
+        print(entered_otp)
+        print(stored_otp)
+
+        if entered_otp == stored_otp:
+            # OTP is correct, create the user
+            user = CustomUser.objects.create_user(email=email, password=request.session.get('password'))
+            messages.success(request, "User created successfully")
+            return redirect('login')
+        else:
+            messages.error(request, "Invalid OTP. Please try again.")
+            return render(request, 'userside/otpVerify.html', {'email': email})
+
+    return render(request, 'userside/otpVerify.html')
+
+
+
+
 
 def user_logout(request):
     logout(request)

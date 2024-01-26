@@ -3,7 +3,7 @@ from . import views
 urlpatterns=[
     path('home/',views.index,name='home'),
     path('login/',views.user_login,name='login'),
-    # path('otp/<str:uid>/', views.otpVerify, name='otp'),
+    path('otp/', views.otpVerify, name='otp'),
     path('',views.user_signup,name='signup'),
     path('logout/',views.user_logout,name='logout'),
     # path('custadmin/',views.custom_admin,name='admin'),
