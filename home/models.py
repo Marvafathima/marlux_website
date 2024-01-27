@@ -23,7 +23,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 
 class UserAddress(models.Model):
-    user=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    user=models.ForeignKey(CustomUser,on_delete=models.CASCADE ,related_name='useraddress')
     user_name=models.CharField(max_length=100,default='nil')
     phone_number=models.CharField(max_length=15,default='nil')
     street = models.CharField(max_length=255)
