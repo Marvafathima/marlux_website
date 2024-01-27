@@ -63,12 +63,12 @@
                         </a>
                     </li>
 
-                    <!-- <li>
-                        <a href="">
+                    <li>
+                        <a href="{% url 'adminapp:userlist' %}">
                             <i class="fa fa-users"></i>
                            Users
                         </a>
-                    </li> -->
+                    </li>
 
 
                     <!-- <li>
@@ -549,7 +549,8 @@
                 </ul>
             </div>
         </aside>
-        <!-- {%block userlist %} {% endblock userlist %} -->
+        {% block userlist %}
+        {% endblock userlist %} 
 
         <!-- <div class="content_body" id="content_body">
             <div class="wrapper_content_body"> -->

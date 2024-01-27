@@ -40,20 +40,22 @@ def admin_logout(request):
     return redirect('adminapp:admin')
 # # Create your views here.
 def admin_userlist(request):
-    user_data = CustomUser.objects.values('id', 'email','is_active')
-    address_data = UserAddress.objects.values('id', 'user_id', 'user_name', 'phone_number')
-
-    combined_data = []
-
-    for user in user_data:
-        user_id = user['id']
-        user_address_detail = address_data.filter(user_id=user_id).first()
-        if user_address_detail:
-            combined_data.append({**user, **user_address_detail})
-
-    context = {'userlist': combined_data}
+    user_data = CustomUser.objects.select_related('useraddress').values('id', 'email','is_active','useraddress__user_name','useraddress__phone_number')
+    context = {'userlist':user_data}
     return render(request, "adminside/userlist.html", context)
 
+def user_unblock(request,user_id):
+    us=CustomUser.objects.filter(id=user_id).first()
+    if us.is_active==True:
+        us.is_active=False
+        us.save()
+    return redirect('adminapp:userlist')
+def user_block(request,user_id):
+    us=CustomUser.objects.filter(id=user_id).first()
+    if us.is_active==False:
+        us.is_active=True
+        us.save()
+    return redirect('adminapp:userlist')
 
 
 

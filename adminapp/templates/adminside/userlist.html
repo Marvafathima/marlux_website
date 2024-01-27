@@ -3,87 +3,76 @@
 {% block userlist %}
 
 
-                <div class="table_data_check">
-                    <div class="table_head_sec">
-                        <h2>ALL Staff LIST</h2>
-                    </div>
-                    
-
-                    <div class="table_overflow">
-                        <table id="table_filter" class="tablenormal">
-                            <thead>
-                                <tr>
-                                    <th></th>
-                                    <th>Status</th>
-                                    <th class="sort_table_row">Name</th>
-                                    <th class="sort_table_row">Email id</th>
-                                    <th class="sort_table_row">Mobile</th>
-                                    <th class="sort_table_row">Date joined</th>
-                                    
-                                </tr>
-                            </thead>
-                            <!-- <tbody>
-                                {% for user in userlist%}
-                                <tr>
-                                    <td><input type="checkbox" class="check_select"></td>
-                                    <td></td>
-                                    <td>{{user.is_active}}</td>
-                                    <td>{{user.user_name}}</td>
-                                    <td>{{user.email}}</td>
-                                    <td>{{user.phone_number}}</td>
-                                    <td>{{user.date_joined}}</td>
-            
-                                </tr>
-                                {% endfor %}
-                               
-                            </tbody>
-                        </table>
-                    </div>
-                    <p class="showing_data">Showing 1 to 3 of 3 entries</p>
-                    <ul class="pagination_table">
-                        <li><a href="">← Previous</a></li>
-                        <li><a href="">1</a></li>
-                        <li><a href="">Next → </a></li>
-                    </ul> -->
-          <!-- ... (other parts of your template) ... -->
-
-<tbody>
-    {% for user in userlist %}
-    <tr>
-        <td><input type="checkbox" class="check_select"></td>
-        <td></td>
-        <td>{{ user.is_active }}</td>
-        <td>{{ user.user_name }}</td>
-        <td>{{ user.email }}</td>
-        <td>{{ user.phone_number }}</td>
-        <td>{{ user.date_joined }}</td>
-    </tr>
-    {% endfor %}
-</tbody>
-
-<tfoot>
-    <tr>
-        <td colspan="7">
-            <div class="pagination_table">
-                <span class="step-links">
-                    {% if userlist.has_previous %}
-                        <a href="?page=1">&laquo; first</a>
-                        <a href="?page={{ userlist.previous_page_number }}">previous</a>
-                    {% endif %}
-
-                    <span class="current">
-                        Page {{ userlist.number }} of {{ userlist.paginator.num_pages }}.
-                    </span>
-
-                    {% if userlist.has_next %}
-                        <a href="?page={{ userlist.next_page_number }}">next</a>
-                        <a href="?page={{ userlist.paginator.num_pages }}">last &raquo;</a>
-                    {% endif %}
-                </span>
+<div class="table_data_check">
+    <div class="table_head_sec">
+        <h2>ALL USER LIST</h2>
+    </div>
+    <!-- <div class="table_filtter">
+        <div class="row">
+            <div class="col-6">
+                <div class="table_row_select">
+                    <label for="">Records Per Page :- </label>
+                    <select name="" id="" onchange="countTable('table_filter',this.value)">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="500">500</option>
+                        <option value="1000">1000</option>
+                    </select>
+                </div>
             </div>
-        </td>
-    </tr>
-</tfoot>
+            <div class="col-6">
+                <div class="table_row_search">
+
+                    <input type="text" class="w-100" placeholder="Search">
+                </div>
+            </div>
+        </div>
+    </div> -->
+
+    <div class="table_overflow">
+        <table id="table_filter" class="tablenormal">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th class="sort_table_row">Name</th>
+                    <th class="sort_table_row">Email id</th>
+                    <th class="sort_table_row">Mobile</th>
+                    <th>Status</th>
+                    <th>Edit</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in userlist %}
+                {% if user.email != 'admin@gmail.com' %}
+                <tr>
+                    <td>{{user.id}}</td>
+                    <td>{{user.useraddress__user_name}}</td>
+                    <td>{{user.email}}</td>
+                    <td>{{user.useraddress__phone_number}}</td>
+                    <td>{{user.is_active}}</td>
+                    {% if not user.is_active %}
+                    <td><a href="block/{{user.id}}" style="color:red"class="fa-solid fa-user-lock" title="block" type="submit" onclick=blockUser()></a></td>
+                    {% else %}
+                    <td><a href="unblock/{{user.id}}" style="color:green" class="fa-solid fa-user" title="Unblock" onclick=unblockuser()></a></td>
+                    {% endif %}
+                </tr>
+
+                {% endif %}
+               {% endfor %} 
+            </tbody>
+        </table>
+    </div>
+    <!-- <p class="showing_data">Showing 1 to 3 of 3 entries</p>
+    <ul class="pagination_table">
+        <li><a href="">← Previous</a></li>
+        <li><a href="">1</a></li>
+        <li><a href="">Next → </a></li>
+    </ul> -->
+</div>
+
 
 <!-- ... (other parts of your template) ... -->
      
@@ -113,5 +102,28 @@
         function countTable(tableid, count) {
 
         }
+    </script>
+    <script>
+        function blockUser(){
+            var confirmation=confirm("Are you sure you want to block the user?");
+            if (confirmation){
+                alert("User Blocked!");
+            }
+            else{
+                alert("Block action cancelled") ;
+            }
+        }
+        function unblockuser(){
+            var confirmations=confirm("Are you sure you want to Unblock the user?");
+            if (confirmations){
+                alert("User Unblocked!");
+            }
+            else{
+                alert("UnBlock action cancelled") ;
+            }
+        
+        }
+
+
     </script>
     {% endblock userlist %}
