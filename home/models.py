@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-
+# from . models import CustomUser
 from .managers import CustomUserManager
 
 
@@ -20,6 +20,21 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+class UserAddress(models.Model):
+    user=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    user_name=models.CharField(max_length=100,default='nil')
+    phone_number=models.CharField(max_length=15,default='nil')
+    street = models.CharField(max_length=255)
+    city = models.CharField(max_length=100)
+    district = models.CharField(max_length=100)
+    landmark = models.CharField(max_length=200)
+    state = models.CharField(max_length=100)
+    postal_code = models.CharField(max_length=20)
+
+
+
 
 # import uuid
 # from django.utils import timezone 

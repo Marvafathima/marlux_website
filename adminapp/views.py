@@ -10,7 +10,7 @@ from django.contrib.auth import authenticate,login,logout
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
-
+from home.models import UserAddress ,CustomUser
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 # Create your views here.
 @ensure_csrf_cookie
@@ -39,19 +39,26 @@ def admin_logout(request):
     logout(request)
     return redirect('adminapp:admin')
 # # Create your views here.
-# def admin_userlist(request):
+def admin_userlist(request):
+    
+    user_list=CustomUser.objects.all('id','email','is_active','date_joined')
+    user_detail=UserAddress.objects.values('user_name','phone_number')
+    #combining both query set
+    combined_data=[]
+    for user in user_list:
+        user_id = user.get('id')
+        user_address_detail = user_detail.filter(user_id=user_id).first()
+        combined_data.append({**user, **user_address_detail})
+    items_per_page = 15
+    paginator = Paginator(combined_data, items_per_page)
+    page = request.GET.get('page', 1)
+    
+    try:
+        users = paginator.page(page)
+    except PageNotAnInteger:
+        users = paginator.page(1)
+    except EmptyPage:
+        users = paginator.page(paginator.num_pages)
 
-#     user_list=User.objects.values('email','user_name','phone_number','is_active','date_joined')
-#     items_per_page = 15
-#     paginator = Paginator(user_list, items_per_page)
-#     page = request.GET.get('page', 1)
-#     try:
-#         users = paginator.page(page)
-#     except PageNotAnInteger:
-#         # If page is not an integer, deliver first page.
-#         users = paginator.page(1)
-#     except EmptyPage:
-#         # If page is out of range (e.g., 9999), deliver last page of results.
-#         users = paginator.page(paginator.num_pages)
-#     context = {'userlist': users}
-#     return render(request, "adminside/userlist.html", context)
+    context = {'userlist': users}
+    return render(request, "adminside/userlist.html", context)

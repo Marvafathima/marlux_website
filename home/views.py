@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
-from .models import CustomUser
+from .models import CustomUser,UserAddress
 import random
 from .helper import MessageHandler
 from django.contrib import messages
@@ -36,6 +36,9 @@ def user_signup(request):
         email=request.POST.get('email')
         pass1=request.POST.get('pass1')
         pass2=request.POST.get('pass2')
+        user_name=request.POST.get('user_name')
+        phone_number=request.POST.get('phone_number')
+
         if not email or not pass1 or not pass2:
             messages.error(request,'Please fill this fields.')
             return render(request,'userside/user_signup.html')
@@ -66,7 +69,7 @@ def user_signup(request):
         request.session['otp'] = otp
         request.session['password'] = pass1
         # Redirect to the OTP verification page
-        return render(request, 'userside/otpVerify.html', {'email': email})
+        return render(request, 'userside/otpVerify.html', {'email': email,'user_name':user_name,'phone_number':phone_number})
        
     return render(request,'userside/user_signup.html')
 
@@ -99,18 +102,21 @@ def otpVerify(request):
     if request.method == 'POST':
         entered_otp = request.POST.get('otp')
         email = request.POST.get('email')
+        phone_number=request.POST.get('phone_number')
+        user_name=request.POST.get('user_name')
         stored_otp = request.session.get('otp')
         print(entered_otp)
         print(stored_otp)
 
         if entered_otp == stored_otp:
             # OTP is correct, create the user
-            user = CustomUser.objects.create_user(email=email, password=request.session.get('password'))
+            user = CustomUser.objects.create_user(email=email, password=request.session.get('password'),is_active=True)
+            user_details=UserAddress.objects.create(user=user,user_name=user_name,phone_number=phone_number)
             messages.success(request, "User created successfully")
             return redirect('login')
         else:
             messages.error(request, "Invalid OTP. Please try again.")
-            return render(request, 'userside/otpVerify.html', {'email': email})
+            return render(request, 'userside/otpVerify.html', {'email': email,'user_name':user_name,'phone_number':phone_number})
 
     return render(request, 'userside/otpVerify.html')
 
