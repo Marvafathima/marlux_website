@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'home',
     'adminapp',
+    'category',
     
 ]
 
@@ -60,7 +61,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [ os.path.join(BASE_DIR, 'home', 'templates','userside'),
-            os.path.join(BASE_DIR, 'adminapp', 'templates', 'adminside'),],
+            os.path.join(BASE_DIR, 'adminapp', 'templates', 'adminside'),
+            os.path.join(BASE_DIR,'category','templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -134,6 +136,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'adminapp/static'),
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # Default primary key field type

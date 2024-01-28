@@ -11,7 +11,7 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
 from home.models import UserAddress ,CustomUser
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 # Create your views here.
 @ensure_csrf_cookie
 def custom_admin(request):
