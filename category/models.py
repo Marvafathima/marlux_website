@@ -5,7 +5,7 @@ class Category(models.Model):
     name=models.CharField(max_length=100)
     cat_dsc=models.TextField(max_length=200,blank=True)
     published=models.BooleanField(default=True)
-    cat_img=models.ImageField(upload_to='',null=True, blank=True)
+    cat_img=models.ImageField(upload_to='category_images/',null=True, blank=True)
 
     def __str__(self):
         return self.name

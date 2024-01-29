@@ -56,13 +56,41 @@
                              products
                         </a>
                     </li>
+            
                     <li>
-                        <a href="UpdateImageFiles.html">
-                            <i class="fa fa-square"></i>
-                            Categories
-                        </a>
-                    </li>
 
+                        <a href="javascript:;" data-show="useractivity">
+                            <i class="fa fa-user"></i>
+                            Categories
+                            <i class="downarrow fa-solid fa-chevron-down"></i>
+                        </a>
+
+                        <ul class="submenus" id="useractivity">
+
+                            <li>
+                                <a href="{% url 'adminapp:addcategory' %}">
+                                    <i class="fa fa-square"></i>
+                                    Add Category
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="ExpressReq.html?type=employer">
+                                    <i class="fa fa-square"></i>
+                                    Update or Delete Category
+                                </a>
+                            </li>
+
+                            <!-- <li>
+                                <a href="ShortList.html">
+                                    <i class="fa fa-square"></i>
+                                    Update Category
+                                </a>
+                            </li> -->
+ 
+
+                        </ul>
+                    </li>
                     <li>
                         <a href="{% url 'adminapp:userlist' %}">
                             <i class="fa fa-users"></i>
@@ -71,13 +99,13 @@
                     </li>
 
 
-                    <li>
+                    <!-- <li>
                         <a href="{% url 'adminapp:addcategory' %}">
                             <i class="fa fa-users"></i>
                              Customers
                         </a>
                     </li>
-                   
+                    -->
 
                     <!-- <li> 
                         <a href="allPoint.html"> 
@@ -432,40 +460,7 @@
                     </li> -->
 
 
-                    <li>
-
-                        <a href="javascript:;" data-show="useractivity">
-                            <i class="fa fa-user"></i>
-                             User Activity
-                            <i class="downarrow fa-solid fa-chevron-down"></i>
-                        </a>
-
-                        <ul class="submenus" id="useractivity">
-
-                            <li>
-                                <a href="ExpressReq.html?type=seeker">
-                                    <i class="fa fa-square"></i>
-                                    Seeker Express
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="ExpressReq.html?type=employer">
-                                    <i class="fa fa-square"></i>
-                                    Employer Express
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="ShortList.html">
-                                    <i class="fa fa-square"></i>
-                                    Short List
-                                </a>
-                            </li>
- 
-
-                        </ul>
-                    </li>
+                   
 
 
 

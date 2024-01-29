@@ -1,33 +1,73 @@
  {% extends 'dashboard.html' %}
  {% block userlist %}
- <form>
-    <div class="mb-3">
-      <label for="exampleInputEmail1" class="form-label">Email address</label>
-      <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-      <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-    </div>
-    <div class="mb-3">
-      <label for="exampleInputPassword1" class="form-label">Password</label>
-      <input type="password" class="form-control" id="exampleInputPassword1">
-    </div>
-    <div class="mb-3 form-check">
-      <input type="checkbox" class="form-check-input" id="exampleCheck1">
-      <label class="form-check-label" for="exampleCheck1">Check me out</label>
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
-    <div class="row g-3 align-items-center">
-        <div class="col-auto">
-          <label for="inputPassword6" class="col-form-label">Password</label>
-        </div>
-        <div class="col-auto">
-          <input type="password" id="inputPassword6" class="form-control" aria-describedby="passwordHelpInline">
-        </div>
-        <div class="col-auto">
-          <span id="passwordHelpInline" class="form-text">
-            Must be 8-20 characters long.
-          </span>
-        </div>
-      </div>
-  </form>
+ <style>
+    .content_body_hc {
+        background-color: hsl(217, 25%, 94%);
+    }
 
+    
+</style>
+
+
+<div style="margin-left: 500px;">
+<div class="content_body " id="content_body">
+    <div class="wrapper_content_body">
+        <h4>Add Category </h4>
+
+        <div class="row">
+            
+            <div class="col-lg-7">
+                <div class="content_box_border">
+
+                    <!-- <h5>Upload Logo </h5>
+                    <div class="current_logo">
+                        <img src="assets/images/banner-1.jpg" alt="">
+                    </div>  -->
+
+                    <form action="" method="post" enctype="multipart/form-data">
+                       {%csrf_token%}
+                       <div class="col-md-12">
+                        <div class="form_group">
+                            <label for="name">Category name</label>
+                            <input type="text" placeholder="Category Name" name="cat_name">
+                        </div>
+                    </div>
+        
+                    <div class="col-md-12">
+                        <div class="form_group">
+                            <label for="">Category Description </label>
+                            <textarea name="description" rows="4" required></textarea>
+                        </div>
+                    </div>
+                        <div class="row mt-2">
+                            <div class="col-md-12">
+                                <div class="form_group">
+                                    <label for="">Upload category image</label>
+                                    <input type="file" name="image" accept="image/*" required>
+                                </div>
+                            </div>
+                        </div>
+
+                       
+                        <div class="col-md-12">
+                        <div class="d-inline-block">
+                            <input type="checkbox" name="is_published" value="True"></div>
+                        <div class="d-inline-block">
+                            <label for="">Published</label>
+                        </div> </div>
+
+                      
+
+                        <div class="col-12 text-center">
+                            <button class="form_btn btn_green" type="submit">Save</button>
+                            <button class="form_btn btn_warning" type="reset" href="{% url 'category:addcategory'%}">Cancel</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
  {% endblock userlist %}

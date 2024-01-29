@@ -1,0 +1,105 @@
+{% extends 'dashboard.html' %}
+
+{% block userlist %}
+
+
+<div class="table_data_check">
+    <div class="table_head_sec">
+        <h2>ALL CATEEGORIES</h2>
+    </div>
+    <div class="table_filtter">
+        <div class="row">
+            <div class="col-6">
+                <div class="table_row_select">
+                    <label for="">Records Per Page :- </label>
+                    <select name="" id="" onchange="countTable('table_filter',this.value)">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="500">500</option>
+                        <option value="1000">1000</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="table_row_search">
+
+                    <input type="text" class="w-100" placeholder="Search">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table_overflow">
+        <table id="table_filter" class="tablenormal">
+            <thead>
+                <tr>
+                    <th class="sort_table_row">Id</th>
+                    <th class="sort_table_row">Category Name</th>
+                    <th class="sort_table_row">Category dsc</th>
+                    <th class="sort_table_row">image </th>
+                    <th class="sort_table_row">Published</th>
+                    <th>
+                        <a href="{% url 'addcategory' %}" class="btn btn-outline-dark">
+                            <i class="fas fa-plus"></i>Add New
+                        </a>
+                    </th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in userlist %}
+                {% if user.email != 'admin@gmail.com' %}
+                <tr>
+                    <td>{{user.id}}</td>
+                    <td>{{user.useraddress__user_name}}</td>
+                    <td>{{user.email}}</td>
+                    <td>{{user.useraddress__phone_number}}</td>
+                    <td>{{user.is_active}}</td>
+                    {% if user.is_active %}
+                    <td><a href="block/{{user.id}}" style="color:red"class="fa-solid fa-user-lock" title="block" type="submit" onclick=blockUser()></a></td>
+                    {% else %}
+                    <td><a href="unblock/{{user.id}}" style="color:green" class="fa-solid fa-user" title="Unblock" onclick=unblockuser()></a></td>
+                    {% endif %}
+                </tr>
+
+                {% endif %}
+               {% endfor %} 
+            </tbody>
+        </table>
+    </div>
+    <p class="showing_data">Showing 1 to 3 of 3 entries</p>
+    <ul class="pagination_table">
+        <li><a href="">← Previous</a></li>
+        <li><a href="">1</a></li>
+        <li><a href="">Next → </a></li>
+    </ul>
+</div>
+
+
+<!-- ... (other parts of your template) ... -->
+     
+    <script>
+        $(document).ready(function () {
+
+
+            $('#table_filter').DataTable({
+                "processing": true,
+                "language": {
+                    "processing": "DataTables is currently busy"
+                },
+                paging: true,
+                "aaSorting": [
+                    [3, 'desc']
+                ],
+                'aoColumnDefs': [{
+                    'bSortable': false,
+                    'info': true,
+                    "paging": true,
+                    'aTargets': [0, 1, 2,],
+                    'pageLength': 10
+                }]
+            });
+        })
