@@ -42,8 +42,8 @@ def user_signup(request):
         if not email or not pass1 or not pass2:
             messages.error(request,'Please fill this fields.')
             return render(request,'userside/user_signup.html')
-        if len(pass1)<8 or not any(char.isupper() for char in pass1)or not any(char.isdigit() for char in pass1):
-            messages.error(request,'password must have atleast 8 characters with atleast one uppercase and numbers.')
+        if len(pass1)<6 or not any(char.isupper() for char in pass1)or not any(char.isdigit() for char in pass1):
+            messages.error(request,'password must have atleast 6 characters with atleast one uppercase and numbers.')
             return render(request,'userside/user_signup.html')
         if pass1!=pass2:
             messages.error(request, "Your password and confirm Password are not the same")

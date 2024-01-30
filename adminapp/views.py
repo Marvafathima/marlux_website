@@ -46,15 +46,14 @@ def admin_userlist(request):
 
 def user_unblock(request,user_id):
     us=CustomUser.objects.filter(id=user_id).first()
-    if us.is_active==True:
-        us.is_active=False
-        us.save()
+    us.is_active=True
+    us.save()
     return redirect('adminapp:userlist')
 def user_block(request,user_id):
     us=CustomUser.objects.filter(id=user_id).first()
-    if us.is_active==False:
-        us.is_active=True
-        us.save()
+    print(us)
+    us.is_active=False
+    us.save()
     return redirect('adminapp:userlist')
 
 

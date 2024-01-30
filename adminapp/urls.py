@@ -14,4 +14,7 @@ urlpatterns=[
     path('dashboard/userlist/unblock/<int:user_id>/',admin_views.user_unblock,name='unblock_user'),
     path('dashboard/userlist/block/<int:user_id>/',admin_views.user_block,name='block_user'),
     path('dashboard/category',category_views.add_category,name='addcategory'),
+    path('dashboard/category/category_list',category_views.category_list,name='category_list'),
+    path('dashboard/category/update_category/<int:id>',category_views.update_category,name='update_category'),
+    path('dashboard/category/delete_category/<int:id>',category_views.del_category,name='delete_category'),
 ]

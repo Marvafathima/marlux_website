@@ -1,4 +1,4 @@
- {% extends 'dashboard.html' %}
+{% extends 'dashboard.html' %}
  {% block userlist %}
  <style>
     .content_body_hc {
@@ -30,25 +30,26 @@
                         <img src="assets/images/banner-1.jpg" alt="">
                     </div>  -->
 
-                    <form action="" method="post" enctype="multipart/form-data">
+                    <form action="{% url 'adminapp:update_category' id=cat.pk %}" method="post" enctype="multipart/form-data">
                        {%csrf_token%}
                        <div class="col-md-12">
                         <div class="form_group">
                             <label for="name">Category name</label>
-                            <input type="text" placeholder="Category Name" name="cat_name">
+                            <input type="text" placeholder="Category Name" name="cat_name" value="{{cat.cat_name}}">
                         </div>
                     </div>
         
                     <div class="col-md-12">
                         <div class="form_group">
                             <label for="">Category Description </label>
-                            <textarea name="description" rows="4" required></textarea>
+                            <textarea value="{{cat.description}}"name="description" rows="4" required></textarea>
                         </div>
                     </div>
                         <div class="row mt-2">
                             <div class="col-md-12">
                                 <div class="form_group">
                                     <label for="">Upload category image</label>
+                                    <img src="{{cat.cat_img.url}}" alt="current image">
                                     <input type="file" name="image" accept="image/*" required>
                                 </div>
                             </div>
@@ -65,8 +66,8 @@
                       
 
                         <div class="col-12 text-center">
-                            <button class="form_btn btn_green" type="submit">Save</button>
-                            <button class="form_btn btn_warning" type="reset" href="{% url 'adminapp:addcategory'%}">Cancel</button>
+                            <button class="form_btn btn_green" type="submit">update</button>
+                            <button class="form_btn btn_warning" type="reset" href="{% url 'adminapp:update_category' cat.id %}">Cancel</button>
                         </div>
 
                     </form>

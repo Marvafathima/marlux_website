@@ -41,31 +41,43 @@
                     <th class="sort_table_row">image </th>
                     <th class="sort_table_row">Published</th>
                     <th>
-                        <a href="{% url 'addcategory' %}" class="btn btn-outline-dark">
+                        <a href="{% url 'adminapp:addcategory' %}" class="btn btn-outline-dark">
                             <i class="fas fa-plus"></i>Add New
                         </a>
                     </th>
-                    <th>Edit</th>
-                    <th>Delete</th>
+                    <!-- <th>Edit</th>
+                    <th>Delete</th> -->
                 </tr>
             </thead>
             <tbody>
-                {% for user in userlist %}
-                {% if user.email != 'admin@gmail.com' %}
+                {% for cat in category_list %}
+               
                 <tr>
-                    <td>{{user.id}}</td>
-                    <td>{{user.useraddress__user_name}}</td>
-                    <td>{{user.email}}</td>
-                    <td>{{user.useraddress__phone_number}}</td>
-                    <td>{{user.is_active}}</td>
-                    {% if user.is_active %}
-                    <td><a href="block/{{user.id}}" style="color:red"class="fa-solid fa-user-lock" title="block" type="submit" onclick=blockUser()></a></td>
-                    {% else %}
-                    <td><a href="unblock/{{user.id}}" style="color:green" class="fa-solid fa-user" title="Unblock" onclick=unblockuser()></a></td>
-                    {% endif %}
+                    <td>{{cat.id}}</td>
+                    <td>{{cat.name}}</td>
+                    <td>{{cat.cat_dsc}}</td>
+                    <td>{% if cat.cat_img %}
+                        <img src="{{cat.cat_img.url}}"alt="image" style="width:80px;">
+
+                        {% else %}
+                        No Image
+
+                        {% endif %}
+
+
+                    </td>
+                    <td>{{cat.published}}</td>
+                    <td><a href="{% url 'adminapp:update_category' cat.id %}" class="btn text-secondary px-0">
+                        <i class="far fa-edit fa-lg text-dark"></i>
+                    <a href="{%url 'adminapp:delete_category' cat.id %}" class="btn text-secondary px-0">
+                   <!-- {% csrf_token %}
+                <button type="submit" class="btn"> -->
+                    <i class="far fa-trash-alt text-danger float-right"></i></td>
+                <!-- </button>
+            </form> -->
                 </tr>
 
-                {% endif %}
+               
                {% endfor %} 
             </tbody>
         </table>
@@ -79,7 +91,7 @@
 </div>
 
 
-<!-- ... (other parts of your template) ... -->
+ ... (other parts of your template) ...
      
     <script>
         $(document).ready(function () {
@@ -103,3 +115,8 @@
                 }]
             });
         })
+        
+        
+    </script>      
+
+{% endblock userlist %}
