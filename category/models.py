@@ -14,7 +14,7 @@ class Category(models.Model):
 class Subcategory(models.Model):
     cat_id=models.ForeignKey(Category,on_delete=models.CASCADE,related_name='subcat')  
     sub_name=models.CharField(max_length=100)
-    sub_img=models.ImageField(upload_to='',null=True, blank=True) 
+    sub_img=models.ImageField(upload_to='subcat_images/',null=True, blank=True) 
     def __str__(self):
         return self.sub_name
 class Brand(models.Model):

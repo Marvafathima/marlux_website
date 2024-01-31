@@ -29,19 +29,23 @@ def del_category(request,id):
     cat.delete()
     return redirect('adminapp:category_list')
 def update_category(request,id):
-    cat=Category.objects.get(id=id)
+    cat=Category.objects.get(pk=id)
     if request.method=="POST":
         cat_name=request.POST.get('cat_name')
-        cat_des=request.POST.get('description')
+        cat_dsc=request.POST.get('description')
         cat_img=request.FILES.get('image')
         is_published=request.POST.get('is_published')=='True'
-        cat.cat_name=cat_name
-        cat.description=cat_des
-        cat.is_published=is_published
+        if cat_name:
+            cat.name=cat_name
+        if cat_dsc:
+            cat.cat_dsc=cat_dsc
+        if is_published :
+            cat.published=is_published
         if cat_img:
             cat.cat_img=cat_img
         cat.save()
         return redirect('adminapp:category_list')
-    return render(request,'cat_update.html',{'cat':cat})
+    context={'id':cat.pk,'cat_name':cat.name,'description':cat.cat_dsc,'image':cat.cat_img,'is_published':cat.published}
+    return render(request,'cat_update.html',context)
 
 
