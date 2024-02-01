@@ -4,7 +4,20 @@
     .content_body_hc {
         background-color: hsl(217, 25%, 94%);
     }
-</style>
+        /* Additional styling for improved appearance */
+    .variant-container {
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+    }
+
+    .remove-btn {
+        margin-top: 10px;
+    }
+    </style>
+   
+
 {% if messages %}
 <div class="alert alert-success alert-dismissible fade show" role="alert">
     {% for message in messages%}
@@ -14,72 +27,168 @@
 </div>
 {% endif %}
 <div style="margin-left: 500px;">
-<div class="content_body " id="content_body">
-    <div class="wrapper_content_body">
-        <h4>Add Product </h4>
+    <div class="content_body " id="content_body">
+        <div class="wrapper_content_body">
+            <h4>Add Product </h4>
 
-        <div class="row">
-            
-            <div class="col-lg-7">
-                <div class="content_box_border">
-
-                    <!-- <h5>Upload Logo </h5>
-                    <div class="current_logo">
-                        <img src="assets/images/banner-1.jpg" alt="">
-                    </div>  -->
-
-                    <form action="" method="post" enctype="multipart/form-data">
-                       {%csrf_token%}
-                       <div class="col-md-12">
-                        <div class="form_group">
-                            <label for="name">Product Name</label>
-                            <input type="text" placeholder="Category Name" name="cat_name">
-                        </div>
-                    </div>
-        
-                    <div class="col-md-12">
-                        <div class="form_group">
-                            <label for="">Product Description </label>
-                            <textarea name="description" rows="4" required></textarea>
-                        </div>
-                    </div>
-                        <div class="row mt-2">
-                            <div class="col-md-12">
-                                <div class="form_group">
-                                    <label for="">Upload image 1</label>
-                                    <input type="file" name="image" accept="image/*" required>
-                                </div>
-                                <div class="form_group">
-                                    <label for="">Upload image 2</label>
-                                    <input type="file" name="image" accept="image/*" required>
-                                </div>
-                                <div class="form_group">
-                                    <label for="">Upload image 3</label>
-                                    <input type="file" name="image" accept="image/*" required>
+            <div class="row">
+                
+                <div class="col-lg-7">
+                    <div class="content_box_border">
+                        <div class="wrapper_content_body">
+                        <form method="post" enctype="multipart/form-data" id="productForm">
+                            {% csrf_token %}
+                            <!-- Product fields -->
+                            {{ product_form.as_p }}
+                            <input type="hidden" name="variant_count" id="variant_count" value="0">
+                            <div class="row mt-2">
+                                <div class="col-md-12">
+                                    <div class="form_group">
+                                        <label for="">Upload product image</label>
+                                        <input type="file" name="image1" accept="image/*" required>
+                                        <input type="file" name="image2" accept="image/*">
+                                        <input type="file" name="image3" accept="image/*">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
+
+
+
+                            <h4 style="font-size: 20px;font-weight:bold">Product Variants</h4>
+                            <div id="variantFieldsContainer">
+                            <!-- Variant input fields will be added here -->
+                            </div>
+                            <div class="d-flex justify-content-between">
+                            <button class="btn btn-primary mr-2" type="button" id="addVariantBtn">Add Variant</button>
+                            <input  class="btn btn-success"  type="submit" value="Save">
+                        </div>
                        
-                        <div class="col-md-12">
-                        <div class="d-inline-block">
-                            <input type="checkbox" name="is_published" value="True"></div>
-                        <div class="d-inline-block">
-                            <label for="">Published</label>
-                        </div> </div>
+                        </form>
+                        
+                        
+                        
 
-                      
-
-                        <div class="col-12 text-center">
-                            <button class="form_btn btn_green" type="submit">Save</button>
-                            <button class="form_btn btn_warning" type="reset" href="{% url 'adminapp:addcategory'%}">Cancel</button>
+                        
                         </div>
-
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-</div>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        var variantCount = 0;
+
+        // Function to add variant input fields dynamically
+        function addVariantFields() {
+            variantCount++;
+            $('#variant_count').val(variantCount);
+            var container = $('#variantFieldsContainer');
+            var inputColor = 'color_' + variantCount;
+            var inputSize = 'size_' + variantCount;
+            var inputStock = 'stock_' + variantCount;
+            var inputPrice = 'price_' + variantCount;
+            var inputDiscount = 'discount_' + variantCount;
+
+            var variantFields = `
+                <div class="variant-container">
+                    
+                    <label for="${inputColor}">Color:</label>
+                    <input class="form-control" type="text" id="${inputColor}" name="${inputColor}" required>
+                    <div class="col-lg-12">
+                        <div class="row">
+                        <div class="col-md-6 ml-3">
+                    <label for="${inputSize}">Size:</label>
+                    <input class="form-control" type="text" id="${inputSize}" name="${inputSize}" required>
+                </div>
+                <div class="col-md-6 ml-3">
+                    <label for="${inputStock}">Stock:</label>
+                    <input class="form-control" type="number" id="${inputStock}" name="${inputStock}" required>
+                </div>
+            </div>  </div>
+                    <div class="col-lg-12">
+                        <div class="row">
+                        <div class="col-md-6 ml-3">
+                    <label for="${inputPrice}">Price:</label>
+                    <input class="form-control" type="number" id="${inputPrice}" name="${inputPrice}" required>
+                </div>
+                <div class="col-md-6 ">
+                    <label for="${inputDiscount}">Discount:</label>
+                    <input class="form-control" type="number" id="${inputDiscount}" name="${inputDiscount}">
+                </div></div></div>
+                    <button type="button" class="btn btn-danger remove-btn">Remove</button>
+                </div>
+            `;
+
+            container.append(variantFields);
+        }
+
+        // Event listener for adding variants
+        $('#addVariantBtn').on('click', addVariantFields);
+
+        // Event delegation for removing variants
+        $('#variantFieldsContainer').on('click', '.remove-btn', function() {
+            $(this).closest('.variant-container').remove();
+            variantCount--;
+            $('#variant_count').val(variantCount);
+        });
+    });
+</script>
+
+
+
+
+<!-- <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var variantCount = 0;
+  
+      // Function to add variant input fields dynamically
+      function addVariantFields() {
+        variantCount++;
+        document.getElementById('variant_count').value = variantCount;
+        var container = document.getElementById('variantFieldsContainer');
+        var inputColor = 'color_' + variantCount;
+        var inputSize = 'size_' + variantCount;
+        var inputStock = 'stock_' + variantCount;
+        var inputPrice = 'price_' + variantCount;
+        var inputDiscount='discount_'+ variantCount;
+  
+        var variantFields = `
+          <div class="variant-container">
+            <label for="${inputColor}">Color:</label>
+            <input type="text" id="${inputColor}" name="${inputColor}" required>
+  
+            <label for="${inputSize}">Size:</label>
+            <input type="text" id="${inputSize}" name="${inputSize}" required>
+  
+            <label for="${inputStock}">Stock:</label>
+            <input type="number" id="${inputStock}" name="${inputStock}" required>
+  
+            <label for="${inputPrice}">Price:</label>
+            <input type="number" id="${inputPrice}" name="${inputPrice}" required>
+            <label for="${inputDiscount}">Discount:</label>
+            <input type="number" name="${inputDiscount}" id="${inputDiscount}">
+  
+            <button type="button" onclick="removeVariantFields(this)">Remove</button>
+          </div>
+        `;
+  
+        container.innerHTML += variantFields;
+      }
+  
+      function removeVariantFields(btn) {
+        var variantContainer = btn.closest('.variant-container');
+        variantContainer.remove();
+        variantCount--;
+        document.getElementById('variant_count').value = variantCount;
+    }
+  
+      // Event listener for adding variants
+      document.getElementById('addVariantBtn').addEventListener('click', addVariantFields);
+    });
+  </script> -->
  {% endblock userlist %}

@@ -50,13 +50,34 @@
 
 
 
-                    <li id="imagepopup">
-                        <a href="javascript:;">
-                            <i class="fa fa-image"></i>
-                             products
+                    <li>
+
+                        <a href="javascript:;" data-show="useractivity">
+                            <i class="fa fa-user"></i>
+                            Products
+                            <i class="downarrow fa-solid fa-chevron-down"></i>
                         </a>
+
+                        <ul class="submenus" id="useractivity">
+
+                            <li>
+                                <a href="{% url 'adminapp:add_product' %}">
+                                    <i class="fa fa-square"></i>
+                                    Add products
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="{% url 'adminapp:category_list' %}">
+                                    <i class="fa fa-square"></i>
+                                    View Products
+                                </a>
+                            </li>
+                           
+ 
+
+                        </ul>
                     </li>
-            
                     <li>
 
                         <a href="javascript:;" data-show="useractivity">
@@ -86,19 +107,16 @@
                                     Add SubCategory
                                 </a>
                             </li>
-
-
-
-                            <!-- <li>
-                                <a href="ShortList.html">
-                                    <i class="fa fa-square"></i>
-                                    Update Category
-                                </a>
-                            </li> -->
  
 
                         </ul>
                     </li>
+
+                    
+
+
+
+
                     <li>
                         <a href="{% url 'adminapp:userlist' %}">
                             <i class="fa fa-users"></i>

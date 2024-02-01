@@ -18,4 +18,6 @@ urlpatterns=[
     path('dashboard/category/update_category/<int:id>',category_views.update_category,name='update_category'),
     path('dashboard/category/delete_category/<int:id>',category_views.del_category,name='delete_category'),
     path('dashboard/category/add_subcategory',category_views.add_subcategory,name='add_subcategory'),
+    path('dashboard/products/add_product',category_views.add_product,name='add_product'),
+
 ]
