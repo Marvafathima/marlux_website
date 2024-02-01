@@ -80,6 +80,14 @@
                                     View Category
                                 </a>
                             </li>
+                            <li>
+                                <a href="{% url 'adminapp:add_subcategory' %}">
+                                    <i class="fa fa-square"></i>
+                                    Add SubCategory
+                                </a>
+                            </li>
+
+
 
                             <!-- <li>
                                 <a href="ShortList.html">
@@ -97,6 +105,87 @@
                            Users
                         </a>
                     </li>
+                    <li>
+                        <a href="ContentManagment.html">
+                            <i class="fa-solid fa-add"></i>
+                            Content Management  
+                        </a>
+                    </li>
+
+
+                    <li>
+
+                        <a href="javascript:;" data-show="emailtemplate">
+                            <i class="fa fa-files-o"></i>
+                             Email Template
+                            <i class="downarrow fa-solid fa-chevron-down"></i>
+                        </a>
+
+                        <ul class="submenus" id="emailtemplate">
+
+                            <li>
+                                <a href="AddEmailTemplate.html">
+                                    <i class="fa fa-square"></i>
+                                   Add new template
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="AllEmailTemplate.html">
+                                    <i class="fa fa-square"></i>
+                                    All email template
+                                </a>
+                            </li>
+ 
+                        </ul>
+                    </li>
+
+
+
+
+                    <li>
+
+                        <a href="javascript:;" data-show="memberreport">
+                            <i class="fa fa-files-o"></i>
+                            Member Report
+                            <i class="downarrow fa-solid fa-chevron-down"></i>
+                        </a>
+
+                        <ul class="submenus" id="memberreport">
+
+                            <li>
+                                <a href="">
+                                    <i class="fa fa-square"></i>
+                                  Export Seeker Data
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="">
+                                    <i class="fa fa-square"></i>
+                                  Export Employer  Data
+                                </a>
+                            </li>
+
+                         
+                        </ul>
+                    </li>
+
+
+                    <li>
+                        <a href="SendEmail.html">
+                            <i class="fa fa-envelope-o"></i>
+                           Send Email
+                        </a>
+                    </li>
+
+                  
+                </ul>
+            </div>
+        </aside>
+    </div>
+        {% block userlist %}
+        {% endblock userlist %} 
 
 
                     <!-- <li>
@@ -466,86 +555,7 @@
 
 
 
-                    <li>
-                        <a href="ContentManagment.html">
-                            <i class="fa-solid fa-add"></i>
-                            Content Management  
-                        </a>
-                    </li>
-
-
-                    <li>
-
-                        <a href="javascript:;" data-show="emailtemplate">
-                            <i class="fa fa-files-o"></i>
-                             Email Template
-                            <i class="downarrow fa-solid fa-chevron-down"></i>
-                        </a>
-
-                        <ul class="submenus" id="emailtemplate">
-
-                            <li>
-                                <a href="AddEmailTemplate.html">
-                                    <i class="fa fa-square"></i>
-                                   Add new template
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="AllEmailTemplate.html">
-                                    <i class="fa fa-square"></i>
-                                    All email template
-                                </a>
-                            </li>
- 
-                        </ul>
-                    </li>
-
-
-
-
-                    <li>
-
-                        <a href="javascript:;" data-show="memberreport">
-                            <i class="fa fa-files-o"></i>
-                            Member Report
-                            <i class="downarrow fa-solid fa-chevron-down"></i>
-                        </a>
-
-                        <ul class="submenus" id="memberreport">
-
-                            <li>
-                                <a href="">
-                                    <i class="fa fa-square"></i>
-                                  Export Seeker Data
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="">
-                                    <i class="fa fa-square"></i>
-                                  Export Employer  Data
-                                </a>
-                            </li>
-
-                         
-                        </ul>
-                    </li>
-
-
-                    <li>
-                        <a href="SendEmail.html">
-                            <i class="fa fa-envelope-o"></i>
-                           Send Email
-                        </a>
-                    </li>
-
-                  
-                </ul>
-            </div>
-        </aside>
-        {% block userlist %}
-        {% endblock userlist %} 
+                   
 
         <!-- <div class="content_body" id="content_body">
             <div class="wrapper_content_body"> -->

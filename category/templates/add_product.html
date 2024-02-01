@@ -1,0 +1,85 @@
+{% extends 'dashboard.html' %}
+ {% block userlist %}
+ <style>
+    .content_body_hc {
+        background-color: hsl(217, 25%, 94%);
+    }
+</style>
+{% if messages %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    {% for message in messages%}
+    <strong>SUCCESS:</strong> {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  {% endfor %}
+</div>
+{% endif %}
+<div style="margin-left: 500px;">
+<div class="content_body " id="content_body">
+    <div class="wrapper_content_body">
+        <h4>Add Product </h4>
+
+        <div class="row">
+            
+            <div class="col-lg-7">
+                <div class="content_box_border">
+
+                    <!-- <h5>Upload Logo </h5>
+                    <div class="current_logo">
+                        <img src="assets/images/banner-1.jpg" alt="">
+                    </div>  -->
+
+                    <form action="" method="post" enctype="multipart/form-data">
+                       {%csrf_token%}
+                       <div class="col-md-12">
+                        <div class="form_group">
+                            <label for="name">Product Name</label>
+                            <input type="text" placeholder="Category Name" name="cat_name">
+                        </div>
+                    </div>
+        
+                    <div class="col-md-12">
+                        <div class="form_group">
+                            <label for="">Product Description </label>
+                            <textarea name="description" rows="4" required></textarea>
+                        </div>
+                    </div>
+                        <div class="row mt-2">
+                            <div class="col-md-12">
+                                <div class="form_group">
+                                    <label for="">Upload image 1</label>
+                                    <input type="file" name="image" accept="image/*" required>
+                                </div>
+                                <div class="form_group">
+                                    <label for="">Upload image 2</label>
+                                    <input type="file" name="image" accept="image/*" required>
+                                </div>
+                                <div class="form_group">
+                                    <label for="">Upload image 3</label>
+                                    <input type="file" name="image" accept="image/*" required>
+                                </div>
+                            </div>
+                        </div>
+
+                       
+                        <div class="col-md-12">
+                        <div class="d-inline-block">
+                            <input type="checkbox" name="is_published" value="True"></div>
+                        <div class="d-inline-block">
+                            <label for="">Published</label>
+                        </div> </div>
+
+                      
+
+                        <div class="col-12 text-center">
+                            <button class="form_btn btn_green" type="submit">Save</button>
+                            <button class="form_btn btn_warning" type="reset" href="{% url 'adminapp:addcategory'%}">Cancel</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+ {% endblock userlist %}

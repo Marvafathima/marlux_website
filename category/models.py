@@ -19,21 +19,34 @@ class Subcategory(models.Model):
         return self.sub_name
 class Brand(models.Model):
     br_name=models.CharField(max_length=200)
-    br_logo=models.ImageField(upload_to='',null=True, blank=True)
-    br_dsc=models.TextField(max_length=200)
+
 class Products(models.Model):
     pr_name=models.CharField(max_length=100)
     cat_id=models.ForeignKey(Category,on_delete=models.CASCADE,related_name='prodcat')  
-    brand_id=models.ForeignKey(Brand,on_delete=models.CASCADE,related_name='brand')
+    brand_id=models.ForeignKey(Brand,on_delete=models.SET_NULL,null=True,blank=True,related_name='brand')
     subcat_id=models.ForeignKey(Subcategory,on_delete=models.CASCADE,related_name='prosubcat')  
-    price=models.FloatField()
-    sale_price=models.FloatField()
-    prodvar_img=models.ImageField(upload_to='',null=True, blank=True)
 
-class ProductVarient(models.Model):
+    # price=models.FloatField()
+    # sale_price=models.FloatField()
+    # discount=models.IntegerField(null=True,blank=True)
+class ProductImage(models.Model):
+    image=models.ImageField(upload_to='product_image/',null=True, blank=True)
+    img_id=models.ForeignKey(Products,on_delete=models.CASCADE,related_name='product_image')  
+
+# 
+class Color(models.Model):
+    color=models.CharField(max_length=200)
+
+class Size(models.Model):
+    size=models.CharField(max_length=200)
+class ProductVar(models.Model):
     prod_id=models.ForeignKey(Products,on_delete=models.CASCADE,related_name='product_varient')  
-    Color=models.CharField(max_length=200)
-    size=models.CharField(max_length=5)
+    color=models.ForeignKey(Color,on_delete=models.CASCADE,related_name='product_color')  
+    size=models.ForeignKey(Size,on_delete=models.CASCADE,related_name='product_size')  
     stock=models.IntegerField()
     discount=models.IntegerField()
-    prodvar_img=models.ImageField(upload_to='',null=True, blank=True)
+    is_active=models.BooleanField(default=True)
+    # prodvar_img=models.ImageField(upload_to='',null=True, blank=True)
+# class VarientImage(models.Model):
+#     varient_id=models.ForeignKey(Color,on_delete=models.CASCADE,related_name='varient_image')
+#     prod_img=models.ImageField(upload_to='varient_img/',null=True, blank=True)

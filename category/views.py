@@ -3,7 +3,8 @@ from django.http import HttpResponse
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
 from django.db.models import Q
-from .models import Category,Subcategory,Products,ProductVarient,Brand
+from .models import Category,Subcategory
+from .forms import SubcategoryForm
 # Create your views here.
 def add_category(request):
     if request.method=='POST':
@@ -48,4 +49,22 @@ def update_category(request,id):
     context={'id':cat.pk,'cat_name':cat.name,'description':cat.cat_dsc,'image':cat.cat_img,'is_published':cat.published}
     return render(request,'cat_update.html',context)
 
+def add_subcategory(request):
+    if request.method == "POST":
+        form = SubcategoryForm(request.POST,request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Subcategory added successfully.')  # Add a success message
+            return redirect('adminapp:category_list')
+        else:
+            messages.error(request, 'Form validation failed. Please check the entered data.')
+            # You might want to handle form validation errors here
+    else:
+        form = SubcategoryForm()
 
+    return render(request, 'addsubcat.html', {'forms': form})
+def add_product(request):
+    pass
+
+
+    

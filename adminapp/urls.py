@@ -17,4 +17,5 @@ urlpatterns=[
     path('dashboard/category/category_list',category_views.category_list,name='category_list'),
     path('dashboard/category/update_category/<int:id>',category_views.update_category,name='update_category'),
     path('dashboard/category/delete_category/<int:id>',category_views.del_category,name='delete_category'),
+    path('dashboard/category/add_subcategory',category_views.add_subcategory,name='add_subcategory'),
 ]
