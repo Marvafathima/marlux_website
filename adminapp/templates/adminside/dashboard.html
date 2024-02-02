@@ -68,12 +68,17 @@
                             </li>
 
                             <li>
-                                <a href="{% url 'adminapp:category_list' %}">
+                                <a href="{% url 'adminapp:list_product' %}">
                                     <i class="fa fa-square"></i>
                                     View Products
                                 </a>
                             </li>
-                           
+                            <!-- <li>
+                                <a href="{% url 'adminapp:add_subcategory' %}">
+                                    <i class="fa fa-square"></i>
+                                    Add SubCategory
+                                </a>
+                            </li> -->
  
 
                         </ul>
@@ -101,6 +106,8 @@
                                     View Category
                                 </a>
                             </li>
+                           
+
                             <li>
                                 <a href="{% url 'adminapp:add_subcategory' %}">
                                     <i class="fa fa-square"></i>
@@ -108,10 +115,41 @@
                                 </a>
                             </li>
  
+                        </ul>
+                    </li>
+                    <li>
+
+                        <a href="javascript:;" data-show="useractivity">
+                            <i class="fa fa-user"></i>
+                            SubCategory
+                            <i class="downarrow fa-solid fa-chevron-down"></i>
+                        </a>
+
+                        <ul class="submenus" id="useractivity">
+
+                            <li>
+                                <a href="{% url 'adminapp:add_product' %}">
+                                    <i class="fa fa-square"></i>
+                                    Add SubCategory
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="{% url 'adminapp:category_list' %}">
+                                    <i class="fa fa-square"></i>
+                                    View SubCategory
+                                </a>
+                            </li>
+                            <!-- <li>
+                                <a href="{% url 'adminapp:add_subcategory' %}">
+                                    <i class="fa fa-square"></i>
+                                    Add SubCategory
+                                </a>
+                            </li> -->
+ 
 
                         </ul>
                     </li>
-
                     
 
 

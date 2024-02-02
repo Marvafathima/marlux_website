@@ -1,0 +1,47 @@
+{% extends 'dashboard.html' %}
+ {% block userlist %}
+ <style>
+    .content_body_hc {
+        background-color: hsl(217, 25%, 94%);
+    }
+</style>
+
+<div style="margin-left: 500px;">
+    <div class="content_body " id="content_body">
+        <div class="wrapper_content_body">
+            <h4>Update Product </h4>
+
+            <div class="row">
+                
+                <div class="col-lg-7">
+                    <div class="content_box_border">
+                        <div class="wrapper_content_body">
+                        <form method="post" enctype="multipart/form-data" id="productForm">
+                            {% csrf_token %}
+                           {% for pr in %}
+                           
+                            <div class="row mt-2">
+                                <div class="col-md-12">
+                                    <div class="form_group">
+                                        <label for="">Upload product image</label>
+                                        <input type="file" name="image1" accept="image/*" required>
+                                        <input type="file" name="image2" accept="image/*">
+                                        <input type="file" name="image3" accept="image/*">
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                            <h4 style="font-size: 20px;font-weight:bold">Product Variants</h4>
+                            <div id="variantFieldsContainer">
+                            <!-- Variant input fields will be added here -->
+                            </div>
+                            <div class="d-flex justify-content-between">
+                            <button class="btn btn-primary mr-2" type="button" id="addVariantBtn">Add Variant</button>
+                            <input  class="btn btn-success"  type="submit" value="Save">
+                        </div>
+                       
+                        </form></div>
+                        {% endblock userlist %}

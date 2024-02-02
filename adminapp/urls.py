@@ -19,5 +19,8 @@ urlpatterns=[
     path('dashboard/category/delete_category/<int:id>',category_views.del_category,name='delete_category'),
     path('dashboard/category/add_subcategory',category_views.add_subcategory,name='add_subcategory'),
     path('dashboard/products/add_product',category_views.add_product,name='add_product'),
-
-]
+    path('dashboard/products/delete_product/<int:id>',category_views.delete_product,name='delete_product'),
+    path('dashboard/products/update_product/<int:id>',category_views.update_product,name='update_product'),
+    path('dashboard/products/product_list',category_views.list_product,name='list_product'),
+   
+    ]

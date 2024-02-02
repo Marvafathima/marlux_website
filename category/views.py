@@ -2,10 +2,11 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
 from django.contrib import messages
 from django.db.models import Q
-from .models import Category,Subcategory,ProductVar, Color, Size,ProductImage
+from .models import Category,Subcategory,Products,ProductVar, Color, Size,ProductImage
 from .forms import SubcategoryForm,ProductsForm
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+from django.http import JsonResponse
 # Create your views here.
 @login_required(login_url="adminapp:admin")
 def add_category(request):
@@ -104,21 +105,30 @@ def add_product(request):
                 size = request.POST.get(f'size_{i}')
                 stock = request.POST.get(f'stock_{i}')
                 price = request.POST.get(f'price_{i}')
-                discount=request.POST.get(f'discount_{i}')
+                discount = request.POST.get(f'discount_{i}', None)
+
 
                 print(color,size,stock,price,discount)
 
                 color_instance, _ = Color.objects.get_or_create(color=color)
                 size_instance, _ = Size.objects.get_or_create(size=size)
-
-                ProductVar.objects.create(
-                    prod_id=product_instance,
-                    color=color_instance,
-                    size=size_instance,
-                    stock=stock,
-                    price=price,
-                    discount=discount
-                )
+                if discount:
+                    ProductVar.objects.create(
+                        prod_id=product_instance,
+                        color=color_instance,
+                        size=size_instance,
+                        stock=stock,
+                        price=price,
+                        discount=discount
+                    )
+                else:
+                    ProductVar.objects.create(
+                        prod_id=product_instance,
+                        color=color_instance,
+                        size=size_instance,
+                        stock=stock,
+                        price=price
+                    )
             
             return redirect('adminapp:category_list')
         else:
@@ -129,7 +139,74 @@ def add_product(request):
 
     return render(request, 'add_product.html', {'product_form': product_form})
     
+def list_product(request):
+    products=Products.objects.all()
+    return render (request,'product_list.html',{'products':products})
 
+def update_product(request,id):
+    product=Products.objects.get(pk=id)
+    image_ids=list(ProductImage.objects.filter(img_id=id).values_list('id', flat=True))
+    if request.method=="POST":
+        pr_name=request.POST.get('name')
+        category=request.POST.get('category')
+        brand=request.POST.get('brand')
+        sub_category=request.POST.get('sub_category')
+        is_available=request.POST.get('is_available',False)
+        image1=request.FILES.get('image1')
+        if 'image2' in request.FILES:
+            image2=request.FILES.get('image2')
+        if 'image3' in request.FILES:
+            image3=request.FILES.get('image3')
+        if pr_name:
+            product.pr_name=pr_name
+        if category:
+            product.cat_id=category
+        if brand:
+            product.brand_id=brand
+        if sub_category:
+            product.subcat_id=sub_category 
+        if is_available:
+            product.is_available=is_available   
+        product.save()
+        if  image1 and image_ids:
+            first_image_id = image_ids[0]
+            ProductImage.objects.filter(id=first_image_id).update(image=image1)
+
+        # Update image2 for the second image_id
+        if image2 and len(image_ids) > 1:
+            second_image_id = image_ids[1]
+            ProductImage.objects.filter(id=second_image_id).update(image=image2)
+
+    # Update image3 for the last image_id
+        if image3 and len(image_ids) > 2:
+            last_image_id = image_ids[-1]
+            ProductImage.objects.filter(id=last_image_id).update(image=image3)
+        return redirect('adminapp:product_list')
+    
+
+    category = product.cat_id 
+    brand = product.brand_id 
+    sub_category = product.subcat_id 
+
+    context = {
+        'id': product.pk,
+        'pr_name': product.pr_name,
+        'category': category,
+        'brand': brand,
+        'sub_category': sub_category,
+        'is_available':product.is_available
+        # Add more fields as needed
+    }
+
+    return render(request, 'update_product.html', {'context':context})
+def delete_product(request, id):
+    product = get_object_or_404(Products, pk=id)
+    ProductImage.objects.filter(img_id=id).delete()
+    product.delete()
+
+    return redirect('adminapp:product_list')
+
+    
     
 
 

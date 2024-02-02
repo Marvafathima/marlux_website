@@ -1,0 +1,78 @@
+{% extends 'dashboard.html' %}
+
+{% block userlist %}
+
+
+<div class="table_data_check">
+    <div class="table_head_sec">
+        <h1>Product List</h1></div>
+        <div class="container mt-4">
+            <div class="row">
+                {% for product in products %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            
+                            <img src="{% if product.product_image.all %}{{ product.product_image.first.image.url }}{% else %}{{ 'path/to/placeholder-image.jpg' }}{% endif %}" class="card-img-top" alt="Product Image" style="height:400px;">
+                            <div class="card-body">
+                                <div class="card-header d-flex justify-content-between">
+                                    <h3 class="card-title font-weight-bold">{{ product.pr_name }}</h3>
+                                    
+                                </div>
+                                <p class="card-text">Category: <span class="font-weight-bold">{{ product.cat_id.name }}</span></p>
+                                <p class="card-text">Brand: <span class="font-weight-bold">{{ product.brand_id.br_name }}</span></p>
+                                <p class="card-text">Subcategory: <span class="font-weight-bold">{{ product.subcat_id.sub_name }}</span></p>
+                                <p class="card-text">Availability: <span class="{% if product.is_available %}text-success{% else %}text-danger{% endif %}">{{ product.is_available|yesno:"Available,Not Available" }}</span></p>
+                            </div>
+                            <div class="mb-4 justify-content-between">
+                                <a href="{% url 'adminapp:update_product' product.id %}" class="btn btn-info btn-sm mr-2">Edit</a>
+                                <a href="{% url 'adminapp:delete_product' product.id %}" class="btn btn-danger btn-sm ml-3" onclick="confirmDelete(event)">Delete</a>
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item bg-light">
+                                    <h6 class="font-weight-bold">Variants:</h6>
+                                    <table class="table table-bordered">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th class="font-weight-bold">Color</th>
+                                                <th class="font-weight-bold">Size</th>
+                                                <th class="font-weight-bold">Stock</th>
+                                                <th class="font-weight-bold">Price</th>
+                                                <th class="font-weight-bold">Discount</th>
+                                                <th class="font-weight-bold">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for variant in product.product_varient.all %}
+                                                <tr>
+                                                    <td>{{ variant.color.color }}</td>
+                                                    <td>{{ variant.size.size }}</td>
+                                                    <td>{{ variant.stock }}</td>
+                                                    <td>{{ variant.price }}</td>
+                                                    <td>{{ variant.discount }}</td>
+                                                    <td>
+                                                        <span class="{% if variant.is_active %}text-success{% else %}text-danger{% endif %} font-weight-bold">
+                                                            {% if variant.is_active %}Active{% else %}Inactive{% endif %}
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+    </div>
+    <script>
+        function confirmDelete(event) {
+            var confirmed = confirm('Are you sure you want to delete the Product');
+            if (!confirmed) {
+                event.preventDefault();  // Prevent the default link behavior
+            }
+        } 
+     </script>   
+{% endblock userlist %}

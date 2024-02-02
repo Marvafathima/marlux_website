@@ -142,53 +142,5 @@
 
 
 
-<!-- <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      var variantCount = 0;
-  
-      // Function to add variant input fields dynamically
-      function addVariantFields() {
-        variantCount++;
-        document.getElementById('variant_count').value = variantCount;
-        var container = document.getElementById('variantFieldsContainer');
-        var inputColor = 'color_' + variantCount;
-        var inputSize = 'size_' + variantCount;
-        var inputStock = 'stock_' + variantCount;
-        var inputPrice = 'price_' + variantCount;
-        var inputDiscount='discount_'+ variantCount;
-  
-        var variantFields = `
-          <div class="variant-container">
-            <label for="${inputColor}">Color:</label>
-            <input type="text" id="${inputColor}" name="${inputColor}" required>
-  
-            <label for="${inputSize}">Size:</label>
-            <input type="text" id="${inputSize}" name="${inputSize}" required>
-  
-            <label for="${inputStock}">Stock:</label>
-            <input type="number" id="${inputStock}" name="${inputStock}" required>
-  
-            <label for="${inputPrice}">Price:</label>
-            <input type="number" id="${inputPrice}" name="${inputPrice}" required>
-            <label for="${inputDiscount}">Discount:</label>
-            <input type="number" name="${inputDiscount}" id="${inputDiscount}">
-  
-            <button type="button" onclick="removeVariantFields(this)">Remove</button>
-          </div>
-        `;
-  
-        container.innerHTML += variantFields;
-      }
-  
-      function removeVariantFields(btn) {
-        var variantContainer = btn.closest('.variant-container');
-        variantContainer.remove();
-        variantCount--;
-        document.getElementById('variant_count').value = variantCount;
-    }
-  
-      // Event listener for adding variants
-      document.getElementById('addVariantBtn').addEventListener('click', addVariantFields);
-    });
-  </script> -->
+
  {% endblock userlist %}
