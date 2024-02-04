@@ -36,3 +36,26 @@ class ProductsForm(forms.ModelForm):
         self.set_empty_label('cat_id')
         self.set_empty_label('brand_id')
         self.set_empty_label('subcat_id')
+
+
+class UpdateProductForm(forms.ModelForm):
+    class Meta:
+        model = Products
+        fields = ['pr_name', 'cat_id', 'brand_id', 'subcat_id', 'is_available']
+        labels = {
+            'pr_name': 'Product Name',
+            'cat_id': 'Category',
+            'brand_id': 'Brand',
+            'subcat_id': 'Subcategory',
+            'is_available': 'Active',
+        }
+
+    def set_empty_label(self, field_name):
+        self.fields[field_name].empty_label = "Select"
+
+    def __init__(self, *args, **kwargs):
+        super(UpdateProductForm, self).__init__(*args, **kwargs)
+        # Set empty_label for cat_id, brand_id, and subcat_id
+        self.set_empty_label('cat_id')
+        self.set_empty_label('brand_id')
+        self.set_empty_label('subcat_id')

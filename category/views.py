@@ -2,8 +2,8 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse
 from django.contrib import messages
 from django.db.models import Q
-from .models import Category,Subcategory,Products,ProductVar, Color, Size,ProductImage
-from .forms import SubcategoryForm,ProductsForm
+from .models import Category,Subcategory,Products,ProductVar,Brand, Color, Size,ProductImage
+from .forms import SubcategoryForm,ProductsForm,UpdateProductForm
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.http import JsonResponse
@@ -130,7 +130,7 @@ def add_product(request):
                         price=price
                     )
             
-            return redirect('adminapp:category_list')
+            return redirect('adminapp:list_product')
         else:
            messages.error(request,"invalid form")
            return render(request,"add_product.html")
@@ -144,7 +144,7 @@ def list_product(request):
     return render (request,'product_list.html',{'products':products})
 
 def update_product(request,id):
-    product=Products.objects.get(pk=id)
+    product=Products.objects.get(id=id)
     image_ids=list(ProductImage.objects.filter(img_id=id).values_list('id', flat=True))
     if request.method=="POST":
         pr_name=request.POST.get('name')
@@ -152,59 +152,105 @@ def update_product(request,id):
         brand=request.POST.get('brand')
         sub_category=request.POST.get('sub_category')
         is_available=request.POST.get('is_available',False)
+
+        print(pr_name)
+        print(category)
+        print(brand)
+        print(sub_category)
+        print(is_available)
+    
+              #working code
         image1=request.FILES.get('image1')
-        if 'image2' in request.FILES:
-            image2=request.FILES.get('image2')
-        if 'image3' in request.FILES:
-            image3=request.FILES.get('image3')
+        print(image1)
+         #end of working code
+        
+
+
+        # if 'image2' in request.FILES:
+        #     image2=request.FILES.get('image2')
+        #     print('yes')
+        # else:
+        #     print('no')   
+        # if 'image3' in request.FILES:
+        #     image3=request.FILES.get('image3')
+        #     print('yes')
+        # else:
+        #     print('no')
         if pr_name:
             product.pr_name=pr_name
+            print('yes')
+        else:
+            print('no')
         if category:
             product.cat_id=category
+            print('yes')
+        else:
+            print('no')
         if brand:
             product.brand_id=brand
+            print('yes')
+        else:
+            print('no')
         if sub_category:
             product.subcat_id=sub_category 
         if is_available:
-            product.is_available=is_available   
+            product.is_available=is_available 
+            print('yes')
+        else:
+            print('no')  
         product.save()
+       
         if  image1 and image_ids:
             first_image_id = image_ids[0]
-            ProductImage.objects.filter(id=first_image_id).update(image=image1)
+            print(image_ids)
+            obj=ProductImage.objects.get(id=first_image_id)
+            obj.image=image1
+            obj.save()
+        # end of working code
+    #     if image2 and len(image_ids) > 1:
+    #         second_image_id = image_ids[1]
+    #         ProductImage.objects.filter(id=second_image_id).update(image=image2)
 
-        # Update image2 for the second image_id
-        if image2 and len(image_ids) > 1:
-            second_image_id = image_ids[1]
-            ProductImage.objects.filter(id=second_image_id).update(image=image2)
-
-    # Update image3 for the last image_id
-        if image3 and len(image_ids) > 2:
-            last_image_id = image_ids[-1]
-            ProductImage.objects.filter(id=last_image_id).update(image=image3)
-        return redirect('adminapp:product_list')
+    # # Update image3 for the last image_id
+    #     if image3 and len(image_ids) > 2:
+    #         last_image_id = image_ids[-1]
+    #         ProductImage.objects.filter(id=last_image_id).update(image=image3)
+        return redirect('adminapp:list_product')
     
+    else:
 
-    category = product.cat_id 
-    brand = product.brand_id 
-    sub_category = product.subcat_id 
+        categories = Category.objects.all()
+        brands = Brand.objects.all()
+        subcategories = Subcategory.objects.all()
+        
 
-    context = {
-        'id': product.pk,
-        'pr_name': product.pr_name,
-        'category': category,
-        'brand': brand,
-        'sub_category': sub_category,
-        'is_available':product.is_available
-        # Add more fields as needed
-    }
+# Access individual images if needed
 
+
+        context = {
+            'id':product.id,
+            'pr_name':product.pr_name,
+            'cat_id':product.cat_id.id if product.cat_id else None,
+            'subcat_id':product.subcat_id.id if product.subcat_id else None,
+            'brand_id':product.brand_id.id if product.brand_id else None,
+            'subcategories': subcategories,
+            'brands':brands,
+            'categories':categories,
+            
+            # 'category_id':categories.id,
+            # 'category_name':categories.name,
+            # 'brand_name':brands.br_name,
+            # 'brands_id':brands.id,
+            # 'subcat_name':subcategories.sub_name,
+        }
+       
     return render(request, 'update_product.html', {'context':context})
 def delete_product(request, id):
-    product = get_object_or_404(Products, pk=id)
+    product = get_object_or_404(Products, id=id)
     ProductImage.objects.filter(img_id=id).delete()
     product.delete()
-
-    return redirect('adminapp:product_list')
+    messages.success("Product deleted successfully")
+    return redirect('adminapp:list_product')
 
     
     

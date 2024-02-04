@@ -1,47 +1,86 @@
 {% extends 'dashboard.html' %}
- {% block userlist %}
- <style>
+{% block userlist %}
+<style>
     .content_body_hc {
         background-color: hsl(217, 25%, 94%);
     }
 </style>
 
+{% if messages %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    {% for message in messages %}
+    <strong>SUCCESS:</strong> {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    {% endfor %}
+</div>
+{% endif %}
 <div style="margin-left: 500px;">
     <div class="content_body " id="content_body">
         <div class="wrapper_content_body">
-            <h4>Update Product </h4>
-
+            <h4>Update Product</h4>
             <div class="row">
-                
+            
                 <div class="col-lg-7">
                     <div class="content_box_border">
-                        <div class="wrapper_content_body">
-                        <form method="post" enctype="multipart/form-data" id="productForm">
-                            {% csrf_token %}
-                           {% for pr in %}
-                           
-                            <div class="row mt-2">
-                                <div class="col-md-12">
-                                    <div class="form_group">
-                                        <label for="">Upload product image</label>
-                                        <input type="file" name="image1" accept="image/*" required>
-                                        <input type="file" name="image2" accept="image/*">
-                                        <input type="file" name="image3" accept="image/*">
-                                    </div>
-                                </div>
+            
+            <div class="product-update-form">
+                <!-- Product Common Details -->
+                <form action="{% url 'adminapp:update_product' context.id %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Product Name -->
+                    <label for="pr_name">Product Name:</label>
+                    <input type="text" name="name" value="{{context.pr_name }}" required>
+                    
+                    <!-- Category Dropdown -->
+                    <label for="cat_id">Category:</label>
+                    <select name="cat_id">
+                        {% for category in context.categories %}
+        
+                        <option name="category" value="{{ category.id }}" {% if category.id == context.cat_id.id %}selected{% endif %}>{{ category.name }}</option>
+    
+                        {% endfor %}
+                    </select>
+            
+                    <!-- Brand Dropdown -->
+                    <label for="brand_id">Brand:</label>
+                    <select name="brand_id">
+                        {% for brand in context.brands %}
+                        <option name="brand" value="{{ brand.id }}" {% if brand.id == context.brand_id.id %}selected{% endif %}>{{ brand.br_name }}</option>
+                        {% endfor %}
+                    </select>
+            
+                    <!-- Subcategory Dropdown -->
+                    <label for="subcat_id">Subcategory:</label>
+                    <select name="subcat_id">
+                        {% for subcategory in context.subcategories %}
+                        <option name="sub_category" value="{{ subcategory.id }}" {% if subcategory.id == context.subcat_id.id %}selected{% endif %}>{{ subcategory.sub_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="row mt-2">
+                        <div class="col-md-12">
+                            <div class="form_group">
+                                <label for="">Product image</label>
+        
+                               
+                                <!-- <img src="{{cat.cat_img.url}}" alt="current image"> -->
+                                <input value="{{context.image1}}" type="file" name="image1" accept="image/*" required>
+                                <input value="{{context.image2}}" type="file" name="image2" accept="image/*">
+                                <input value="{{context.image3}}" type="file" name="image3" accept="image/*">
                             </div>
-
-
-
-
-                            <h4 style="font-size: 20px;font-weight:bold">Product Variants</h4>
-                            <div id="variantFieldsContainer">
-                            <!-- Variant input fields will be added here -->
-                            </div>
-                            <div class="d-flex justify-content-between">
-                            <button class="btn btn-primary mr-2" type="button" id="addVariantBtn">Add Variant</button>
-                            <input  class="btn btn-success"  type="submit" value="Save">
                         </div>
-                       
-                        </form></div>
-                        {% endblock userlist %}
+                    </div>
+                    
+                    <!-- Other product fields go here -->
+            
+                    <button type="submit" class="btn btn-primary">Save Product</button>
+                </form>
+            
+                <!-- Variants Table and other buttons go here -->
+            </div>
+            
+        </div>
+    </div>
+</div>
+</div></div></div>
+{% endblock userlist %}
