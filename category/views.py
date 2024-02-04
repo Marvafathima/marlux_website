@@ -166,16 +166,18 @@ def update_product(request,id):
         
 
 
-        # if 'image2' in request.FILES:
-        #     image2=request.FILES.get('image2')
-        #     print('yes')
-        # else:
-        #     print('no')   
-        # if 'image3' in request.FILES:
-        #     image3=request.FILES.get('image3')
-        #     print('yes')
-        # else:
-        #     print('no')
+        if 'image2' in request.FILES:
+            image2=request.FILES.get('image2')
+            
+        
+        else:
+            image2=None  
+        if 'image3' in request.FILES:
+            image3=request.FILES.get('image3')
+        else:
+            image3=None
+        print(image2)
+        print(image3)
         if pr_name:
             product.pr_name=pr_name
             print('yes')
@@ -204,17 +206,34 @@ def update_product(request,id):
             first_image_id = image_ids[0]
             print(image_ids)
             obj=ProductImage.objects.get(id=first_image_id)
+            obj.image.delete(False)
             obj.image=image1
             obj.save()
-        # end of working code
-    #     if image2 and len(image_ids) > 1:
-    #         second_image_id = image_ids[1]
-    #         ProductImage.objects.filter(id=second_image_id).update(image=image2)
+       
+        if image2 and len(image_ids) > 1:
+            second_image_id = image_ids[1]
+            obj= ProductImage.objects.get(id=second_image_id)
+            obj.image.delete(False)
+            obj.image=image2
+            obj.save()
+        elif image2 and len(image_ids)== 1:
+            ProductImage.objects.create(img_id=product,image=image2)
+            
+        else:
+            image2=None
 
-    # # Update image3 for the last image_id
-    #     if image3 and len(image_ids) > 2:
-    #         last_image_id = image_ids[-1]
-    #         ProductImage.objects.filter(id=last_image_id).update(image=image3)
+    # Update image3 for the last image_id
+        if image3 and len(image_ids) > 2:
+            last_image_id = image_ids[-1]
+            obj=ProductImage.objects.get(id=last_image_id)
+            obj.image.delete(False)
+            obj.image=image3
+            obj.save()
+        elif image3 and len(image_ids) <= 2:
+            ProductImage.objects.create(img_id=product,image=image3)
+        else:
+            image3=None
+        print(image1,image2,image3)
         return redirect('adminapp:list_product')
     
     else:
@@ -222,28 +241,48 @@ def update_product(request,id):
         categories = Category.objects.all()
         brands = Brand.objects.all()
         subcategories = Subcategory.objects.all()
-        
+        first_image_id=image_ids[0]
+        image1=ProductImage.objects.get(id=first_image_id) 
+        if len(image_ids)==2:
+            second=image_ids[1] 
+            image2=ProductImage.objects.get(id=second) 
+        else:
+            image2=None
+        if len(image_ids)==3:
+            second=image_ids[1] 
+            image2=ProductImage.objects.get(id=second)
+            third=image_ids[2] 
+            image3=ProductImage.objects.get(id=third)
+        else:
+            image2=None
+            image3=None
 
 # Access individual images if needed
-
-
+        print(image1)
+        print(image2)
+        print(image3)
         context = {
             'id':product.id,
             'pr_name':product.pr_name,
-            'cat_id':product.cat_id.id if product.cat_id else None,
-            'subcat_id':product.subcat_id.id if product.subcat_id else None,
-            'brand_id':product.brand_id.id if product.brand_id else None,
+            # 'cat_id':product.cat_id.id if product.cat_id else None,
+            # 'subcat_id':product.subcat_id.id if product.subcat_id else None,
+            # 'brand_id':product.brand_id.id if product.brand_id else None,
+            'cat_id':product.cat_id,
+            'subcat_id':product.subcat_id,
+            'brand_id':product.brand_id,
             'subcategories': subcategories,
             'brands':brands,
             'categories':categories,
-            
+            'image1':image1,
+            'image2':image2,
+            'image3':image3
             # 'category_id':categories.id,
             # 'category_name':categories.name,
             # 'brand_name':brands.br_name,
             # 'brands_id':brands.id,
             # 'subcat_name':subcategories.sub_name,
         }
-       
+        print(context['brand_id'])
     return render(request, 'update_product.html', {'context':context})
 def delete_product(request, id):
     product = get_object_or_404(Products, id=id)
