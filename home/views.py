@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate,login,logout
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
+from category.models import Products,ProductImage,ProductVar
 @login_required(login_url='login')
 def index(request):
     return render(request,'userside/index.html')
@@ -26,6 +27,10 @@ def user_login(request):
             login(request,user)
             # messages.success(request,'Successfully loged in')
             return redirect('home')
+        elif user is not None and not user.is_active:
+            messages.error(request, "Your account is not active. Please contact support.")
+            print("hellooo")
+            return redirect('login')
         else:
             messages.error(request,"invalid user name or password")
             return redirect('login')
@@ -146,4 +151,6 @@ def user_logout(request):
 # def user_logout(request):
 #     pass
 
-
+def product_list(request):
+    products=Products.objects.all()
+    return redirect (request,'index.html',{'products':products})

@@ -49,6 +49,7 @@ def update_category(request,id):
         if is_published :
             cat.published=is_published
         if cat_img:
+            cat.cat_img.delete(False)
             cat.cat_img=cat_img
         cat.save()
         return redirect('adminapp:category_list')
