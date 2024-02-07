@@ -19,7 +19,7 @@
     <!-- <div class="alert_display_bottom"  >
         Something Error
     </div> -->
-
+    
     <div class="login_flex_center">
         <div class="login_wrapper">
             <h2 class="head_login"><span>Admin</span> Login Panel</h2>
@@ -45,7 +45,10 @@
                     </div>
 
                     <button class="btn_submit w-100" href="{% url 'adminapp:dashboard' %}">Sign in</button>
-                   
+                    <div class="navbar-nav ml-auto py-0">
+                        <a href="{% url 'login' %} " class="nav-item nav-link">Go to User Login</a>
+                    </div>
+
                 </form>
                 
             </div>

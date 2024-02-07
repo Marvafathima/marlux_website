@@ -28,12 +28,7 @@ class Products(models.Model):
     brand_id=models.ForeignKey(Brand,on_delete=models.SET_NULL,null=True,blank=True,related_name='brand')
     subcat_id=models.ForeignKey(Subcategory,on_delete=models.CASCADE,related_name='prosubcat')  
     is_available=models.BooleanField(default=True)
-    # image1=models.ImageField(upload_to='product_image/',null=True, blank=True)
-    # image2=models.ImageField(upload_to='product_image/',null=True, blank=True)
-    # image3=models.ImageField(upload_to='product_image/',null=True, blank=True)
-    # price=models.FloatField()
-    # sale_price=models.FloatField()
-    # discount=models.IntegerField(null=True,blank=True)
+  
     def __str__(self):
         return self.pr_name
 class ProductImage(models.Model):

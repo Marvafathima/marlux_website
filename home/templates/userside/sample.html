@@ -1,0 +1,13 @@
+{% extends 'main.html' %}
+
+{% block corousel%}
+
+<h1>All Products</h1>
+{% for product in products %}
+    <div>
+        <h2>{{ product.pr_name }}</h2>
+        <img src="{{ product.product_image.first.image.url }}" alt="{{ product.pr_name }}" style="height:200px;">
+    <h4>price:{{product.product_varient.first.price}}</h4>
+    </div>
+{% endfor %}
+{% endblock %}

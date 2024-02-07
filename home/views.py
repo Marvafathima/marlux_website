@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.models import User
 from .models import CustomUser,UserAddress
 import random
@@ -9,14 +9,25 @@ from django.contrib.auth import authenticate,login,logout
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from category.models import Products,ProductImage,ProductVar
+from category.models import Products,ProductImage,ProductVar,Category,Subcategory
+from django.db.models import Min
 @login_required(login_url='login')
 def index(request):
-    return render(request,'userside/index.html')
-    # if request.COOKIES.get('verified') and request.COOKIES.get('verified')!=None:
-    #     return redirect('home')
-    # else:
-    #     return HttpResponse("Not verified")
+    # products = Products.objects.annotate(
+    #     lowest_price=Min('product_varient__price'),
+    #     prod_image=Min('product_image__image')).values('pr_name','lowest_price','prod_image')
+    # for product in products:
+    #     print(product['prod_image']) 
+    products=Products.objects.all()
+    category=Category.objects.all()
+    return render(request,'userside/index.html',{'products':products,'categories':category})
+def categoryproduct(request,category_id):
+    cat=get_object_or_404(Category, pk=category_id)
+    subcat=Subcategory.objects.filter(cat_id=category_id)
+    prod=Products.objects.filter(cat_id=category_id)
+    return render(request, 'shop.html', {'cat': cat, 'prod': prod,'subcat':subcat})
+
+   
 def user_login(request):
     if request.method=="POST":
         email=request.POST['email']
@@ -134,23 +145,7 @@ def user_logout(request):
     return redirect('login')
 
 
-# def otpVerify(request,uid):
-#     if request.method=="POST":
-#         profile=Profiles.objects.get(uid=uid)
-#         if request.COOKIES.get('can_otp_enter')!=None:
-#             if(profile.otp==request.POST['otp']):
-#                 red=redirect("home")
-#                 red.set_cookie('verified',True)
-#                 return red
-#             messages.error(request,"wrong otp")
-#             return render(request,'otpVerify')
-#         messages.error(request,"10 minutes passed")   
-#         return render(request,'otpVerify')
-#     return render(request,"userside/otpVerify.html",{'id':uid})
-    
-# def user_logout(request):
-#     pass
-
-def product_list(request):
+def shop(request):
     products=Products.objects.all()
-    return redirect (request,'index.html',{'products':products})
+    return render (request,'shop.html',{'products': products})
+

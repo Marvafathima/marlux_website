@@ -137,8 +137,9 @@ def add_product(request):
            return render(request,"add_product.html")
     else:
         product_form = ProductsForm()
-
-    return render(request, 'add_product.html', {'product_form': product_form})
+        colors=Color.objects.all()
+        sizes=Size.bjects.all()
+    return render(request, 'add_product.html', {'product_form': product_form,'colors':colors,'sizes':sizes})
     
 def list_product(request):
     products=Products.objects.all()

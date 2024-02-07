@@ -1,29 +1,60 @@
 
 {% extends 'main.html' %}
+{% block navbar %} 
+<div class="col-lg-3 d-none d-lg-block">
+<a class="btn shadow-none d-flex align-items-center justify-content-between bg-primary text-white w-100" data-toggle="collapse" href="#navbar-vertical" style="height: 65px; margin-top: -1px; padding: 0 30px;">
+    <h6 class="m-0">Categories</h6>
+    <i class="fa fa-angle-down text-dark"></i>
+</a>
+<nav class="collapse show navbar navbar-vertical navbar-light align-items-start p-0 border border-top-0 border-bottom-0" id="navbar-vertical">
+    <div class="navbar-nav w-100 overflow-hidden" style="height: 410px">
+        <div class="nav-item dropdown">
+            <a href="#" class="nav-link" data-toggle="dropdown">Dresses <i class="fa fa-angle-down float-right mt-1"></i></a>
+            <div class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0">
+                <a href="" class="dropdown-item">Men's Dresses</a>
+                <a href="" class="dropdown-item">Women's Dresses</a>
+                <a href="" class="dropdown-item">Baby's Dresses</a>
+            </div>
+        </div>
+        <a href="" class="nav-item nav-link">Shirts</a>
+        <a href="" class="nav-item nav-link">Jeans</a>
+        <a href="" class="nav-item nav-link">Swimwear</a>
+        <a href="" class="nav-item nav-link">Sleepwear</a>
+        <a href="" class="nav-item nav-link">Sportswear</a>
+        <a href="" class="nav-item nav-link">Jumpsuits</a>
+        <a href="" class="nav-item nav-link">Blazers</a>
+        <a href="" class="nav-item nav-link">Jackets</a>
+        <a href="" class="nav-item nav-link">Shoes</a>
+    </div>
+</nav></div>
+{% endblock navbar %} 
 
 {% block corousel%}
+<style>
+    .carousel-item img {
+        object-fit: cover; /* Cover the entire container with the image, maintaining aspect ratio */
+        object-position: center; /* Position the image at the top center */
+        height: 100%; /* Ensure the image fills the entire height of the carousel item */
+        width: 100%; /* Ensure the image fills the entire width of the carousel item */
+    }
+</style>
+
+<!-- userside/index.html -->
+
 <div id="header-carousel" class="carousel slide" data-ride="carousel">
     <div class="carousel-inner">
-        <div class="carousel-item active" style="height: 410px;">
-            <img class="img-fluid" src="tem_two/img/carousel-1.jpg" alt="Image">
+        {% for category in categories %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}" style="height: 410px;">
+            <img class="img-fluid" src="{{ category.cat_img.url }}" alt="{{ category.name }} Image">
             <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
                 <div class="p-3" style="max-width: 700px;">
-                    <h4 class="text-light text-uppercase font-weight-medium mb-3">10% Off Your First Order</h4>
-                    <h3 class="display-4 text-white font-weight-semi-bold mb-4">Fashionable Dress</h3>
-                    <a href="" class="btn btn-light py-2 px-3">Shop Now</a>
+                    <h4 class="text-light text-uppercase font-weight-medium mb-3">{{ category.name }}</h4>
+                    <h3 class="display-4 text-white font-weight-semi-bold mb-4">{{ category.cat_dsc }}</h3>
+                    <a href="{% url 'catpro' category.id %}" class="btn btn-light py-2 px-3">Shop Now</a>
                 </div>
             </div>
         </div>
-        <div class="carousel-item" style="height: 410px;">
-            <img class="img-fluid" src="tem_two/img/carousel-2.jpg" alt="Image">
-            <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                <div class="p-3" style="max-width: 700px;">
-                    <h4 class="text-light text-uppercase font-weight-medium mb-3">10% Off Your First Order</h4>
-                    <h3 class="display-4 text-white font-weight-semi-bold mb-4">Reasonable Price</h3>
-                    <a href="" class="btn btn-light py-2 px-3">Shop Now</a>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
     </div>
     <a class="carousel-control-prev" href="#header-carousel" data-slide="prev">
         <div class="btn btn-dark" style="width: 45px; height: 45px;">
@@ -34,15 +65,17 @@
         <div class="btn btn-dark" style="width: 45px; height: 45px;">
             <span class="carousel-control-next-icon mb-n2"></span>
         </div>
-    </a>
+    </a> 
 </div>
-{% endblock corousel %}
+
+
+{% endblock corousel %} 
 
 
 
 {%block content %}
     <!-- Featured Start -->
-    <div class="container-fluid pt-5">
+    <!-- <div class="container-fluid pt-5">
         <div class="row px-xl-5 pb-3">
             <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
                 <div class="d-flex align-items-center border mb-4" style="padding: 30px;">
@@ -69,74 +102,36 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <!-- Featured End -->
 
 
     <!-- Categories Start -->
+
+
     <div class="container-fluid pt-5">
         <div class="row px-xl-5 pb-3">
+            {% for category in categories %}
             <div class="col-lg-4 col-md-6 pb-1">
                 <div class="cat-item d-flex flex-column border mb-4" style="padding: 30px;">
-                    <p class="text-right">15 Products</p>
-                    <a href="" class="cat-img position-relative overflow-hidden mb-3">
-                        <img class="img-fluid" src="static/tem_two/img/cat-1.jpg" alt="">
+                    <p class="text-right">{{ category.products.count }} Products</p>
+                    <a href="{% url 'catpro' category.id %}" class="cat-img position-relative overflow-hidden mb-3">
+                        <img class="img-fluid" src="{{ category.cat_img.url }}" alt="{{ category.name }} Image">
                     </a>
-                    <h5 class="font-weight-semi-bold m-0">Men's dresses</h5>
+                    <h5 class="font-weight-semi-bold m-0">{{ category.name }}</h5>
                 </div>
             </div>
-            <div class="col-lg-4 col-md-6 pb-1">
-                <div class="cat-item d-flex flex-column border mb-4" style="padding: 30px;">
-                    <p class="text-right">15 Products</p>
-                    <a href="" class="cat-img position-relative overflow-hidden mb-3">
-                        <img class="img-fluid" src="static/tem_two/img/cat-2.jpg" alt="">
-                    </a>
-                    <h5 class="font-weight-semi-bold m-0">Women's dresses</h5>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 pb-1">
-                <div class="cat-item d-flex flex-column border mb-4" style="padding: 30px;">
-                    <p class="text-right">15 Products</p>
-                    <a href="" class="cat-img position-relative overflow-hidden mb-3">
-                        <img class="img-fluid" src="static/tem_two/img/cat-3.jpg" alt="">
-                    </a>
-                    <h5 class="font-weight-semi-bold m-0">Baby's dresses</h5>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 pb-1">
-                <div class="cat-item d-flex flex-column border mb-4" style="padding: 30px;">
-                    <p class="text-right">15 Products</p>
-                    <a href="" class="cat-img position-relative overflow-hidden mb-3">
-                        <img class="img-fluid" src="static/tem_two/img/cat-4.jpg" alt="">
-                    </a>
-                    <h5 class="font-weight-semi-bold m-0">Accerssories</h5>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 pb-1">
-                <div class="cat-item d-flex flex-column border mb-4" style="padding: 30px;">
-                    <p class="text-right">15 Products</p>
-                    <a href="" class="cat-img position-relative overflow-hidden mb-3">
-                        <img class="img-fluid" src="static/tem_two/img/cat-5.jpg" alt="">
-                    </a>
-                    <h5 class="font-weight-semi-bold m-0">Bags</h5>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 pb-1">
-                <div class="cat-item d-flex flex-column border mb-4" style="padding: 30px;">
-                    <p class="text-right">15 Products</p>
-                    <a href="" class="cat-img position-relative overflow-hidden mb-3">
-                        <img class="img-fluid" src="static/tem_two/img/cat-6.jpg" alt="">
-                    </a>
-                    <h5 class="font-weight-semi-bold m-0">Shoes</h5>
-                </div>
-            </div>
+            {% endfor %}
         </div>
     </div>
-    <!-- Categories End -->
+    
+   
+    
+   <!-- Categories End  -->
 
 
     <!-- Offer Start -->
-    <div class="container-fluid offer pt-5">
+    <!-- <div class="container-fluid offer pt-5">
         <div class="row px-xl-5">
             <div class="col-md-6 pb-4">
                 <div class="position-relative bg-secondary text-center text-md-right text-white mb-2 py-5 px-5">
@@ -159,12 +154,12 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <!-- Offer End -->
 
 
     <!-- Products Start -->
-    <div class="container-fluid pt-5">
+    <!-- <div class="container-fluid pt-5">
         <div class="text-center mb-4">
             <h2 class="section-title px-5"><span class="px-2">Trandy Products</span></h2>
         </div>
@@ -274,8 +269,8 @@
             <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
                 <div class="card product-item border-0 mb-4">
                     <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                        <img class="img-fluid w-100" src="static/tem_two/img/product-7.jpg" alt="">
-                    </div>
+                        <img class="img-fluid w-100" src="static/tem_two/img/product-7.jpg" alt=""> -->
+                    <!-- </div>
                     <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
                         <h6 class="text-truncate mb-3">Colorful Stylish Shirt</h6>
                         <div class="d-flex justify-content-center">
@@ -306,6 +301,34 @@
                 </div>
             </div>
         </div>
+    </div> -->
+    <div class="container-fluid pt-5">
+        <div class="text-center mb-4">
+            <h2 class="section-title px-5"><span class="px-2">Trendy Products</span></h2>
+        </div>
+        <div class="row px-xl-5 pb-3">
+            {% for product in products %}
+            <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+                <div class="card product-item border-0 mb-4">
+                    <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                        <img class="img-fluid w-100" src="{{ product.product_image.first.image.url }}" style="height: 500px;" >
+                       
+                         <!-- <img class="img-fluid w-100" src="{{ product.prod_image.url }}" alt="">  -->
+                    </div>
+                    <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                        <h6 class="text-truncate mb-3">{{ product.pr_name }}</h6>
+                        <div class="d-flex justify-content-center">
+                            <h6>${{ product.product_varient.first.price }}</h6>
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between bg-light border">
+                        <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
+                        <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
     <!-- Products End -->
 
@@ -333,7 +356,7 @@
 
 
     <!-- Products Start -->
-    <div class="container-fluid pt-5">
+    <!-- <div class="container-fluid pt-5">
         <div class="text-center mb-4">
             <h2 class="section-title px-5"><span class="px-2">Just Arrived</span></h2>
         </div>
@@ -475,7 +498,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
     <!-- Products End -->
 
 
