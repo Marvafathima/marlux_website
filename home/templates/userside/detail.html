@@ -69,8 +69,8 @@
                     <form>
                         {% for size in sizes %}
                         <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" class="custom-control-input" id="size-1" name="size">
-                            <label class="custom-control-label" for="size-1">{{size.size}}</label>
+                            <input type="radio" class="custom-control-input" id="{{size.size}}" value="{{size.size}}" name="size">
+                            <label class="custom-control-label" for="{{size.size}}">{{size.size}}</label>
                         </div>
                         {% endfor %}
                     </form>
@@ -80,8 +80,8 @@
                     <p class="text-dark font-weight-medium mb-0 mr-3">Colors:</p>
                     <form> {% for color in  colors%}
                         <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" class="custom-control-input" id="color-1" name="color">
-                            <label class="custom-control-label" for="color-1">{{color.color}}</label>
+                            <input type="radio" class="custom-control-input" id="{{color.color}}" value="{{color.color}}" name="color">
+                            <label class="custom-control-label" for="{{color.color}}">{{color.color}}</label>
                         </div>
                         {% endfor %}
                     </form>
