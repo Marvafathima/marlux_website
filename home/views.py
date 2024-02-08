@@ -27,28 +27,36 @@ def categoryproduct(request,category_id):
     prod=Products.objects.filter(cat_id=category_id)
     return render(request, 'shop.html', {'cat': cat, 'prod': prod,'subcat':subcat})
 
-def product_detail(request,id):
-    products=Products.objects.get(pk=id)
-    images=ProductImage.objects.filter(img_id=id)
-    varients=ProductVar.objects.filter(prod_id=products)
-    colors=ProductVar.objects.filter(prod_id=products).values('color__id','color__color').distinct()
+def product_detail(request, id):
+    products = Products.objects.get(pk=id)
+    images = ProductImage.objects.filter(img_id=id)
+    varients = ProductVar.objects.filter(prod_id=products)
+    colors = Color.objects.filter(product_color__prod_id=products).distinct()
+    sizes = Size.objects.filter(product_size__prod_id=products).distinct()
     print(colors)
-    sizes =ProductVar.objects.filter(prod_id=products).values('size__id','size__size').distinct()
-    print(images)
-    return render(request,'userside/detail.html',{'products':products,' images':images,'varients':varients,'colors':colors,'sizes':sizes})
-def get_price(request):
-    if request.method == 'GET':
-        size_id = request.GET.get('size')
+    print(sizes)
+    return render(request, 'userside/detail.html', {'products': products, 'images': images, 'varients': varients, 'colors': colors, 'sizes': sizes})
+
+def get_sizes(request):
+    if request.method == 'GET' and request.is_ajax():
         color_id = request.GET.get('color')
+        sizes = ProductVar.objects.filter(color=color_id).values('size__id', 'size__size').distinct()
+        sizes_list = list(sizes)
+        return JsonResponse({'sizes': sizes_list})
+    return JsonResponse({})
 
-        try:
-            product_variant = ProductVar.objects.get(size=size_id, color=color_id)
-            price = product_variant.price
-        except ProductVar.DoesNotExist:
-            price = None
-        print(price)
+
+
+def get_price(request):
+    color_id = request.GET.get('color_id')
+    size_id = request.GET.get('size_id')
+
+    try:
+        product_var = ProductVar.objects.get(color_id=color_id, size_id=size_id)
+        price = product_var.price
         return JsonResponse({'price': price})
-
+    except ProductVar.DoesNotExist:
+        return JsonResponse({'price': None}) 
 
 def user_login(request):
     if request.method=="POST":
