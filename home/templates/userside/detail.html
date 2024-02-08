@@ -65,18 +65,30 @@
                 </div> -->
 
                 <div class="d-flex mb-3">
-                    <p class="text-dark font-weight-medium mb-0 mr-3">Sizes:</p>
+                    <p class="text-dark font-weight-medium mb-0 mr-3">Colors:</p>
                     <form>
-                        {% for size in sizes %}
+                        {% for c in  colors%}
                         <div class="custom-control custom-radio custom-control-inline">
-                            <input type="radio" class="custom-control-input" id="{{size.size}}" value="{{size.size}}" name="size">
-                            <label class="custom-control-label" for="{{size.size}}">{{size.size}}</label>
+                            <input type="radio" class="custom-control-input" id="{{c.color__id}}" value="{{c.color__color}}" name="color">
+                            <label class="custom-control-label" for="{{c.color__id}}">{{c.color__color}}</label>
                         </div>
                         {% endfor %}
                     </form>
 
                     </div>
-                <div class="d-flex mb-4">
+                    <div class="d-flex mb-4">
+                        <p class="text-dark font-weight-medium mb-0 mr-3">Sizes:</p>
+                        <form> {% for s in  sizes%}
+                            <div class="custom-control custom-radio custom-control-inline">
+                                <input type="radio" class="custom-control-input choose-size" id="{{s.size__id}}" value="{{s.size__size}}" name="size">
+                                <label class="custom-control-label" for="{{s.size__id}}">{{s.size__size}}</label>
+                            </div>
+                            {% endfor %}
+                        </form>
+                        </div> 
+
+
+                <!-- <div class="d-flex mb-4">
                     <p class="text-dark font-weight-medium mb-0 mr-3">Colors:</p>
                     <form> {% for color in  colors%}
                         <div class="custom-control custom-radio custom-control-inline">
@@ -85,7 +97,7 @@
                         </div>
                         {% endfor %}
                     </form>
-                    </div>
+                    </div> -->
 
                 <div class="d-flex align-items-center mb-4 pt-2">
                     <div class="input-group quantity mr-3" style="width: 130px;">
@@ -349,5 +361,6 @@
         });
     });
     </script> -->
+    
 
     {% endblock content%}

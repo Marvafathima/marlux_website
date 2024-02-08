@@ -31,8 +31,9 @@ def product_detail(request,id):
     products=Products.objects.get(pk=id)
     images=ProductImage.objects.filter(img_id=id)
     varients=ProductVar.objects.filter(prod_id=products)
-    colors=Color.objects.filter(product_color__prod_id=products).distinct()
-    sizes = Size.objects.filter(product_size__prod_id=products).distinct()
+    colors=ProductVar.objects.filter(prod_id=products).values('color__id','color__color').distinct()
+    print(colors)
+    sizes =ProductVar.objects.filter(prod_id=products).values('size__id','size__size').distinct()
     print(images)
     return render(request,'userside/detail.html',{'products':products,' images':images,'varients':varients,'colors':colors,'sizes':sizes})
 def get_price(request):
