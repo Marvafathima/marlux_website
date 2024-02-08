@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.models import User
 from .models import CustomUser,UserAddress
@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate,login,logout
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from category.models import Products,ProductImage,ProductVar,Category,Subcategory
+from category.models import Products,ProductImage,ProductVar,Category,Subcategory,Color,Size
 from django.db.models import Min
 @login_required(login_url='login')
 def index(request):
@@ -27,7 +27,28 @@ def categoryproduct(request,category_id):
     prod=Products.objects.filter(cat_id=category_id)
     return render(request, 'shop.html', {'cat': cat, 'prod': prod,'subcat':subcat})
 
-   
+def product_detail(request,id):
+    products=Products.objects.get(pk=id)
+    images=ProductImage.objects.filter(img_id=id)
+    varients=ProductVar.objects.filter(prod_id=products)
+    colors=Color.objects.filter(product_color__prod_id=products).distinct()
+    sizes = Size.objects.filter(product_size__prod_id=products).distinct()
+    print(images)
+    return render(request,'userside/detail.html',{'products':products,' images':images,'varients':varients,'colors':colors,'sizes':sizes})
+def get_price(request):
+    if request.method == 'GET':
+        size_id = request.GET.get('size')
+        color_id = request.GET.get('color')
+
+        try:
+            product_variant = ProductVar.objects.get(size=size_id, color=color_id)
+            price = product_variant.price
+        except ProductVar.DoesNotExist:
+            price = None
+        print(price)
+        return JsonResponse({'price': price})
+
+
 def user_login(request):
     if request.method=="POST":
         email=request.POST['email']

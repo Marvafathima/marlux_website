@@ -2,17 +2,17 @@
 
 {% block userlist %}
 
+</div>
 
 <div class="table_data_check">
     <div class="table_head_sec">
-
         {% if messages %}
-<div class="alert alert-success alert-dismissible fade show" role="alert">
-    {% for message in messages%}
-    <strong>SUCCESS:</strong> {{ message }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  {% endfor %}
-</div>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {% for message in messages%}
+            <strong>SUCCESS:</strong> {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          {% endfor %}
+ 
 {% endif %}
         <h1>Product List</h1></div>
         <div class="container mt-4">

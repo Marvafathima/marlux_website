@@ -111,8 +111,8 @@ def add_product(request):
 
                 print(color,size,stock,price,discount)
 
-                color_instance, _ = Color.objects.get_or_create(color=color)
-                size_instance, _ = Size.objects.get_or_create(size=size)
+                color_instance, _ = Color.objects.get_or_create(color=color.lower())
+                size_instance, _ = Size.objects.get_or_create(size=size.upper())
                 if discount:
                     ProductVar.objects.create(
                         prod_id=product_instance,
@@ -138,7 +138,7 @@ def add_product(request):
     else:
         product_form = ProductsForm()
         colors=Color.objects.all()
-        sizes=Size.bjects.all()
+        sizes=Size.objects.all()
     return render(request, 'add_product.html', {'product_form': product_form,'colors':colors,'sizes':sizes})
     
 def list_product(request):
@@ -290,7 +290,7 @@ def delete_product(request, id):
     product = get_object_or_404(Products, id=id)
     ProductImage.objects.filter(img_id=id).delete()
     product.delete()
-    messages.success("Product deleted successfully")
+    messages.success(request,"Product deleted successfully")
     return redirect('adminapp:list_product')
 
     
