@@ -1,7 +1,7 @@
 from django.http import HttpResponse,JsonResponse
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.models import User
-from .models import CustomUser,UserAddress
+from .models import CustomUser,UserAddress,Cart,CartItem
 import random
 from .helper import MessageHandler
 from django.contrib import messages
@@ -50,13 +50,34 @@ def get_sizes(request):
 def get_price(request):
     color_id = request.GET.get('color_id')
     size_id = request.GET.get('size_id')
-
+    
     try:
         product_var = ProductVar.objects.get(color_id=color_id, size_id=size_id)
         price = product_var.price
         return JsonResponse({'price': price})
     except ProductVar.DoesNotExist:
         return JsonResponse({'price': None}) 
+def add_to_cart(request):
+    color_id=request.GET.get('color_id')
+    size_id=request.GET.get('size_id')
+    quantity=request.GET.get('quantity')
+    print('helloo')
+    product_var = get_object_or_404(ProductVar, color_id=color_id, size_id=size_id)
+    user=request.user
+    if not user.is_authenticated:
+        return JsonResponse({'message': 'Anonymous users cannot add items to the cart.'}, status=400)
+        
+    cart, created = Cart.objects.get_or_create(user=user)
+
+    # Create or update cart item
+    cart_item, created = CartItem.objects.get_or_create(cart=cart, product_variant=product_var)
+    if not created:
+        # If the cart item already exists, update the quantity
+        cart_item.quantity += int(quantity)
+        cart_item.save()
+
+    return JsonResponse({'message': 'Product added to cart successfully.'})
+
 
 def user_login(request):
     if request.method=="POST":
@@ -123,26 +144,6 @@ def user_signup(request):
 
 
 
-    # if request.method=="POST":
-    #     print(request.POST)
-    #     pass1=request.POST['pass1']
-    #     pass2=request.POST['pass2']
-    #     email=request.POST['email']
-    #     if pass1!=pass2:
-    #         messages.error(request,"password and confirm password are not the same")
-    #         return redirect('signup')
-    #     if User.objects.filter(email__iexact=request.POST['email']).exists():
-    #         messages.error(request, "User already exists")
-    #         return redirect('signup')
-        
-    #     user=User.objects.create(email=request.POST['email'],password=request.POST['pass1'],user_name=request.POST['user_name'],phone_number=request.POST['phone_number'])
-    #     otp=random.randint(1000,9999)
-    #     profile=Profiles.objects.create(user=user,phone_number=request.POST['phone_number'],otp=f'{otp}')
-    #     messagehandler=MessageHandler(request.POST['phone_number'],otp).send_otp_via_message()
-    #     red=redirect(f'otp/{profile.uid}/')
-    #     red.set_cookie("can_otp_enter",True,max_age=600)
-    #     return red
-    # return render(request,'userside/user_signup.html')
 
 def otpVerify(request):
     if request.method == 'POST':

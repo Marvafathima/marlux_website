@@ -3,8 +3,9 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-# from . models import CustomUser
+from category .models import ProductVar
 from .managers import CustomUserManager
+
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -33,6 +34,17 @@ class UserAddress(models.Model):
     state = models.CharField(max_length=100)
     postal_code = models.CharField(max_length=20)
 
+class Cart(models.Model):
+    user=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    created_at=models.DateField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
+    product_variant = models.ForeignKey(ProductVar, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
 
 
