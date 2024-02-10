@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from category.models import Products,ProductImage,ProductVar,Category,Subcategory,Color,Size
 from django.db.models import Min
-
+from django.db.models import F, Sum
 def index(request):
     # products = Products.objects.annotate(
     #     lowest_price=Min('product_varient__price'),
@@ -57,7 +57,7 @@ def get_price(request):
         return JsonResponse({'price': price})
     except ProductVar.DoesNotExist:
         return JsonResponse({'price': None}) 
-
+@login_required(login_url='login')
 def add_to_cart(request):
     color_id = request.GET.get('color_id')
     size_id = request.GET.get('size_id')
@@ -79,18 +79,21 @@ def add_to_cart(request):
         # If the cart item already exists, update the quantity
         cart_item.quantity += int(quantity)
         cart_item.save()
-
+    cart.total_qnty = CartItem.objects.filter(cart=cart).aggregate(total_quantity=Sum('quantity'))['total_quantity']
+    cart.total_price = CartItem.objects.filter(cart=cart).aggregate(total_price=Sum(F('quantity') * F('product_variant__price')))['total_price']
+    cart.save()
     return JsonResponse({'message': 'Product added to cart successfully.'})
 
 def cart(request):
     print('cart selected')
     user=request.user
+    carts=Cart.objects.get(user=user.id)
     cart_items=CartItem.objects.filter(cart__user=user.id)
     for cart_item in cart_items:
         product_name=cart_item.product_variant.prod_id.pr_name
         print(product_name)
     
-    return render(request,'cart.html',{'cart_items':cart_items})
+    return render(request,'cart.html',{'cart_items':cart_items,'carts':carts})
 def user_login(request):
     if request.method=="POST":
         email=request.POST['email']

@@ -115,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTH_USER_MODEL = "home.CustomUser"
-LOGIN_URL = 'login'
+
 
 
 # Internationalization

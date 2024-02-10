@@ -38,6 +38,8 @@ class Cart(models.Model):
     user=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     created_at=models.DateField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    total_qnty=models.PositiveIntegerField(default=1,null=True)
+    total_price=models.DecimalField(default=0,decimal_places=2,max_digits=10,null=True)        
 
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')

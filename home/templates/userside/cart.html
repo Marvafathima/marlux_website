@@ -33,7 +33,7 @@
                                         <i class="fa fa-minus"></i>
                                         </button>
                                     </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary text-center"id="quantityInput" value="1">
+                                    <input type="text" class="form-control form-control-sm bg-secondary text-center"id="quantityInput" value="{{cart_item.cart.total_qnty}}">
                                     <div class="input-group-btn">
                                         <button class="btn btn-sm btn-primary btn-plus">
                                             <i class="fa fa-plus"></i>
@@ -42,7 +42,8 @@
                                 </div>
 
                             </td>
-                            <td class="align-middle">$150</td>
+
+                            <td class="align-middle">{{cart_item.cart.total_price}}</td>
                             <td class="align-middle"><button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>
                         </tr>
                         {% endfor %}
@@ -84,6 +85,5 @@
         </div>
     </div>
     <!-- Cart End -->
-
 
    {% endblock content %}
