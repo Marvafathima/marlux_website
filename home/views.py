@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
 from category.models import Products,ProductImage,ProductVar,Category,Subcategory,Color,Size
 from django.db.models import Min
-@login_required(login_url='login')
+
 def index(request):
     # products = Products.objects.annotate(
     #     lowest_price=Min('product_varient__price'),
@@ -57,19 +57,23 @@ def get_price(request):
         return JsonResponse({'price': price})
     except ProductVar.DoesNotExist:
         return JsonResponse({'price': None}) 
-def add_to_cart(request):
-    color_id=request.GET.get('color_id')
-    size_id=request.GET.get('size_id')
-    quantity=request.GET.get('quantity')
-    print('helloo')
-    product_var = get_object_or_404(ProductVar, color_id=color_id, size_id=size_id)
-    user=request.user
-    if not user.is_authenticated:
-        return JsonResponse({'message': 'Anonymous users cannot add items to the cart.'}, status=400)
-        
-    cart, created = Cart.objects.get_or_create(user=user)
 
-    # Create or update cart item
+def add_to_cart(request):
+    color_id = request.GET.get('color_id')
+    size_id = request.GET.get('size_id')
+    quantity = request.GET.get('quantity')
+    
+    try:
+        product_var = ProductVar.objects.get(color_id=color_id, size_id=size_id)
+    except ProductVar.DoesNotExist:
+        return JsonResponse({'error': 'Product unavailable'}, status=400)
+    user = request.user
+    if not user.is_authenticated:
+        # Handle anonymous user (optional)
+        # You can create a session-based cart for anonymous users
+        # or handle the scenario based on your application's requirements
+        return JsonResponse({'message': 'Anonymous users cannot add items to the cart.'}, status=400)
+    cart, created = Cart.objects.get_or_create(user=user)
     cart_item, created = CartItem.objects.get_or_create(cart=cart, product_variant=product_var)
     if not created:
         # If the cart item already exists, update the quantity
@@ -78,7 +82,15 @@ def add_to_cart(request):
 
     return JsonResponse({'message': 'Product added to cart successfully.'})
 
-
+def cart(request):
+    print('cart selected')
+    user=request.user
+    cart_items=CartItem.objects.filter(cart__user=user.id)
+    for cart_item in cart_items:
+        product_name=cart_item.product_variant.prod_id.pr_name
+        print(product_name)
+    
+    return render(request,'cart.html',{'cart_items':cart_items})
 def user_login(request):
     if request.method=="POST":
         email=request.POST['email']

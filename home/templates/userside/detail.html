@@ -2,6 +2,8 @@
 {% block navbar%}{% endblock navbar%}
 
 {% block content%}
+
+
     <!-- Shop Detail Start -->
     <div class="container-fluid py-5">
         <div class="row px-xl-5">
@@ -369,40 +371,35 @@
         });
 
  // Script for adding product to cart
-        $('#addToCartBtn').click(function() {
-            var colorId = $('input[name="color"]:checked').val();
-            var sizeId = $('input[name="size"]:checked').val();
-            var quantity = $('#quantityInput').val();
+ $('#addToCartBtn').click(function() {
+    var colorId = $('input[name="color"]:checked').val();
+    var sizeId = $('input[name="size"]:checked').val();
+    var quantity = $('#quantityInput').val();
 
-            if (colorId && sizeId && quantity) {
-                $.ajax({
-                    url: "{% url 'add_to_cart' %}",
-                    method: "GET",
-                    data: {
-                        'color_id': colorId,
-                        'size_id': sizeId,
-                        'quantity': quantity
-                    },
-                    success: function(response) {
-                        // Handle success response
-                        console.log(response);
-                        var currentBadgeValue = parseInt($('.fa-shopping-cart').next('.badge').text());
-                        var newBadgeValue = currentBadgeValue + parseInt(quantity);
-                        $('.fa-shopping-cart').next('.badge').text(newBadgeValue);
-
-
-
-                    },
-                    error: function(xhr, errmsg, err) {
-                        console.log(xhr.status + ": " + xhr.responseText);
-                        if (xhr.status === 400 && xhr.responseJSON.message === "Product Unavailable") {
-                            alert("Product is unavailable.");}
-                    
-                    }
-                });
+    if (colorId && sizeId && quantity) {
+        $.ajax({
+            url: "{% url 'add_to_cart' %}",
+            method: "GET",
+            data: {
+                'color_id': colorId,
+                'size_id': sizeId,
+                'quantity': quantity
+            },
+            success: function(response) {
+                console.log(response);
+                var currentBadgeValue = parseInt($('.fa-shopping-cart').next('.badge').text());
+                var newBadgeValue = currentBadgeValue + parseInt(quantity);
+                $('.fa-shopping-cart').next('.badge').text(newBadgeValue);
+            },
+            error: function(xhr, errmsg, err) {
+                console.log(xhr.status + ": " + xhr.responseText);
+                if (xhr.status === 400 && xhr.responseJSON.error === "Product unavailable") {
+                    alert("Product is unavailable.");
+                }
             }
         });
-    });
+    }
+});});
 </script>
 
 
