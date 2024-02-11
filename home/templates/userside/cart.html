@@ -20,7 +20,7 @@
                     </thead>
                     <tbody class="align-middle">
                         {% for cart_item in cart_items %}
-                        <tr>
+                        <tr data-cart-item-id="{{ cart_item.id }}">
                             {% with product_variant=cart_item.product_variant %}
                                 {% with product=product_variant.prod_id %}
                                     {% with product_img=product.product_image.first %}
@@ -30,17 +30,18 @@
                             {% endwith %}
                            
                             <td class="align-middle">₹{{cart_item.product_variant.price}}</td>
+                            <!-- <input type="hidden" class="cart-item-id" value="{{ cart_item.id }}"> -->
                             <td class="align-middle">
                                 <div class="input-group quantity mx-auto" style="width: 100px;">
                                     <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
+                                        <button class="btn btn-sm btn-primary btn-minus" data-cart-item-id="{{ cart_item.id }}" >
                                         <i class="fa fa-minus"></i>
                                         </button>
                                     </div>
-                                    <input type="hidden" class="cart-item-id" value="{{ cart_item.id }}">
-                                    <input type="text" class="form-control form-control-sm bg-secondary text-center"id="quantityInput" value="{{cart_item.quantity}}">
+                                   
+                                    <input type="text" class="form-control form-control-sm bg-secondary text-center"id="quantityInput_{{ cart_item.id }}" value="{{cart_item.quantity}}">
                                     <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus">
+                                        <button class="btn btn-sm btn-primary btn-plus" data-cart-item-id="{{ cart_item.id }}" >
                                             <i class="fa fa-plus"></i>
                                         </button>
                                     </div>
@@ -48,8 +49,8 @@
 
                             </td>
 
-                            <td class="align-middle">{{cart_item.item_total_price}}</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-primary btn-remove"><i class="fa fa-times"></i></button></td>
+                            <td class="align-middle item-total-price" id="itemTotalPrice_{{ cart_item.id }}">{{cart_item.item_total_price}}</td>
+                            <td class="align-middle"><button class="btn btn-sm btn-primary btn-remove" data-cart-item-id="{{ cart_item.id }}"><i class="fa fa-times"></i></button></td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -90,94 +91,57 @@
         </div>
     </div>
     <!-- Cart End -->
-<script>
-    $(document).ready(function() {
-        // Function to update total price and cart item quantity
-        function updateCartItem(itemId, quantity) {
-            $.ajax({
-                url: "{% url 'update_cart_item' %}",
-                method: "POST",
-                data: {
-                    'cart_item_id': itemId,
-                    'quantity': quantity
-                },
-                success: function(response) {
-                    // Update total price and cart item quantity on success
-                    if (response.success) {
-                    $('[data-cart-item-id="' + itemId + '"] .total-price').text(response.total_price);
-                    $('[data-cart-item-id="' + itemId + '"] .quantity-input').val(response.quantity);
-                    // Update total quantity in the badge
-                    $('.badge').text(response.total_quantity);
-                } 
-                else {
-                    // Handle error if needed
-                    alert("Failed to update cart item. Please try again.");
-                }  
-                },
-                error: function(xhr, errmsg, err) {
-                    console.log(xhr.status + ": " + xhr.responseText);
-                    // Handle error if needed
-                    alert("Something went wrong. Please try again later.");
-                }
-            });
-        }
-    
-        // Plus button click handler
-        $('.btn-plus').click(function() {
-            var quantityInput = $(this).closest('.quantity').find('.quantity-input');
-            var newQuantity = parseInt(quantityInput.val()) + 1;
-            quantityInput.val(newQuantity);
-            var cartItemId = $(this).closest('tr').data('cart-item-id');
-            updateCartItem(cartItemId, newQuantity);
-        });
-    
-        // Minus button click handler
-        $('.btn-minus').click(function() {
-            var quantityInput = $(this).closest('.quantity').find('.quantity-input');
-    var newQuantity = parseInt(quantityInput.val()) - 1;
-    if (newQuantity >= 1) {
-        quantityInput.val(newQuantity);
-        var cartItemId = $(this).closest('tr').data('cart-item-id');
-        updateCartItem(cartItemId, newQuantity);
-    } else {
-        // Remove the cart item from the cart if quantity becomes zero
-        var cartItemId = $(this).closest('tr').data('cart-item-id');
-        removeCartItem(cartItemId);
-    }
-    });
-    
-        // Remove button click handler
-        $('.btn-remove').click(function() {
-            var confirmDelete = confirm("Are you sure you want to remove this item from the cart?");
-            if (confirmDelete) {
-                var cartItemId = $(this).closest('tr').data('cart-item-id');
-                var $row = $(this).closest('tr');
-                // Make AJAX request to delete the item from the cart
-                function removeCartItem(itemId) {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Function to update quantity and total price
+            function updateCartItem(cartItemId, quantity) {
                 $.ajax({
-                    url: "{% url 'remove_from_cart' %}",
-                    method: "POST",
+                    url: '/update_cart_item/',
+                    method: 'POST',
                     data: {
-                        'cart_item_id': cartItemId
+                        'cart_item_id': cartItemId,
+                        'quantity': quantity
                     },
                     success: function(response) {
-                        // Handle success if needed
-                        $('#success-message-text').text(response.message);
-                        $('#success-message').show();
-                        // Remove the row from the DOM
-                        $row.remove();
+                        if (response.success) {
+                            // Update total price for the item
+                            var itemTotalPriceElement = $('#itemTotalPrice_' + cartItemId);
+                            itemTotalPriceElement.text(response.item_total_price);
+                        }
                     },
-                    error: function(xhr, errmsg, err) {
-                        console.log(xhr.status + ": " + xhr.responseText);
-                        // Handle error if needed
-                        alert("Something went wrong. Please try again later.");
+                    error: function(xhr, status, error) {
+                        console.error(error);
                     }
                 });
             }
-        }
+    
+            // Event listener for plus button
+            $('.btn-plus').on('click', function() {
+                var cartItemId = $(this).data('cart-item-id');
+                var quantityInput = $('#quantityInput_' + cartItemId);
+                var newQuantity = parseInt(quantityInput.val()) + 1;
+                quantityInput.val(newQuantity);
+                updateCartItem(cartItemId, newQuantity);
+            });
+    
+            // Event listener for minus button
+            $('.btn-minus').on('click', function() {
+                var cartItemId = $(this).data('cart-item-id');
+                var quantityInput = $('#quantityInput_' + cartItemId);
+                var newQuantity = parseInt(quantityInput.val()) - 1;
+                if (newQuantity >= 1) {
+                    quantityInput.val(newQuantity);
+                    updateCartItem(cartItemId, newQuantity);
+                }
+            });
+    
+            // Event listener for quantity input change
+            $('.quantity-input').on('change', function() {
+                var cartItemId = $(this).data('cart-item-id');
+                var newQuantity = parseInt($(this).val());
+                updateCartItem(cartItemId, newQuantity);
+            });
         });
-    
-    });
-    
-</script>
+    </script>
    {% endblock content %}

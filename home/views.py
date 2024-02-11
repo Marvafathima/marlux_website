@@ -120,8 +120,8 @@ def update_cart_item(request):
 
         return JsonResponse({
             'success': True,
-            'total_quantity': cart.total_quantity,
-            'total_price': cart.total_price
+            'total_quantity':cart_item.quantity,
+            'total_price': cart_item_total_price
         })
     except CartItem.DoesNotExist:
         return JsonResponse({'error': 'Cart item not found'})
