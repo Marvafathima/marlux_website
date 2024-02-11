@@ -63,7 +63,7 @@ def add_to_cart(request):
     color_id = request.GET.get('color_id')
     size_id = request.GET.get('size_id')
     quantity = request.GET.get('quantity')
-    
+
     try:
         product_var = ProductVar.objects.get(color_id=color_id, size_id=size_id)
     except ProductVar.DoesNotExist:
@@ -101,7 +101,10 @@ def cart(request):
 def update_cart_item(request):
     item_id = request.POST.get('item_id')
     quantity = request.POST.get('quantity')
-    print("called update cart")
+    print(request, "called update cart")
+
+    print(item_id,'++++++++++++++++++++++++')
+    print(quantity,'+++++++++++++++++++++++++quantity')
     try:
         cart_item = get_object_or_404(CartItem, id=item_id)
         cart_item.quantity = int(quantity)
@@ -154,7 +157,7 @@ def update_cart_item(request):
     #     return JsonResponse({'error': str(e)})
 def remove_from_cart(request):
     if request.method == 'POST':
-        item_id = request.POST.get('cart_item_id')
+        item_id = request.POST.get('item_id')
         try:
             cart_item = CartItem.objects.get(id=item_id)
             cart_item.delete()

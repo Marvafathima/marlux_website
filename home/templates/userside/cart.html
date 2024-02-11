@@ -118,10 +118,33 @@ $(document).ready(function() {
         var $quantityInput = $('#quantityInput_' + itemId); 
         var currentQuantity = parseInt($quantityInput.val());
         if (currentQuantity > 1) {
-            // updateQuantity(itemId, currentQuantity - 1);
+            updateQuantity(itemId, currentQuantity);
             $quantityInput.val(currentQuantity );
         }
     });
+
+    $('.btn-remove').click(function() {
+        console.log("Remove button clicked");
+        var itemId = $(this).closest('tr').data('cart-item-id');
+
+        $.ajax({
+            url: "{% url 'remove_from_cart' %}",
+            method: "POST",  // Change method to POST
+            headers: { "X-CSRFToken": csrftoken }, // Include CSRF token in headers
+            data: {
+                'item_id': itemId,
+            },
+            success: function(response) {
+               alert('Item removed from cart') 
+               location.reload();
+            },
+            error: function(xhr, errmsg, err) {
+                console.log(xhr.status + ": " + xhr.responseText);
+                // Handle error if needed
+            }
+        });
+    });
+    
 
     // Increase quantity
     $('.btn-plus').click(function() {
@@ -129,8 +152,9 @@ $(document).ready(function() {
         var itemId = $(this).closest('tr').data('cart-item-id');
         var $quantityInput = $('#quantityInput_' + itemId); // Define $quantityInput here
         var currentQuantity = parseInt($quantityInput.val());
-        //updateQuantity(itemId, currentQuantity + 1);
-        $quantityInput.val(currentQuantity );
+        $quantityInput.val(currentQuantity);
+        updateQuantity(itemId, currentQuantity);
+
     });
 
     function updateQuantity(itemId, newQuantity) {
