@@ -1,6 +1,10 @@
 {% extends 'main.html' %}
 {% block content %}
     <!-- Cart Start -->
+    <div id="success-message" style="display: none;">
+        <p id="success-message-text"></p>
+    </div>
+    
     <div class="container-fluid pt-5">
         <div class="row px-xl-10 justify-content-between align-content-lg-between">
             <div class="col-lg-8 table-responsive mb-5">
@@ -33,7 +37,8 @@
                                         <i class="fa fa-minus"></i>
                                         </button>
                                     </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary text-center"id="quantityInput" value="{{cart_item.cart.total_qnty}}">
+                                    <input type="hidden" class="cart-item-id" value="{{ cart_item.id }}">
+                                    <input type="text" class="form-control form-control-sm bg-secondary text-center"id="quantityInput" value="{{cart_item.quantity}}">
                                     <div class="input-group-btn">
                                         <button class="btn btn-sm btn-primary btn-plus">
                                             <i class="fa fa-plus"></i>
@@ -43,8 +48,8 @@
 
                             </td>
 
-                            <td class="align-middle">{{cart_item.cart.total_price}}</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>
+                            <td class="align-middle">{{cart_item.item_total_price}}</td>
+                            <td class="align-middle"><button class="btn btn-sm btn-primary btn-remove"><i class="fa fa-times"></i></button></td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -85,5 +90,94 @@
         </div>
     </div>
     <!-- Cart End -->
-
+<script>
+    $(document).ready(function() {
+        // Function to update total price and cart item quantity
+        function updateCartItem(itemId, quantity) {
+            $.ajax({
+                url: "{% url 'update_cart_item' %}",
+                method: "POST",
+                data: {
+                    'cart_item_id': itemId,
+                    'quantity': quantity
+                },
+                success: function(response) {
+                    // Update total price and cart item quantity on success
+                    if (response.success) {
+                    $('[data-cart-item-id="' + itemId + '"] .total-price').text(response.total_price);
+                    $('[data-cart-item-id="' + itemId + '"] .quantity-input').val(response.quantity);
+                    // Update total quantity in the badge
+                    $('.badge').text(response.total_quantity);
+                } 
+                else {
+                    // Handle error if needed
+                    alert("Failed to update cart item. Please try again.");
+                }  
+                },
+                error: function(xhr, errmsg, err) {
+                    console.log(xhr.status + ": " + xhr.responseText);
+                    // Handle error if needed
+                    alert("Something went wrong. Please try again later.");
+                }
+            });
+        }
+    
+        // Plus button click handler
+        $('.btn-plus').click(function() {
+            var quantityInput = $(this).closest('.quantity').find('.quantity-input');
+            var newQuantity = parseInt(quantityInput.val()) + 1;
+            quantityInput.val(newQuantity);
+            var cartItemId = $(this).closest('tr').data('cart-item-id');
+            updateCartItem(cartItemId, newQuantity);
+        });
+    
+        // Minus button click handler
+        $('.btn-minus').click(function() {
+            var quantityInput = $(this).closest('.quantity').find('.quantity-input');
+    var newQuantity = parseInt(quantityInput.val()) - 1;
+    if (newQuantity >= 1) {
+        quantityInput.val(newQuantity);
+        var cartItemId = $(this).closest('tr').data('cart-item-id');
+        updateCartItem(cartItemId, newQuantity);
+    } else {
+        // Remove the cart item from the cart if quantity becomes zero
+        var cartItemId = $(this).closest('tr').data('cart-item-id');
+        removeCartItem(cartItemId);
+    }
+    });
+    
+        // Remove button click handler
+        $('.btn-remove').click(function() {
+            var confirmDelete = confirm("Are you sure you want to remove this item from the cart?");
+            if (confirmDelete) {
+                var cartItemId = $(this).closest('tr').data('cart-item-id');
+                var $row = $(this).closest('tr');
+                // Make AJAX request to delete the item from the cart
+                function removeCartItem(itemId) {
+                $.ajax({
+                    url: "{% url 'remove_from_cart' %}",
+                    method: "POST",
+                    data: {
+                        'cart_item_id': cartItemId
+                    },
+                    success: function(response) {
+                        // Handle success if needed
+                        $('#success-message-text').text(response.message);
+                        $('#success-message').show();
+                        // Remove the row from the DOM
+                        $row.remove();
+                    },
+                    error: function(xhr, errmsg, err) {
+                        console.log(xhr.status + ": " + xhr.responseText);
+                        // Handle error if needed
+                        alert("Something went wrong. Please try again later.");
+                    }
+                });
+            }
+        }
+        });
+    
+    });
+    
+</script>
    {% endblock content %}

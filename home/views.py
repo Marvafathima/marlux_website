@@ -6,6 +6,7 @@ import random
 from .helper import MessageHandler
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
+from django.views.decorators.http import require_POST
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
@@ -69,10 +70,12 @@ def add_to_cart(request):
         return JsonResponse({'error': 'Product unavailable'}, status=400)
     user = request.user
     if not user.is_authenticated:
+        messages.info(request,"Login to add items to the cart")
+        return redirect('login')
         # Handle anonymous user (optional)
         # You can create a session-based cart for anonymous users
         # or handle the scenario based on your application's requirements
-        return JsonResponse({'message': 'Anonymous users cannot add items to the cart.'}, status=400)
+        # return JsonResponse({'message': 'Anonymous users cannot add items to the cart.'}, status=400)
     cart, created = Cart.objects.get_or_create(user=user)
     cart_item, created = CartItem.objects.get_or_create(cart=cart, product_variant=product_var)
     if not created:
@@ -80,7 +83,7 @@ def add_to_cart(request):
         cart_item.quantity += int(quantity)
         cart_item.save()
     cart.total_qnty = CartItem.objects.filter(cart=cart).aggregate(total_quantity=Sum('quantity'))['total_quantity']
-    cart.total_price = CartItem.objects.filter(cart=cart).aggregate(total_price=Sum(F('quantity') * F('product_variant__price')))['total_price']
+    cart.total_price = CartItem.objects.filter(cart=cart).aggregate(total_price=Sum('item_total_price'))['total_price']
     cart.save()
     return JsonResponse({'message': 'Product added to cart successfully.'})
 
@@ -94,6 +97,48 @@ def cart(request):
         print(product_name)
     
     return render(request,'cart.html',{'cart_items':cart_items,'carts':carts})
+@require_POST
+def update_cart_item(request):
+    cart_item_id = request.POST.get('cart_item_id')
+    quantity = request.POST.get('quantity')
+
+    try:
+        cart_item = CartItem.objects.get(id=cart_item_id)
+        cart_item.quantity = quantity
+        cart_item.save()
+
+        # Calculate and update total price for the cart item
+        cart_item_total_price = cart_item.product_variant.price * int(quantity)
+        cart_item.item_total_price = cart_item_total_price
+        cart_item.save()
+
+        # Update total price and total quantity for the cart
+        cart = cart_item.cart
+        cart.total_price = CartItem.objects.filter(cart=cart).aggregate(total_price=Sum('item_total_price'))['total_price']
+        cart.total_quantity = CartItem.objects.filter(cart=cart).aggregate(total_quantity=Sum('quantity'))['total_quantity']
+        cart.save()
+
+        return JsonResponse({
+            'success': True,
+            'total_quantity': cart.total_quantity,
+            'total_price': cart.total_price
+        })
+    except CartItem.DoesNotExist:
+        return JsonResponse({'error': 'Cart item not found'})
+    except Exception as e:
+        return JsonResponse({'error': str(e)})
+def remove_from_cart(request):
+    if request.method == 'POST':
+        item_id = request.POST.get('cart_item_id')
+        try:
+            cart_item = CartItem.objects.get(id=item_id)
+            cart_item.delete()
+            return JsonResponse({'message': 'Product removed from the cart'}, )
+        except CartItem.DoesNotExist:
+            return JsonResponse({'error': 'Cart item not found'},)
+    else:
+        return JsonResponse({'error': 'Method not allowed'},)
+
 def user_login(request):
     if request.method=="POST":
         email=request.POST['email']
