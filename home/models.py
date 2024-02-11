@@ -49,8 +49,17 @@ class CartItem(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     item_total_price=models.DecimalField(default=0,decimal_places=2,max_digits=10,null=True) 
     def save(self, *args, **kwargs):
-        self.item_total_price = self.quantity * self.product_variant.price
+        if self.pk:  # If the instance has already been saved (i.e., it's an update)
+            old_cart_item = CartItem.objects.get(pk=self.pk)
+            if old_cart_item.quantity != self.quantity:  # Check if quantity has changed
+                self.item_total_price = self.quantity * self.product_variant.price
+        else:  # If it's a new instance
+            self.item_total_price = self.quantity * self.product_variant.price
+        
         super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     self.item_total_price = self.quantity * self.product_variant.price
+    #     super().save(*args, **kwargs)
 
 
 # import uuid

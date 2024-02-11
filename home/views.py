@@ -94,39 +94,64 @@ def cart(request):
     cart_items=CartItem.objects.filter(cart__user=user.id)
     for cart_item in cart_items:
         product_name=cart_item.product_variant.prod_id.pr_name
-        print(product_name)
+    
     
     return render(request,'cart.html',{'cart_items':cart_items,'carts':carts})
 @require_POST
 def update_cart_item(request):
-    cart_item_id = request.POST.get('cart_item_id')
+    item_id = request.POST.get('item_id')
     quantity = request.POST.get('quantity')
-
+    print("called update cart")
     try:
-        cart_item = CartItem.objects.get(id=cart_item_id)
-        cart_item.quantity = quantity
+        cart_item = get_object_or_404(CartItem, id=item_id)
+        cart_item.quantity = int(quantity)
         cart_item.save()
-
-        # Calculate and update total price for the cart item
-        cart_item_total_price = cart_item.product_variant.price * int(quantity)
+        
+        price = float(cart_item.product_variant.price)
+        cart_item_total_price = price * cart_item.quantity
         cart_item.item_total_price = cart_item_total_price
         cart_item.save()
-
-        # Update total price and total quantity for the cart
-        cart = cart_item.cart
-        cart.total_price = CartItem.objects.filter(cart=cart).aggregate(total_price=Sum('item_total_price'))['total_price']
-        cart.total_quantity = CartItem.objects.filter(cart=cart).aggregate(total_quantity=Sum('quantity'))['total_quantity']
-        cart.save()
-
+        
         return JsonResponse({
             'success': True,
-            'total_quantity':cart_item.quantity,
-            'total_price': cart_item_total_price
+            'quantity': cart_item.quantity,
+            'total_price': cart_item.item_total_price 
         })
     except CartItem.DoesNotExist:
-        return JsonResponse({'error': 'Cart item not found'})
+        return JsonResponse({'error': 'Cart item not found'}, status=404)
     except Exception as e:
-        return JsonResponse({'error': str(e)})
+        return JsonResponse({'error': str(e)}, status=500)
+
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+    # cart_item_id = request.POST.get('cart_item_id')
+    # quantity = request.POST.get('quantity')
+
+    # try:
+    #     cart_item = CartItem.objects.get(id=cart_item_id)
+    #     cart_item.quantity = quantity
+    #     cart_item.save()
+
+    #     # Calculate and update total price for the cart item
+    #     cart_item_total_price = cart_item.product_variant.price * cart_item.quantity
+    #     cart_item.item_total_price = cart_item_total_price
+    #     cart_item.save()
+
+    #     # Update total price and total quantity for the cart
+    #     cart = cart_item.cart
+    #     cart.total_price = CartItem.objects.filter(cart=cart).aggregate(total_price=Sum('item_total_price'))['total_price']
+    #     cart.total_quantity = CartItem.objects.filter(cart=cart).aggregate(total_quantity=Sum('quantity'))['total_quantity']
+    #     cart.save()
+
+    #     return JsonResponse({
+    #         'success': True,
+    #         'total_quantity':cart_item.quantity,
+    #         'total_price':cart_item.item_total_price 
+    #     })
+    # except CartItem.DoesNotExist:
+    #     return JsonResponse({'error': 'Cart item not found'})
+    # except Exception as e:
+    #     return JsonResponse({'error': str(e)})
 def remove_from_cart(request):
     if request.method == 'POST':
         item_id = request.POST.get('cart_item_id')

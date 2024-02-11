@@ -1,147 +1,158 @@
 {% extends 'main.html' %}
 {% block content %}
-    <!-- Cart Start -->
-    <div id="success-message" style="display: none;">
-        <p id="success-message-text"></p>
-    </div>
-    
-    <div class="container-fluid pt-5">
-        <div class="row px-xl-10 justify-content-between align-content-lg-between">
-            <div class="col-lg-8 table-responsive mb-5">
-                <table class="table table-bordered text-center mb-0">
-                    <thead class="bg-secondary text-dark">
-                        <tr>
-                            <th>Products</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Total</th>
-                            <th>Remove</th>
-                        </tr>
-                    </thead>
-                    <tbody class="align-middle">
-                        {% for cart_item in cart_items %}
-                        <tr data-cart-item-id="{{ cart_item.id }}">
-                            {% with product_variant=cart_item.product_variant %}
-                                {% with product=product_variant.prod_id %}
-                                    {% with product_img=product.product_image.first %}
-                            <td class="align-middle"><img src="{{product_img.image.url}}" alt="" style="width: 50px;"> {{cart_item.product_variant.prod_id.pr_name}}</td>
-                                    {% endwith %}
+<!-- Cart Start -->
+<div id="success-message" style="display: none;">
+    <p id="success-message-text"></p>
+</div>
+
+<div class="container-fluid pt-5">
+    <div class="row px-xl-10 justify-content-between align-content-lg-between">
+        <div class="col-lg-8 table-responsive mb-5">
+            <table class="table table-bordered text-center mb-0">
+                <thead class="bg-secondary text-dark">
+                    <tr>
+                        <th>Products</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody class="align-middle">
+                    {% for cart_item in cart_items %}
+                    <tr data-cart-item-id="{{ cart_item.id }}">
+                        {% with product_variant=cart_item.product_variant %}
+                            {% with product=product_variant.prod_id %}
+                                {% with product_img=product.product_image.first %}
+                        <td class="align-middle"><img src="{{product_img.image.url}}" alt="" style="width: 50px;"> {{cart_item.product_variant.prod_id.pr_name}}</td>
                                 {% endwith %}
                             {% endwith %}
-                           
-                            <td class="align-middle">₹{{cart_item.product_variant.price}}</td>
-                            <!-- <input type="hidden" class="cart-item-id" value="{{ cart_item.id }}"> -->
-                            <td class="align-middle">
-                                <div class="input-group quantity mx-auto" style="width: 100px;">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" data-cart-item-id="{{ cart_item.id }}" >
-                                        <i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                   
-                                    <input type="text" class="form-control form-control-sm bg-secondary text-center"id="quantityInput_{{ cart_item.id }}" value="{{cart_item.quantity}}">
-                                    <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus" data-cart-item-id="{{ cart_item.id }}" >
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
+                        {% endwith %}
+                        
+                        <td class="align-middle">₹{{cart_item.product_variant.price}}</td>
+                        <!-- <input type="hidden" class="cart-item-id" value="{{ cart_item.id }}"> -->
+                        <td class="align-middle">
+                            <div class="input-group quantity mx-auto" style="width: 100px;">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-sm btn-primary btn-minus"  >
+                                    <i class="fa fa-minus"></i>
+                                    </button>
                                 </div>
+                                
+                                <input type="text" class="form-control form-control-sm bg-secondary text-center"id="quantityInput_{{ cart_item.id }}" value="{{cart_item.quantity}}">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-sm btn-primary btn-plus" >
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
 
-                            </td>
+                        </td>
 
-                            <td class="align-middle item-total-price" id="itemTotalPrice_{{ cart_item.id }}">{{cart_item.item_total_price}}</td>
-                            <td class="align-middle"><button class="btn btn-sm btn-primary btn-remove" data-cart-item-id="{{ cart_item.id }}"><i class="fa fa-times"></i></button></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-lg-4">
-                <form class="mb-5" action="">
-                    <div class="input-group">
-                        <input type="text" class="form-control p-4" placeholder="Coupon Code">
-                        <div class="input-group-append">
-                            <button class="btn btn-primary">Apply Coupon</button>
-                        </div>
+                        <td class="align-middle item-total-price" id="itemTotalPrice_{{ cart_item.id }}">{{cart_item.item_total_price}}</td>
+                        <td class="align-middle"><button class="btn btn-sm btn-primary btn-remove" data-cart-item-id="{{ cart_item.id }}"><i class="fa fa-times"></i></button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-4">
+            <form class="mb-5" action="">
+                <div class="input-group">
+                    <input type="text" class="form-control p-4" placeholder="Coupon Code">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary">Apply Coupon</button>
                     </div>
-                </form>
-                <div class="card border-secondary mb-5">
-                    <div class="card-header bg-secondary border-0">
-                        <h4 class="font-weight-semi-bold m-0">Cart Summary</h4>
+                </div>
+            </form>
+            <div class="card border-secondary mb-5">
+                <div class="card-header bg-secondary border-0">
+                    <h4 class="font-weight-semi-bold m-0">Cart Summary</h4>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3 pt-1">
+                        <h6 class="font-weight-medium">Subtotal</h6>
+                        <h6 class="font-weight-medium">$150</h6>
                     </div>
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between mb-3 pt-1">
-                            <h6 class="font-weight-medium">Subtotal</h6>
-                            <h6 class="font-weight-medium">$150</h6>
-                        </div>
-                        <div class="d-flex justify-content-between">
-                            <h6 class="font-weight-medium">Shipping</h6>
-                            <h6 class="font-weight-medium">$10</h6>
-                        </div>
+                    <div class="d-flex justify-content-between">
+                        <h6 class="font-weight-medium">Shipping</h6>
+                        <h6 class="font-weight-medium">$10</h6>
                     </div>
-                    <div class="card-footer border-secondary bg-transparent">
-                        <div class="d-flex justify-content-between mt-2">
-                            <h5 class="font-weight-bold">Total</h5>
-                            <h5 class="font-weight-bold">$160</h5>
-                        </div>
-                        <button class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</button>
+                </div>
+                <div class="card-footer border-secondary bg-transparent">
+                    <div class="d-flex justify-content-between mt-2">
+                        <h5 class="font-weight-bold">Total</h5>
+                        <h5 class="font-weight-bold">$160</h5>
                     </div>
+                    <button class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</button>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Cart End -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Function to update quantity and total price
-            function updateCartItem(cartItemId, quantity) {
-                $.ajax({
-                    url: '/update_cart_item/',
-                    method: 'POST',
-                    data: {
-                        'cart_item_id': cartItemId,
-                        'quantity': quantity
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            // Update total price for the item
-                            var itemTotalPriceElement = $('#itemTotalPrice_' + cartItemId);
-                            itemTotalPriceElement.text(response.item_total_price);
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error(error);
-                    }
-                });
-            }
-    
-            // Event listener for plus button
-            $('.btn-plus').on('click', function() {
-                var cartItemId = $(this).data('cart-item-id');
-                var quantityInput = $('#quantityInput_' + cartItemId);
-                var newQuantity = parseInt(quantityInput.val()) + 1;
-                quantityInput.val(newQuantity);
-                updateCartItem(cartItemId, newQuantity);
-            });
-    
-            // Event listener for minus button
-            $('.btn-minus').on('click', function() {
-                var cartItemId = $(this).data('cart-item-id');
-                var quantityInput = $('#quantityInput_' + cartItemId);
-                var newQuantity = parseInt(quantityInput.val()) - 1;
-                if (newQuantity >= 1) {
-                    quantityInput.val(newQuantity);
-                    updateCartItem(cartItemId, newQuantity);
+</div>
+<!-- Cart End -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                // Check if the cookie contains the desired name
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
                 }
-            });
+            }
+        }
+        return cookieValue;
+    }
     
-            // Event listener for quantity input change
-            $('.quantity-input').on('change', function() {
-                var cartItemId = $(this).data('cart-item-id');
-                var newQuantity = parseInt($(this).val());
-                updateCartItem(cartItemId, newQuantity);
-            });
-        });
-    </script>
-   {% endblock content %}
+    var csrftoken = getCookie('csrftoken'); 
+    // Decrease quantity
+    $('.btn-minus').click(function() {
+        console.log("Minus button clicked");
+        var itemId = $(this).closest('tr').data('cart-item-id');
+        var $quantityInput = $('#quantityInput_' + itemId); 
+        var currentQuantity = parseInt($quantityInput.val());
+        if (currentQuantity > 1) {
+            // updateQuantity(itemId, currentQuantity - 1);
+            $quantityInput.val(currentQuantity );
+        }
+    });
+
+    // Increase quantity
+    $('.btn-plus').click(function() {
+        console.log("Plus button clicked"); 
+        var itemId = $(this).closest('tr').data('cart-item-id');
+        var $quantityInput = $('#quantityInput_' + itemId); // Define $quantityInput here
+        var currentQuantity = parseInt($quantityInput.val());
+        //updateQuantity(itemId, currentQuantity + 1);
+        $quantityInput.val(currentQuantity );
+    });
+
+    function updateQuantity(itemId, newQuantity) {
+    $.ajax({
+        url: "{% url 'update_cart_item' %}",
+        method: "POST",  // Change method to POST
+        headers: { "X-CSRFToken": csrftoken }, // Include CSRF token in headers
+        data: {
+            'item_id': itemId,
+            'quantity': newQuantity
+        },
+        success: function(response) {
+            $('#quantityInput_' + itemId).val(response.quantity); // Update quantity in input field
+            $('#itemTotalPrice_' + itemId).text(response.total_price); 
+            // Update total price or any other relevant UI here
+        },
+        error: function(xhr, errmsg, err) {
+            console.log(xhr.status + ": " + xhr.responseText);
+            // Handle error if needed
+        }
+    });
+}
+});
+</script>    
+{% endblock content %}
