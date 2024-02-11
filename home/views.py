@@ -63,7 +63,7 @@ def add_to_cart(request):
     color_id = request.GET.get('color_id')
     size_id = request.GET.get('size_id')
     quantity = request.GET.get('quantity')
-
+    print(quantity,"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
     try:
         product_var = ProductVar.objects.get(color_id=color_id, size_id=size_id)
     except ProductVar.DoesNotExist:
@@ -72,15 +72,16 @@ def add_to_cart(request):
     if not user.is_authenticated:
         messages.info(request,"Login to add items to the cart")
         return redirect('login')
-        # Handle anonymous user (optional)
-        # You can create a session-based cart for anonymous users
-        # or handle the scenario based on your application's requirements
-        # return JsonResponse({'message': 'Anonymous users cannot add items to the cart.'}, status=400)
+        
     cart, created = Cart.objects.get_or_create(user=user)
     cart_item, created = CartItem.objects.get_or_create(cart=cart, product_variant=product_var)
     if not created:
         # If the cart item already exists, update the quantity
         cart_item.quantity += int(quantity)
+        cart_item.save()
+    else:
+        # If the cart item is newly created, set its quantity
+        cart_item.quantity = int(quantity)
         cart_item.save()
     cart.total_qnty = CartItem.objects.filter(cart=cart).aggregate(total_quantity=Sum('quantity'))['total_quantity']
     cart.total_price = CartItem.objects.filter(cart=cart).aggregate(total_price=Sum('item_total_price'))['total_price']
