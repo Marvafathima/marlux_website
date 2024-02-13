@@ -21,6 +21,13 @@ def index(request):
     #     print(product['prod_image']) 
     products=Products.objects.all()
     category=Category.objects.all()
+    user=request.user
+    # if user is not None:
+    #     cart=Cart.objects.get(user=user)
+    #     cart_quantity=cart.total_qnty
+    #     print(cart_quantity)
+    return render(request,'userside/index.html',{'products':products,'categories':category,'cart_count':6})
+    
     return render(request,'userside/index.html',{'products':products,'categories':category})
 def categoryproduct(request,category_id):
     cat=get_object_or_404(Category, pk=category_id)
@@ -63,18 +70,19 @@ def add_to_cart(request):
     color_id = request.GET.get('color_id')
     size_id = request.GET.get('size_id')
     quantity = request.GET.get('quantity')
-    print(quantity,"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
     try:
         product_var = ProductVar.objects.get(color_id=color_id, size_id=size_id)
+        stocks=product_var.stock
     except ProductVar.DoesNotExist:
         return JsonResponse({'error': 'Product unavailable'}, status=400)
     user = request.user
     if not user.is_authenticated:
         messages.info(request,"Login to add items to the cart")
         return redirect('login')
-        
+       
     cart, created = Cart.objects.get_or_create(user=user)
     cart_item, created = CartItem.objects.get_or_create(cart=cart, product_variant=product_var)
+   
     if not created:
         # If the cart item already exists, update the quantity
         cart_item.quantity += int(quantity)
@@ -103,9 +111,6 @@ def update_cart_item(request):
     item_id = request.POST.get('item_id')
     quantity = request.POST.get('quantity')
     print(request, "called update cart")
-
-    print(item_id,'++++++++++++++++++++++++')
-    print(quantity,'+++++++++++++++++++++++++quantity')
     try:
         cart_item = get_object_or_404(CartItem, id=item_id)
         cart_item.quantity = int(quantity)
@@ -115,6 +120,12 @@ def update_cart_item(request):
         cart_item_total_price = price * cart_item.quantity
         cart_item.item_total_price = cart_item_total_price
         cart_item.save()
+        # Update total price and total quantity for the cart
+        cart = cart_item.cart
+        cart.total_price = CartItem.objects.filter(cart=cart).aggregate(total_price=Sum('item_total_price'))['total_price']
+        cart.total_qnty = CartItem.objects.filter(cart=cart).aggregate(total_quantity=Sum('quantity'))['total_quantity']
+        print(cart.total_qnty,'********************888888*8')
+        cart.save()
         
         return JsonResponse({
             'success': True,
@@ -126,7 +137,6 @@ def update_cart_item(request):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
-    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
     # cart_item_id = request.POST.get('cart_item_id')
     # quantity = request.POST.get('quantity')
@@ -159,15 +169,31 @@ def update_cart_item(request):
 def remove_from_cart(request):
     if request.method == 'POST':
         item_id = request.POST.get('item_id')
+        user=request.user
+        print('remove function called')
         try:
             cart_item = CartItem.objects.get(id=item_id)
+            cart=Cart.objects.get(user=user)
+            qnty=cart_item.quantity
             cart_item.delete()
-            return JsonResponse({'message': 'Product removed from the cart'}, )
+            cart.total_qnty=cart.total_qnty-qnty
+            new_qnty= cart.total_qnty
+            print(cart.total_qnty,"NEW UPDATED QUANTITY")
+
+            return JsonResponse({'message': 'Product removed from the cart','total_qnty':new_qnty}, )
         except CartItem.DoesNotExist:
             return JsonResponse({'error': 'Cart item not found'},)
     else:
         return JsonResponse({'error': 'Method not allowed'},)
-
+def cart_count(request):
+    user=request.user
+    if user is not None:
+        cart=Cart.objects.get(user=user)
+        count=cart.total_qnty
+        print(count,'***************************')
+        return JsonResponse({'count':count})
+    else:
+        return JsonResponse({'count':0})
 def user_login(request):
     if request.method=="POST":
         email=request.POST['email']
@@ -265,7 +291,10 @@ def user_logout(request):
     return redirect('login')
 
 
+
 def shop(request):
     products=Products.objects.all()
-    return render (request,'shop.html',{'products': products})
+    return render (request,'mainshop.html',{'products': products})
 
+def user_address(request):
+    return render (request,'userprofile.html')

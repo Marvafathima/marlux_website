@@ -117,16 +117,18 @@ $(document).ready(function() {
         var itemId = $(this).closest('tr').data('cart-item-id');
         var $quantityInput = $('#quantityInput_' + itemId); 
         var currentQuantity = parseInt($quantityInput.val());
-        if (currentQuantity > 1) {
+        if (currentQuantity >= 0) {
             updateQuantity(itemId, currentQuantity);
             $quantityInput.val(currentQuantity );
+            updatecartcount()
         }
     });
 
-    $('.btn-remove').click(function() {
+    $('.btn-remove').click(function(){
         console.log("Remove button clicked");
         var itemId = $(this).closest('tr').data('cart-item-id');
-
+        //var $quantityInput = $('#quantityInput_' + itemId); 
+        //var currentQuantity = parseInt($quantityInput.val());
         $.ajax({
             url: "{% url 'remove_from_cart' %}",
             method: "POST",  // Change method to POST
@@ -137,14 +139,16 @@ $(document).ready(function() {
             success: function(response) {
                alert('Item removed from cart') 
                location.reload();
+              
             },
             error: function(xhr, errmsg, err) {
                 console.log(xhr.status + ": " + xhr.responseText);
                 // Handle error if needed
             }
         });
+   
     });
-    
+
 
     // Increase quantity
     $('.btn-plus').click(function() {
@@ -154,6 +158,7 @@ $(document).ready(function() {
         var currentQuantity = parseInt($quantityInput.val());
         $quantityInput.val(currentQuantity);
         updateQuantity(itemId, currentQuantity);
+        updatecartcount()
 
     });
 
@@ -169,6 +174,7 @@ $(document).ready(function() {
         success: function(response) {
             $('#quantityInput_' + itemId).val(response.quantity); // Update quantity in input field
             $('#itemTotalPrice_' + itemId).text(response.total_price); 
+            updatecartcount();
             // Update total price or any other relevant UI here
         },
         error: function(xhr, errmsg, err) {
@@ -177,6 +183,8 @@ $(document).ready(function() {
         }
     });
 }
+
+
 });
 </script>    
 {% endblock content %}
