@@ -124,7 +124,7 @@ def update_cart_item(request):
         cart = cart_item.cart
         cart.total_price = CartItem.objects.filter(cart=cart).aggregate(total_price=Sum('item_total_price'))['total_price']
         cart.total_qnty = CartItem.objects.filter(cart=cart).aggregate(total_quantity=Sum('quantity'))['total_quantity']
-        print(cart.total_qnty,'********************888888*8')
+        print(cart.total_qnty,'&&&&&&&&&&&&&&&&&&&')
         cart.save()
         
         return JsonResponse({
@@ -138,34 +138,7 @@ def update_cart_item(request):
         return JsonResponse({'error': str(e)}, status=500)
 
 
-    # cart_item_id = request.POST.get('cart_item_id')
-    # quantity = request.POST.get('quantity')
 
-    # try:
-    #     cart_item = CartItem.objects.get(id=cart_item_id)
-    #     cart_item.quantity = quantity
-    #     cart_item.save()
-
-    #     # Calculate and update total price for the cart item
-    #     cart_item_total_price = cart_item.product_variant.price * cart_item.quantity
-    #     cart_item.item_total_price = cart_item_total_price
-    #     cart_item.save()
-
-    #     # Update total price and total quantity for the cart
-    #     cart = cart_item.cart
-    #     cart.total_price = CartItem.objects.filter(cart=cart).aggregate(total_price=Sum('item_total_price'))['total_price']
-    #     cart.total_quantity = CartItem.objects.filter(cart=cart).aggregate(total_quantity=Sum('quantity'))['total_quantity']
-    #     cart.save()
-
-    #     return JsonResponse({
-    #         'success': True,
-    #         'total_quantity':cart_item.quantity,
-    #         'total_price':cart_item.item_total_price 
-    #     })
-    # except CartItem.DoesNotExist:
-    #     return JsonResponse({'error': 'Cart item not found'})
-    # except Exception as e:
-    #     return JsonResponse({'error': str(e)})
 def remove_from_cart(request):
     if request.method == 'POST':
         item_id = request.POST.get('item_id')
@@ -297,4 +270,35 @@ def shop(request):
     return render (request,'mainshop.html',{'products': products})
 
 def user_address(request):
-    return render (request,'userprofile.html')
+    user=request.user
+    profile=CustomUser.objects.get(id=user.id)
+    useraddress = UserAddress.objects.get(user=user)
+    if request.method=='GET':
+       
+        profile=CustomUser.objects.get(id=user.id)
+        useraddress = UserAddress.objects.get(user=user)
+        us_detail={
+            'id':profile.id,
+            'name':useraddress.user_name,
+            'email':profile.email,
+            'password':profile.password,
+           'phone_number':useraddress.phone_number
+        }
+        return render (request,'userprofile.html',{'us':us_detail})
+    else:
+        name=request.POST.get('name')
+        email=request.POST.get('email')
+        phone_number=request.POST.get('number')
+        profile.email=email
+        useraddress.user_name=name
+        useraddress.phone_number=phone_number
+        profile.save()
+        useraddress.save()
+        us_detail={
+            'id':profile.id,
+            'name':useraddress.user_name,
+            'email':profile.email,
+            'password':profile.password,
+           'phone_number':useraddress.phone_number
+        }
+        return render (request,'userprofile.html',{'us':us_detail})

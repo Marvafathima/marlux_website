@@ -37,8 +37,9 @@
             <!-- Right Side - Form -->
             <div class="col-lg-7 ml-4 ">
                 <div class="col text-center">
-                    <h3>My Profile</h3>
+                    {% block profilehead %}  {% endblock profilehead %}
                 </div>
+                <div></div>
                 <form method="POST" action="{% url 'user_address' %}"class="col-lg-12 border-custom rounded p-3 d-flex flex-column align-items-center">
                     {% csrf_token %}
                     
