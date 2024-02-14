@@ -18,4 +18,9 @@ urlpatterns=[
     path('myprofile/',views.user_profile,name='user_profile'),
     path('user_address/',views.user_address,name='user_address'),
     path('cartcount/',views.cart_count,name='cart_count'),
+    path('addressdisplay/',views.addressdisplay,name='addressdisplay'),
+    path('set_default_address/',views.set_default_address,name='set_default_address'),
+    path('delete_address/<int:id>/',views.address_delete,name='delete_address'),
+    path('update_address/<int:id>/',views.update_address,name='update_address'),
+
 ]

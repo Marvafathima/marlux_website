@@ -1,0 +1,53 @@
+{% extends 'useraddress.html' %}
+{% block addressdisplay %}
+<div class="container mt-4">
+    <div class="row">
+   {% for address in addresses %}     
+    <div class=" col-6 card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">{{address.house_name}}</h5>
+            <p class="card-text">{{address.street}},{{address.city}},{{address.postal_code}}</p>
+            <p class="card-text">{{address.district}},{{address.state}},{{address.country}}</p>
+            
+            <div class="form-check">
+                <input class="form-check-input  default-address" type="radio" name="defaultAddress" value="{{ address.id }}" id="defaultAddress{{ address.id }} {% if address.is_default %} checked {% endif %}" >
+                <label class="form-check-label" for="defaultAddress{{ address.id }}">
+                    Set as Default
+                </label>
+            </div>
+        </div>
+        <div class="card-footer">
+            <a href="{% url 'update_address' address.id %}"class="btn btn-primary btn-sm edit-address" data-address-id="{{ address.id }}">Edit</a>
+            <a href="{% url 'delete_address' address.id %}" class="btn btn-danger btn-sm delete-address" data-address-id="{{ address.id }}">Delete</a>
+        </div>
+    </div>
+{% endfor %}
+</div></div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Attach click event handler to radio buttons
+        $('.default-address').click(function() {
+            console.log("radio button clicked")
+            // Get the address ID from the value attribute
+            var addressId = $(this).val();
+            console.log(addressId)
+            // Make an AJAX request to set the default address
+            $.ajax({
+                url: '{% url "set_default_address" %}',
+                type: 'POST',
+                headers: { 'X-CSRFToken': '{{ csrf_token }}' },
+                data: { address_id: addressId },
+                success: function(response) {
+                    console.log(response); // Log the response to the console
+                    // Optionally, update the UI or perform other actions based on the response
+                },
+                error: function(xhr, status, error) {
+                    console.error(error); // Log any errors to the console
+                    // Optionally, handle errors or display error messages to the user
+                }
+            });
+        });
+    });
+</script>
+{% endblock addressdisplay %}

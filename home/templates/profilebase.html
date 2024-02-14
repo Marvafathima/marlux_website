@@ -26,7 +26,7 @@
             <div class="col-lg-4 ">
                 <div class="left-buttons p-3">
                     <a id="profileBtn" href="{% url 'user_profile' %}"class="btn btn-primary btn-block mb-3">My Profile</a>
-                    <a id="addressBtn" href="{% url 'user_address' %}" class="btn btn-primary btn-block mb-3">My Address</a>
+                    <a id="addressBtn" href="{% url 'addressdisplay' %}" class="btn btn-primary btn-block mb-3">My Address</a>
                     <a id="passwordBtn"  class="btn btn-primary btn-block mb-3">My Password</a>
                     <a id="ordersBtn" class="btn btn-primary btn-block mb-3">My Orders</a>
                    
@@ -63,6 +63,9 @@
         document.getElementById("walletBtn").classList.add("active");
     }
 </script>
+<!-- Add jQuery CDN in your template -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     {% endblock corousel %}
     {% block right %}
   

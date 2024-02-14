@@ -1,7 +1,7 @@
 from django.http import HttpResponse,JsonResponse
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.models import User
-from .models import CustomUser,UserAddress,Cart,CartItem
+from .models import CustomUser,UserAddress,Cart,CartItem,Address
 import random
 from .helper import MessageHandler
 from django.contrib import messages
@@ -13,6 +13,7 @@ from django.core.mail import send_mail
 from category.models import Products,ProductImage,ProductVar,Category,Subcategory,Color,Size
 from django.db.models import Min
 from django.db.models import F, Sum
+from django.views.decorators.csrf import csrf_protect
 def index(request):
     # products = Products.objects.annotate(
     #     lowest_price=Min('product_varient__price'),
@@ -304,5 +305,94 @@ def user_profile(request):
         return render (request,'userprofile.html',{'us':us_detail})
     
 def user_address(request):
-    
-    return render (request,'useraddress.html')
+    if request.method=='POST':
+        house_name=request.POST.get('house_name')
+        place=request.POST.get('place')
+        city=request.POST.get('city')
+        district=request.POST.get('district') 
+        pincode=request.POST.get('pin_code') 
+        state=request.POST.get('state') 
+        country=request.POST.get('country') 
+        landmark=request.POST.get('landmark','') 
+        print(house_name)
+        Address.objects.create(
+        user=request.user,
+        house_name=house_name,
+        street=place,
+        city=city,
+        district=district,
+        postal_code=pincode,
+        state=state,
+        country=country,
+        landmark=landmark
+    )
+        return render (request,'useraddress.html')
+    else:
+        return redirect('addressdisplay')
+
+def addressdisplay(request):
+    user=request.user
+    useraddress = Address.objects.filter(user=user)
+    return render (request,'addressdisplay.html',{'addresses':useraddress})
+@csrf_protect
+def set_default_address(request):
+    print("called set defualt")
+    if request.method == 'POST':
+        user=request.user
+        adrs=Address.objects.filter(user=user)
+        for ad in adrs:
+            ad.is_default='False'
+            ad.save()
+
+        print("loop worked")
+        address_id = request.POST.get('address_id')
+        address = Address.objects.get(pk=address_id)
+        address.is_default = True
+        address.save()
+        return JsonResponse({'message': 'Default address set successfully'}, status=200)
+    else:
+        return JsonResponse({'error': 'Invalid request'}, status=400)
+def address_delete(request,id):
+    address=Address.objects.get(pk=id)
+    address.delete()
+    return redirect('addressdisplay')
+def update_address(request,id):
+    address=get_object_or_404(Address,pk=id)
+    print("update address called",id)
+    if request.method=="POST":
+        house_name=request.POST.get('house_name')
+        place=request.POST.get('place')
+        city=request.POST.get('city')
+        district=request.POST.get('district') 
+        pincode=request.POST.get('pin_code') 
+        state=request.POST.get('state') 
+        country=request.POST.get('country') 
+        landmark=request.POST.get('landmark','') 
+        print(house_name,country,state)
+        address=Address.objects.get(pk=id)
+        # Update the attributes of the address instance
+        if house_name:
+            address.house_name = house_name
+        if place:
+            address.street = place
+        if city:
+            address.city = city
+        if district:
+            address.district = district
+        if pincode:
+            address.postal_code = pincode
+        if state:
+            address.state = state
+        if country:
+            address.country = country
+        if landmark:
+            address.landmark = landmark
+
+        # Save the updated address instance
+        address.save()
+
+        return redirect('addressdisplay')
+    else:
+        return render (request,'updateaddress.html',{'address':address})
+
+

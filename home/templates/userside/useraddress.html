@@ -1,9 +1,38 @@
 {% extends 'profilebase.html' %}
 
-{% block profilehead %} <h2>User Address Form</h2>{% endblock profilehead %} 
+{% block profilehead %} <h2>User Address</h2>{% endblock profilehead %} 
 {% block form %}
-
-<form id="addressFormWrapper" action="#" method="post" class="col-lg-12 border-custom rounded p-3 d-flex flex-column align-items-start">
+<style>
+    #addressFormWrapper {
+        display: none; /* Hide the form by default */
+        position: fixed; /* Fixed position to overlay */
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 999; /* Ensure the form appears above other content */
+        background-color: white;
+        padding: 20px;
+    }
+    .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+        outline:none;
+        border: none;
+    }
+   
+</style>
+{% block addressdisplay %}
+{% endblock addressdisplay %}
+<div class="col text-center m-5">
+<button id="addAddressBtn" class="btn btn-primary btn-lg">Add Address</button></div>
+<div id="addressFormWrapper">
+<form  action="{% url 'user_address' %}" method="post" class="col-lg-10 border-custom rounded p-3 d-flex flex-column align-items-start">
+   {% csrf_token %}
+    <button type="button" class="close" aria-label="Close" id="closeAddressFormBtn">
+        <span aria-hidden="true">&times;</span>
+    </button>
     <div class="form-group col-11">
     <label for="house_name">House Name:</label>
     <input type="text"class="form-control custom-input rounded" id="house_name" name="house_name" required>
@@ -41,7 +70,22 @@
     <label for="landmark">Landmark:</label>
     <textarea type="text"class="form-control custom-input"  id="landmark" name="landmark"></textarea>
 </div>
-    <input class="btn btn-primary align-self-center" type="submit" value="Submit">
+    <a href="{% url 'addressdisplay' %}" class="btn btn-primary align-self-center" type="submit" value="Submit"></a>
   </form>
+</div>
+<!-- Bootstrap JavaScript CDN -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+  <script>
+
+    document.getElementById("addAddressBtn").addEventListener("click", function() {
+        document.getElementById("addressFormWrapper").style.display = "block"; // Show the form
+    });
+    
+    document.getElementById("closeAddressFormBtn").addEventListener("click", function() {
+        document.getElementById("addressFormWrapper").style.display = "none"; // Hide the form when close button is clicked
+    });
+    
+
+  </script>
 {% endblock form %}

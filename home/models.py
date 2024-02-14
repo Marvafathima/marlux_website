@@ -27,14 +27,18 @@ class UserAddress(models.Model):
     user=models.ForeignKey(CustomUser,on_delete=models.CASCADE ,related_name='useraddress')
     user_name=models.CharField(max_length=100,default='nil')
     phone_number=models.CharField(max_length=15,default='nil')
+    
+class Address(models.Model):
+    user=models.ForeignKey(CustomUser,on_delete=models.CASCADE ,related_name='address')
+    house_name=models.CharField(max_length=255,default="none")
     street = models.CharField(max_length=255)
     city = models.CharField(max_length=100)
     district = models.CharField(max_length=100)
     landmark = models.CharField(max_length=200)
     state = models.CharField(max_length=100)
     postal_code = models.CharField(max_length=20)
+    country= models.CharField(max_length=100,default="none")
     is_default=models.BooleanField(default=False)
-
 class Cart(models.Model):
     user=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     created_at=models.DateField(auto_now_add=True)
@@ -63,24 +67,3 @@ class CartItem(models.Model):
     #     super().save(*args, **kwargs)
 
 
-# import uuid
-# from django.utils import timezone 
-
-
-# class User(models.Model):
-#     email = models.EmailField(max_length=254, unique=True)
-#     user_name = models.CharField(max_length=254, null=True, blank=True)
-#     phone_number=models.CharField(max_length=15)
-#     password=models.CharField(max_length=15)
-#     is_staff = models.BooleanField(default=False)
-#     is_superuser = models.BooleanField(default=False)
-#     is_active = models.BooleanField(default=True)
-#     last_login = models.DateTimeField(null=True, blank=True)
-#     date_joined = models.DateTimeField(auto_now_add=True)
-
-
-# class Profile(models.Model):
-#     user=models.OneToOneField(User,   on_delete=models.CASCADE,related_name="profile")
-#     phone_number=models.CharField(max_length=15)
-#     otp=models.CharField(max_length=100,null=True,blank=True)
-#     uid=models.CharField(default=f'{uuid.uuid4}',max_length=200)

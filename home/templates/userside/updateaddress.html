@@ -1,0 +1,73 @@
+{% extends 'profilebase.html' %}
+
+{% block profilehead %} <h4 class="mr-5">User Address</h4>{% endblock profilehead %} 
+{% block form %}
+<!-- <style>
+    #addressFormWrapper {
+        display: none; /* Hide the form by default */
+        position: fixed; /* Fixed position to overlay */
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 999; /* Ensure the form appears above other content */
+        background-color: white;
+        padding: 20px;
+    }
+    .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        cursor: pointer;
+        outline:none;
+        border: none;
+    }
+   
+</style> -->
+{% block addressdisplay %}
+{% endblock addressdisplay %}
+<div id="addressFormWrapper">
+<form  action="{% url 'update_address' address.id %}" method="post" class="col-lg-10 border-custom rounded p-3 d-flex flex-column align-items-start">
+   {% csrf_token %}
+   
+    <div class="form-group col-11">
+    <label for="house_name">House Name:</label>
+    <input type="text"class="form-control custom-input rounded" value="{{address.house_name}}" id="house_name" name="house_name" >
+   </div>
+   <div class="form-group col-11 d-flex">
+    <div>
+    <label class="pl-3" for="place">Place:</label>
+    <input type="text"class="form-control custom-input rounded" value="{{address.street}}"  id="place" name="place" ></div>
+    <div>
+    <label  class="pl-3" for="city">City:</label>
+    <input  type="text" class="form-control custom-input ml-2 rounded"  value="{{address.city}}"  id="city" name="city" >
+</div></div>
+<div class="form-group col-11 d-flex">
+<div>
+    <label class="pl-3" for="district">District:</label>
+    <input type="text"class="form-control custom-input rounded"  value="{{address.district}}" id="district" name="district">
+</div> <div>
+    <label  class="pl-3" for="state">State:</label>
+    <input type="text" class="form-control custom-input accordion-button ml-2 rounded"  value="{{address.state}}" id="state" name="state">
+</div></div>
+
+
+<div class="form-group col-11 d-flex">
+    <div>
+    <label  class="pl-3"for="pin_code">Pin Code:</label>
+    <input type="text" class="form-control custom-input rounded" value="{{address.postal_code}}" id="pin_code" name="pin_code" pattern="[0-9]{6}" title="Enter a 6 digit pin code" required>
+</div>
+<div>
+    <label class="pl-3"  for="country">Country:</label>
+    <input type="text" class="form-control custom-input ml-2" value="{{address.country}}" id="country" name="country" required>
+</div></div>
+
+<div class="form-group col-11">
+    
+    <label for="landmark">Landmark:</label>
+    <textarea type="text"class="form-control custom-input"  value="{{address.landmark}}" id="landmark" name="landmark"></textarea>
+</div>
+    <a href="{% url 'addressdisplay' %}" class="btn btn-primary  align-self-center" type="submit" value="Submit">Submit</a>
+  </form>
+</div>
+
+{% endblock form %}
