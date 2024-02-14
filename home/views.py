@@ -269,7 +269,7 @@ def shop(request):
     products=Products.objects.all()
     return render (request,'mainshop.html',{'products': products})
 
-def user_address(request):
+def user_profile(request):
     user=request.user
     profile=CustomUser.objects.get(id=user.id)
     useraddress = UserAddress.objects.get(user=user)
@@ -302,3 +302,7 @@ def user_address(request):
            'phone_number':useraddress.phone_number
         }
         return render (request,'userprofile.html',{'us':us_detail})
+    
+def user_address(request):
+    
+    return render (request,'useraddress.html')

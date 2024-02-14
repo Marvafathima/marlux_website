@@ -33,6 +33,7 @@ class UserAddress(models.Model):
     landmark = models.CharField(max_length=200)
     state = models.CharField(max_length=100)
     postal_code = models.CharField(max_length=20)
+    is_default=models.BooleanField(default=False)
 
 class Cart(models.Model):
     user=models.ForeignKey(CustomUser,on_delete=models.CASCADE)
