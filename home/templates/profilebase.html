@@ -27,7 +27,7 @@
                 <div class="left-buttons p-3">
                     <a id="profileBtn" href="{% url 'user_profile' %}"class="btn btn-primary btn-block mb-3">My Profile</a>
                     <a id="addressBtn" href="{% url 'addressdisplay' %}" class="btn btn-primary btn-block mb-3">My Address</a>
-                    <a id="passwordBtn"  class="btn btn-primary btn-block mb-3">My Password</a>
+                    <a id="passwordBtn" href="{% url 'user_password' %}" class="btn btn-primary btn-block mb-3">My Password</a>
                     <a id="ordersBtn" class="btn btn-primary btn-block mb-3">My Orders</a>
                    
                     <a id="walletBtn" class="btn btn-primary btn-block mb-3">My Wallet</a>
@@ -52,7 +52,7 @@
     // Check which button corresponds to the current page and add the 'active' class to it
     if (path.includes("myprofile/")) {
         document.getElementById("profileBtn").classList.add("active");
-    } else if (path.includes("user_address/")) {
+    } else if (path.includes("addressdisplay/")) {
         console.log("address clicked");
         document.getElementById("addressBtn").classList.add("active");
     } else if (path.includes("user_password/")) {

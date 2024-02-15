@@ -14,6 +14,14 @@ from category.models import Products,ProductImage,ProductVar,Category,Subcategor
 from django.db.models import Min
 from django.db.models import F, Sum
 from django.views.decorators.csrf import csrf_protect
+
+# from django.contrib.auth.tokens import default_token_generator
+# from django.contrib.auth import views as auth_views
+# from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+# from django.template.loader import render_to_string
+# from django.utils.encoding import force_bytes,force_str
+# from django.urls import reverse
+# from django.contrib.sites.shortcuts import get_current_site
 def index(request):
     # products = Products.objects.annotate(
     #     lowest_price=Min('product_varient__price'),
@@ -274,26 +282,30 @@ def user_profile(request):
     user=request.user
     profile=CustomUser.objects.get(id=user.id)
     useraddress = UserAddress.objects.get(user=user)
+    
     if request.method=='GET':
-       
-        profile=CustomUser.objects.get(id=user.id)
-        useraddress = UserAddress.objects.get(user=user)
-        us_detail={
-            'id':profile.id,
-            'name':useraddress.user_name,
-            'email':profile.email,
-            'password':profile.password,
-           'phone_number':useraddress.phone_number
-        }
-        return render (request,'userprofile.html',{'us':us_detail})
+        if useraddress is not None:
+            profile=CustomUser.objects.get(id=user.id)
+            useraddress = UserAddress.objects.get(user=user)
+            us_detail={
+                'id':profile.id,
+                'name':useraddress.user_name,
+                'email':profile.email,
+                'password':profile.password,
+            'phone_number':useraddress.phone_number
+            }
+            return render (request,'userprofile.html',{'us':us_detail})
+        else:
+            return render (request,'userprofile.html')
     else:
         name=request.POST.get('name')
         email=request.POST.get('email')
         phone_number=request.POST.get('number')
         profile.email=email
+        profile.save()
         useraddress.user_name=name
         useraddress.phone_number=phone_number
-        profile.save()
+       
         useraddress.save()
         us_detail={
             'id':profile.id,
@@ -333,7 +345,10 @@ def user_address(request):
 def addressdisplay(request):
     user=request.user
     useraddress = Address.objects.filter(user=user)
-    return render (request,'addressdisplay.html',{'addresses':useraddress})
+    if useraddress is not None:
+        return render (request,'addressdisplay.html',{'addresses':useraddress})
+    else:
+        return render (request,'addressdisplay.html')
 @csrf_protect
 def set_default_address(request):
     print("called set defualt")
@@ -394,5 +409,68 @@ def update_address(request,id):
         return redirect('addressdisplay')
     else:
         return render (request,'updateaddress.html',{'address':address})
+  
+def user_password(request):
+    user=request.user
+    if user.is_authenticated: 
+        user=CustomUser.objects.get(id=user.id)
+        print(user)
+        if request.method=='POST':
+            old_password=request.POST.get('old_password')
+            pass1=request.POST.get('pass1')
+            pass2=request.POST.get('pass2')
+            if not user.check_password(old_password):
+                messages.error(request,"Entered Old password is wrong!")
+                return render (request,'userpassword.html')
+            if pass1 != pass2:
+                messages.error(request,"new password and confirm password not matching!")
+                return render (request,'userpassword.html')
+            user.set_password(pass1)
+            user.save()
+            messages.success(request,"Password changed succesfully!")
+            return render (request,'userpassword.html')
+        else:
+            return render (request,'userpassword.html')
+    else:
+        return redirect('login')
+            
 
+
+
+
+# def forgot_password(request):
+#      if request.method == 'POST':
+#         email = request.POST['email']
+#         user = CustomUser.objects.filter(email=email).first()
+#         if user:
+#             token = default_token_generator.make_token(user)
+#             uid = urlsafe_base64_encode(force_bytes(user.pk))
+#             send_reset_email(email, uid, token)
+#             return render(request, 'password_reset_email_sent.html')
+#      return render(request, 'forget_password.html')
+
+# def reset_password(request, uidb64, token):
+#     user_id = force_str(urlsafe_base64_decode(uidb64))
+#     user = User.objects.filter(pk=user_id).first()
+#     if user and default_token_generator.check_token(user, token):
+#         if request.method == 'POST':
+#             password = request.POST['password']
+#             user.set_password(password)
+#             user.save()
+#             return render(request, 'password_reset_done.html')
+#         return render(request, 'reset_password.html')
+#     return render(request, 'password_reset_invalid.html')
+
+
+# def send_reset_email(email, uid, token):
+#     domain = get_current_site(request).domain
+#     reset_link = f"http://{domain}{reverse('reset_password', kwargs={'uidb64': uid, 'token': token})}"
+#     message = render_to_string('password_reset_email.html', {'reset_link': reset_link})
+#     send_mail(
+#         'Password Reset',
+#         message,
+#         'marvafathima62@gmail.com',
+#         [email],
+#         fail_silently=False,
+#     )
 

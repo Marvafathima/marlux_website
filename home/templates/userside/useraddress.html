@@ -13,7 +13,7 @@
         background-color: white;
         padding: 20px;
     }
-    .close {
+    .custom-close {
         position: absolute;
         top: 10px;
         right: 10px;
@@ -30,7 +30,7 @@
 <div id="addressFormWrapper">
 <form  action="{% url 'user_address' %}" method="post" class="col-lg-10 border-custom rounded p-3 d-flex flex-column align-items-start">
    {% csrf_token %}
-    <button type="button" class="close" aria-label="Close" id="closeAddressFormBtn">
+    <button type="button" class="custom-close" aria-label="Close" id="closeAddressFormBtn">
         <span aria-hidden="true">&times;</span>
     </button>
     <div class="form-group col-11">
@@ -70,7 +70,7 @@
     <label for="landmark">Landmark:</label>
     <textarea type="text"class="form-control custom-input"  id="landmark" name="landmark"></textarea>
 </div>
-    <a href="{% url 'addressdisplay' %}" class="btn btn-primary align-self-center" type="submit" value="Submit"></a>
+    <a href="{% url 'addressdisplay' %}" class="btn btn-primary align-self-center" type="submit" value="Submit">Submit</a>
   </form>
 </div>
 <!-- Bootstrap JavaScript CDN -->

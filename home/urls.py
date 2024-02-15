@@ -22,5 +22,10 @@ urlpatterns=[
     path('set_default_address/',views.set_default_address,name='set_default_address'),
     path('delete_address/<int:id>/',views.address_delete,name='delete_address'),
     path('update_address/<int:id>/',views.update_address,name='update_address'),
+    path('user_password/',views.user_password,name='user_password'),
+    # path('forgot_password/',views.forgot_password,name='forgot_password'),
+    # path('forgot_password/', views.forgot_password, name='forgot_password'),
+    # path('reset_password/<uidb64>/<token>/', views.reset_password, name='reset_password'),
+
 
 ]
