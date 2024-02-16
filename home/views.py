@@ -37,7 +37,7 @@ def index(request):
     #     print(cart_quantity)
     return render(request,'userside/index.html',{'products':products,'categories':category,'cart_count':6})
     
-    return render(request,'userside/index.html',{'products':products,'categories':category})
+   
 def categoryproduct(request,category_id):
     cat=get_object_or_404(Category, pk=category_id)
     subcat=Subcategory.objects.filter(cat_id=category_id)
@@ -50,8 +50,7 @@ def product_detail(request, id):
     varients = ProductVar.objects.filter(prod_id=products)
     colors = Color.objects.filter(product_color__prod_id=products).distinct()
     sizes = Size.objects.filter(product_size__prod_id=products).distinct()
-    print(colors)
-    print(sizes)
+   
     return render(request, 'userside/detail.html', {'products': products, 'images': images, 'varients': varients, 'colors': colors, 'sizes': sizes})
 
 def get_sizes(request):
@@ -102,6 +101,7 @@ def add_to_cart(request):
         cart_item.save()
     # cart.total_qnty = CartItem.objects.filter(cart=cart).aggregate(total_quantity=Sum('quantity'))['total_quantity']
     cart.total_qnty = CartItem.objects.filter(cart=cart).count()
+    print(cart.total_qnty)
     cart.total_price = CartItem.objects.filter(cart=cart).aggregate(total_price=Sum('item_total_price'))['total_price']
     cart.save()
     return JsonResponse({'message': 'Product added to cart successfully.'})
@@ -162,11 +162,13 @@ def remove_from_cart(request):
         try:
             cart_item = CartItem.objects.get(id=item_id)
             cart=Cart.objects.get(user=user)
-            qnty=cart_item.quantity
+            qnty=cart_item.quantity 
             cart_item.delete()
             cart.total_qnty=cart.total_qnty-qnty
             new_qnty= cart.total_qnty
+            cart.save()
             print(cart.total_qnty,"NEW UPDATED QUANTITY")
+
 
             return JsonResponse({'message': 'Product removed from the cart','total_qnty':new_qnty}, )
         except CartItem.DoesNotExist:
