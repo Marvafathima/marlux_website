@@ -45,7 +45,7 @@ class Cart(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     total_qnty=models.PositiveIntegerField(default=1,null=True)
     total_price=models.DecimalField(default=0,decimal_places=2,max_digits=10,null=True)        
-
+    is_ordered=models.BooleanField(default=False)
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
     product_variant = models.ForeignKey(ProductVar, on_delete=models.CASCADE)

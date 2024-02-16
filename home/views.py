@@ -100,7 +100,8 @@ def add_to_cart(request):
         # If the cart item is newly created, set its quantity
         cart_item.quantity = int(quantity)
         cart_item.save()
-    cart.total_qnty = CartItem.objects.filter(cart=cart).aggregate(total_quantity=Sum('quantity'))['total_quantity']
+    # cart.total_qnty = CartItem.objects.filter(cart=cart).aggregate(total_quantity=Sum('quantity'))['total_quantity']
+    cart.total_qnty = CartItem.objects.filter(cart=cart).count()
     cart.total_price = CartItem.objects.filter(cart=cart).aggregate(total_price=Sum('item_total_price'))['total_price']
     cart.save()
     return JsonResponse({'message': 'Product added to cart successfully.'})
@@ -109,12 +110,17 @@ def cart(request):
     print('cart selected')
     user=request.user
     carts=Cart.objects.get(user=user.id)
+    try:
+        address=Address.objects.get(user=user,is_default=True)
+    except:
+        address=None
+
     cart_items=CartItem.objects.filter(cart__user=user.id)
     for cart_item in cart_items:
         product_name=cart_item.product_variant.prod_id.pr_name
     
     
-    return render(request,'cart.html',{'cart_items':cart_items,'carts':carts})
+    return render(request,'cart.html',{'cart_items':cart_items,'carts':carts,'address':address})
 @require_POST
 def update_cart_item(request):
     item_id = request.POST.get('item_id')
@@ -133,7 +139,7 @@ def update_cart_item(request):
         cart = cart_item.cart
         cart.total_price = CartItem.objects.filter(cart=cart).aggregate(total_price=Sum('item_total_price'))['total_price']
         cart.total_qnty = CartItem.objects.filter(cart=cart).aggregate(total_quantity=Sum('quantity'))['total_quantity']
-        print(cart.total_qnty,'&&&&&&&&&&&&&&&&&&&')
+       
         cart.save()
         
         return JsonResponse({

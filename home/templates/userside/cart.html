@@ -84,9 +84,36 @@
                         <h5 class="font-weight-bold">Total</h5>
                         <h5 class="font-weight-bold">$160</h5>
                     </div>
-                    <button class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</button>
+                    <a href="{% url 'checkout' carts.id %}"class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</a>
                 </div>
             </div>
+            <div class="card border-secondary mb-5">
+                <div class="card-header bg-secondary border-0">
+                    <h4 class="font-weight-semi-bold m-0">Delivery Address</h4>
+                </div>
+                {% if address %}
+                <div class="card-body">
+                    <h5 class="card-title">{{address.house_name}}</h5>
+                    <p class="card-text">{{address.street}},{{address.city}},{{address.postal_code}}</p>
+                    <p class="card-text">{{address.district}},{{address.state}},{{address.country}}</p>
+                    <div class="input-group-append">
+                        <a href="{% url 'addressdisplay' %}"  class="btn btn-primary">Change Address</a>
+                    </div>   
+                    <!-- <div class="form-check">
+                        <input class="form-check-input  default-address" type="radio" name="defaultAddress" value="{{ address.id }}" id="defaultAddress{{ address.id }} {% if address.is_default %} checked {% endif %}" >
+                        <label class="form-check-label" for="defaultAddress{{ address.id }}">
+                            Set as Default
+                        </label>
+                </div> -->
+                {% else %}
+                <div class="input-group-append">
+                    <a href="{% url 'addressdisplay' %}"  class="btn btn-primary">Add Address</a>
+                </div> 
+                <div class="card-footer border-secondary bg-transparent">
+                    <button class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3">Place Order</button>
+                </div>
+            </div>
+            {% endif %}
         </div>
     </div>
 </div>
