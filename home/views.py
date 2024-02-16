@@ -323,7 +323,8 @@ def user_profile(request):
         return render (request,'userprofile.html',{'us':us_detail})
     
 def user_address(request):
-    if request.method=='POST':
+    if request.method =='POST':
+        print("adress add calleddd")
         house_name=request.POST.get('house_name')
         place=request.POST.get('place')
         city=request.POST.get('city')
@@ -344,9 +345,12 @@ def user_address(request):
         country=country,
         landmark=landmark
     )
-        return render (request,'useraddress.html')
-    else:
         return redirect('addressdisplay')
+        # return render (request,'useraddress.html')
+    else:
+        print("address get method called ")
+        return render (request,'useraddress.html')
+        # return redirect('addressdisplay')
 
 def addressdisplay(request):
     user=request.user

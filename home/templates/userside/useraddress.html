@@ -4,7 +4,7 @@
 {% block form %}
 <style>
     #addressFormWrapper {
-        display: none; /* Hide the form by default */
+         display: none; /* Hide the form by default */
         position: fixed; /* Fixed position to overlay */
         top: 50%;
         left: 50%;
@@ -70,13 +70,13 @@
     <label for="landmark">Landmark:</label>
     <textarea type="text"class="form-control custom-input"  id="landmark" name="landmark"></textarea>
 </div>
-    <a href="{% url 'addressdisplay' %}" class="btn btn-primary align-self-center" type="submit" value="Submit">Submit</a>
+    <input href="{% url 'user_address' %}" class="btn btn-primary align-self-center" type="submit" value="Submit">
   </form>
 </div>
 <!-- Bootstrap JavaScript CDN -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-  <script>
+<script>
 
     document.getElementById("addAddressBtn").addEventListener("click", function() {
         document.getElementById("addressFormWrapper").style.display = "block"; // Show the form
