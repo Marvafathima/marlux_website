@@ -62,7 +62,10 @@ def order_display(request):
    
    
     od_items=OrderProduct.objects.filter(order=order)
-   
+    cart.delete()
+    items.delete()
+    if cart is None:
+        print("order placed successfully")
     return render (request,'orderdisplay.html',{
         'order':order,
         'order_items':od_items,
@@ -88,4 +91,6 @@ def order_item_display(request,order_id):
         })
        
     return JsonResponse(order_details, safe=False)
+    
+def order_history(request):
     pass

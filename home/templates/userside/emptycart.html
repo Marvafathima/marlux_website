@@ -1,0 +1,28 @@
+{% extends 'main.html' %}
+{% block content %}
+{% load static %}
+<style>
+    .button {
+        position: absolute;
+        top: 27%; /* Position the button 50% from the top of the container */
+        left: 58%; /* Position the button 50% from the left of the container */
+        transform: translate(-50%, -50%); /* Center the button within the container */
+        border-radius: 20px;
+    }
+</style>
+<!-- Cart Start -->
+<div class="col text-start">
+    <h1>OOPS!Your Cart is Empty</h1>
+</div>
+<div class="row align-content-center justify-content-center">
+ 
+    <div class="col text-center">
+        <img src="{% static 'tem_two/img/shopping.png'%}" style="height:max-content;" >
+        <a class="button btn btn-lg btn-primary" href="{% url 'shop' %}">Continue Shopping</a>
+    </div>
+</div>
+
+<!-- Cart End -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+   
+{% endblock content %}

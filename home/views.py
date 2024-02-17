@@ -115,21 +115,25 @@ def add_to_cart(request):
 def cart(request):
     print('cart selected')
     user=request.user
-    carts=Cart.objects.get(user=user.id)
+    
     try:
+        
         address=Address.objects.get(user=user,is_default=True)
     except:
         address=None
-
-    cart_items=CartItem.objects.filter(cart__user=user.id)
-    for cart_item in cart_items:
-        product_name=cart_item.product_variant.prod_id.pr_name
-    if carts.total_qnty==0:
-        carts.total_price=0
-        carts.cart_total=carts.total_price + carts.shipping
-    
-    
-    return render(request,'cart.html',{'cart_items':cart_items,'carts':carts,'address':address})
+    try:
+        carts=Cart.objects.get(user=user.id)
+        cart_items=CartItem.objects.filter(cart__user=user.id)
+        for cart_item in cart_items:
+            product_name=cart_item.product_variant.prod_id.pr_name
+        if carts.total_qnty==0:
+            carts.total_price=0
+            carts.cart_total=carts.total_price + carts.shipping
+        
+        
+        return render(request,'cart.html',{'cart_items':cart_items,'carts':carts,'address':address})
+    except:
+        return render(request,'emptycart.html')
 @require_POST
 def update_cart_item(request):
     item_id = request.POST.get('item_id')
