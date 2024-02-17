@@ -44,8 +44,24 @@ class Cart(models.Model):
     created_at=models.DateField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     total_qnty=models.PositiveIntegerField(default=1,null=True)
+    shipping=models.DecimalField(default=0,decimal_places=2,max_digits=10,null=True)
+    cart_total=models.DecimalField(default=0,decimal_places=2,max_digits=10,null=True)
     total_price=models.DecimalField(default=0,decimal_places=2,max_digits=10,null=True)        
     is_ordered=models.BooleanField(default=False)
+    def calculate_cart_total(self):
+        self.cart_total = self.shipping + self.total_price
+
+    def save(self, *args, **kwargs):
+        # If total_qnty is zero, set shipping to zero, else set it to 50
+        if self.total_qnty == 0:
+            self.shipping = 0
+        else:
+            self.shipping = 50
+        
+        # Calculate cart total
+        self.calculate_cart_total()
+
+        super().save(*args, **kwargs)
 class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
     product_variant = models.ForeignKey(ProductVar, on_delete=models.CASCADE)
