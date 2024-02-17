@@ -102,8 +102,14 @@ def add_to_cart(request):
     # cart.total_qnty = CartItem.objects.filter(cart=cart).aggregate(total_quantity=Sum('quantity'))['total_quantity']
     cart.total_qnty = CartItem.objects.filter(cart=cart).count()
     print(cart.total_qnty)
-    cart.total_price = CartItem.objects.filter(cart=cart).aggregate(total_price=Sum('item_total_price'))['total_price']
-    cart.save()
+    if cart.total_qnty >0:
+        cart.total_price = CartItem.objects.filter(cart=cart).aggregate(total_price=Sum('item_total_price'))['total_price']
+        cart.cart_total=cart.shipping+cart.total_price
+        cart.save()
+    else:
+        cart.total_price = 0.00
+        cart.cart_total=cart.shipping+cart.total_price
+        cart.save()
     return JsonResponse({'message': 'Product added to cart successfully.'})
 
 def cart(request):
@@ -118,6 +124,9 @@ def cart(request):
     cart_items=CartItem.objects.filter(cart__user=user.id)
     for cart_item in cart_items:
         product_name=cart_item.product_variant.prod_id.pr_name
+    if carts.total_qnty==0:
+        carts.total_price=0
+        carts.cart_total=carts.total_price + carts.shipping
     
     
     return render(request,'cart.html',{'cart_items':cart_items,'carts':carts,'address':address})
@@ -125,6 +134,7 @@ def cart(request):
 def update_cart_item(request):
     item_id = request.POST.get('item_id')
     quantity = request.POST.get('quantity')
+    cart_id=request.POST.get('cart_id')
     print(request, "called update cart")
     try:
         cart_item = get_object_or_404(CartItem, id=item_id)
@@ -136,16 +146,22 @@ def update_cart_item(request):
         cart_item.item_total_price = cart_item_total_price
         cart_item.save()
         # Update total price and total quantity for the cart
-        cart = cart_item.cart
-        cart.total_price = CartItem.objects.filter(cart=cart).aggregate(total_price=Sum('item_total_price'))['total_price']
-        cart.total_qnty = CartItem.objects.filter(cart=cart).count()
        
+        cart = Cart.objects.get(id=cart_id)
+        cart.total_qnty = CartItem.objects.filter(cart=cart).count()
+        if cart.total_qnty==0:
+            cart.total_price =0
+        else:
+            cart.total_price = CartItem.objects.filter(cart=cart).aggregate(total_price=Sum('item_total_price'))['total_price']
+        
         cart.save()
         
         return JsonResponse({
             'success': True,
             'quantity': cart_item.quantity,
-            'total_price': cart_item.item_total_price 
+            'total_price': cart_item.item_total_price,
+            'subtotal':cart.total_price,
+            'cart_total':cart.cart_total                                                                                                                                              
         })
     except CartItem.DoesNotExist:
         return JsonResponse({'error': 'Cart item not found'}, status=404)
@@ -157,20 +173,28 @@ def update_cart_item(request):
 def remove_from_cart(request):
     if request.method == 'POST':
         item_id = request.POST.get('item_id')
+        cart_id= request.POST.get('cart_id')
         user=request.user
         print('remove function called')
         try:
             cart_item = CartItem.objects.get(id=item_id)
-            cart=Cart.objects.get(user=user)
+            cart=Cart.objects.get(id=cart_id)
             qnty=cart_item.quantity 
-            cart_item.delete()
             cart.total_qnty=cart.total_qnty-1
             new_qnty= cart.total_qnty
+            if(cart.total_qnty)==0:
+                cart.total_price=0.00
+            cart_item.delete()
             cart.save()
-            print(cart.total_qnty,"NEW UPDATED QUANTITY")
+            print(cart.total_price,"NEW UPDATED PRICE AFTER REMOVAL")
 
 
-            return JsonResponse({'message': 'Product removed from the cart','total_qnty':new_qnty}, )
+            return JsonResponse({'message': 'Product removed from the cart',
+                                 'total_qnty':new_qnty,
+                                 'subtotal':cart.total_price,
+                                 'cart_total':cart.cart_total
+                                 
+                                 }, )
         except CartItem.DoesNotExist:
             return JsonResponse({'error': 'Cart item not found'},)
     else:

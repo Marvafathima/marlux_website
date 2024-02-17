@@ -55,6 +55,7 @@ class Cart(models.Model):
         # If total_qnty is zero, set shipping to zero, else set it to 50
         if self.total_qnty == 0:
             self.shipping = 0
+           
         else:
             self.shipping = 50
         
