@@ -72,5 +72,20 @@ def order_display(request):
 
     })
 
-def order_item_display(request):
+def order_item_display(request,order_id):
+    order_items=OrderProduct.objects.filter(order=order_id)
+    order_details = []
+    for product in order_items:
+        img=ProductImage.objects.get(img_id=product.product_variant.prod_id).first()
+        order_details.append({
+            'productImage': img,
+            'productName': product.product_variant.prod_id.pr_name,
+            'quantity': product.quantity,
+            'individualPrice': product.product_variant.price,
+            'totalPrice': product.item_total_price,
+            'size': product.product_variant.size,
+            'color': product.product_variant.color,
+        })
+       
+    return JsonResponse(order_details, safe=False)
     pass
