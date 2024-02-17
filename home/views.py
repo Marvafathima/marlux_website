@@ -138,7 +138,7 @@ def update_cart_item(request):
         # Update total price and total quantity for the cart
         cart = cart_item.cart
         cart.total_price = CartItem.objects.filter(cart=cart).aggregate(total_price=Sum('item_total_price'))['total_price']
-        cart.total_qnty = CartItem.objects.filter(cart=cart).aggregate(total_quantity=Sum('quantity'))['total_quantity']
+        cart.total_qnty = CartItem.objects.filter(cart=cart).count()
        
         cart.save()
         
@@ -164,7 +164,7 @@ def remove_from_cart(request):
             cart=Cart.objects.get(user=user)
             qnty=cart_item.quantity 
             cart_item.delete()
-            cart.total_qnty=cart.total_qnty-qnty
+            cart.total_qnty=cart.total_qnty-1
             new_qnty= cart.total_qnty
             cart.save()
             print(cart.total_qnty,"NEW UPDATED QUANTITY")

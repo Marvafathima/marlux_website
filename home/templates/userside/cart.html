@@ -145,18 +145,51 @@ $(document).ready(function() {
         var itemId = $(this).closest('tr').data('cart-item-id');
         var $quantityInput = $('#quantityInput_' + itemId); 
         var currentQuantity = parseInt($quantityInput.val());
-        if (currentQuantity >= 0) {
+        if (currentQuantity > 0) {
             updateQuantity(itemId, currentQuantity);
             $quantityInput.val(currentQuantity );
             updatecartcount()
         }
+        else{
+            if (confirm("Do you want to remove this item from the cart?")) {
+                // If user confirms, remove the item from the cart
+                removeCartItem(itemId);
+            }
+            else{
+            updateQuantity(itemId, currentQuantity+1);
+            $quantityInput.val(currentQuantity +1 );
+            updatecartcount()
+            }
+
+        }
     });
+    function removeCartItem(itemId) {
+        var csrftoken = getCookie('csrftoken');
+        
+        $.ajax({
+            url: "{% url 'remove_from_cart' %}",
+            method: "POST",
+            headers: { "X-CSRFToken": csrftoken },
+            data: {
+                'item_id': itemId,
+            },
+            success: function(response) {
+                alert('Item removed from cart');
+                location.reload();
+            },
+            error: function(xhr, errmsg, err) {
+                console.log(xhr.status + ": " + xhr.responseText);
+                // Handle error if needed
+            }
+        });
+    }
 
     $('.btn-remove').click(function(){
         console.log("Remove button clicked");
         var itemId = $(this).closest('tr').data('cart-item-id');
         //var $quantityInput = $('#quantityInput_' + itemId); 
         //var currentQuantity = parseInt($quantityInput.val());
+        if (confirm("Are you sure you want to remove this item from the cart?")) {
         $.ajax({
             url: "{% url 'remove_from_cart' %}",
             method: "POST",  // Change method to POST
@@ -175,6 +208,11 @@ $(document).ready(function() {
                 // Handle error if needed
             }
         });
+    }
+    else {
+        alert('Cancelled removal') 
+        console.log("Removal canceled by user");
+    }
    
     });
 

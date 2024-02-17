@@ -390,7 +390,7 @@
             success: function(response) {
                 console.log(response);
                 var currentBadgeValue = parseInt($('.fa-shopping-cart').next('.badge').text())|| 0;
-               var newBadgeValue = currentBadgeValue + parseInt(quantity);
+               var newBadgeValue = currentBadgeValue + 1;
                $('.fa-shopping-cart').next('.badge').text(newBadgeValue);
             },
            error: function(xhr, errmsg, err) {
