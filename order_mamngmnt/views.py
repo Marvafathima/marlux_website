@@ -17,35 +17,54 @@ from django.db import transaction
 # Create your views here.
 @login_required
 def cart_to_order(request,cart_id):
-    user=request.user
-    try:
-        cart=Cart.objects.get(id=cart_id)
-        cartitems=CartItem.objects.filter(cart=cart)
-        total_qnty=cart.total_qnty
-        total_price=float(cart.total_price)
-    # with transaction.atomic():
-        order=Order.objects.create(user=user,order_total=total_price,order_name="order")
-        for items in cartitems:
-            product_variant=items.product_variant
-            quantity=items.quantity
-            price=items.item_total_price
-            OrderProduct.objects.create(
-                order=order,
-                product_variant=product_variant,
-                quantity=quantity,
-                price=price,
-                item_total_price=items.item_total_price
-                )
-        cart.is_ordered=True
-        cart.save()
-        order_items=OrderProduct.objects.filter(order=order)
-        print("yesss!!!!!!!!!!!worked")
-        return render(request,'checkout.html',{'order_items':order_items,'order':order})
-    except Cart.DoesNotExist:
-        print("exception has occured babyy")
-        messages.error(request, "You don't have any items in your cart.")
-        # return render(request,'checkout.html')
-        return redirect('cart')
+    
+    cart=Cart.objects.get(id=cart_id)
+    cart_items=CartItem.objects.filter(cart=cart)
+    us=request.user
+    user=CustomUser.objects.get(id=us.id)
+    address=Address.objects.get(user=us,is_default=True)
+    cust_detail=UserAddress.objects.get(user=us)
+    context={
+        'cart':cart,
+        'cart_items':cart_items,
+        'address':address,
+        'user':user,
+        'cust_detail':cust_detail
+    }
+    return render (request,'checkout.html',{'context':context})
+    # except:
+    #     messages.error(request,"You don't have any items in your cart.Add something to cart to place order")
+        # return redirect('cart')
+    # user=request.user
+    # try:
+    #     cart=Cart.objects.get(id=cart_id)
+    #     cartitems=CartItem.objects.filter(cart=cart)
+    #     address=Address.objects.get(id=address_id,is_default=True)
+    #     total_qnty=cart.total_qnty
+    #     total_price=float(cart.total_price)
+    # # with transaction.atomic():
+    #     order=Order.objects.create(user=user,order_total=total_price,order_name="order")
+    #     for items in cartitems:
+    #         product_variant=items.product_variant
+    #         quantity=items.quantity
+    #         price=items.item_total_price
+    #         OrderProduct.objects.create(
+    #             order=order,
+    #             product_variant=product_variant,
+    #             quantity=quantity,
+    #             price=price,
+    #             item_total_price=items.item_total_price
+    #             )
+    #     cart.is_ordered=True
+    #     cart.save()
+    #     order_items=OrderProduct.objects.filter(order=order)
+    #     print("yesss!!!!!!!!!!!worked")
+    #     return render(request,'checkout.html',{'order_items':order_items,'order':order})
+    # except Cart.DoesNotExist:
+    #     print("exception has occured babyy")
+    #     messages.error(request, "You don't have any items in your cart.")
+    #     # return render(request,'checkout.html')
+    #     return redirect('cart')
 # @login_required
 # def confirm_order(request,order_id):
 #     user=request.user

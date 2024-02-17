@@ -36,7 +36,6 @@ class Order(models.Model):
         ('Return','Return')
 
     )
-    order_name=models.CharField(max_length=200,null=True)
     user=models.ForeignKey(CustomUser, on_delete=models. CASCADE)
     address=models.ForeignKey(OrderAddress, on_delete=models.CASCADE,null=True)
     order_total=models.FloatField(null=True) 
