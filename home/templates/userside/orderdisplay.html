@@ -1,0 +1,155 @@
+{% extends 'profilebase.html'%}
+
+ {% block profilehead %} <h3>My Orders </h3> {% endblock profilehead %}
+             
+                {% block form %}
+                <h1>Order History</h1>
+
+                <table id="orderTable">
+                  <thead>
+                    <tr>
+                      <th>Order ID</th>
+                      <!-- <th>Order Item</th> -->
+                      <th>Quantity</th>
+                      <th>Order Price</th>
+                      <th>Tax/GST</th>
+                      <th>Grand Total</th>
+                      <th>Status</th>
+                      <th>Date of Ordering</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Rows of order data will be dynamically added here -->
+                    
+                    <tr data-order-id="1" class="orderRow">
+                      <td>{{order.id}}</td>
+                      <td>{{order.total_qnty}}</td>   
+                      <td>{{order.order_total}}</td>
+                      <td>{{order.tax}}</td>
+                      <td>{{order.grand_total}}</td>
+                      <td>{{order.status}}</td>
+                      <td>{{order.created_at}}</td>
+                    </tr>
+                    <!-- Add more rows as needed -->
+                  </tbody>
+                </table>
+                
+                <div id="orderDetails" style="display: none;">
+                  <h2>Order Details</h2>
+                  <table id="orderDetailsTable">
+                    <thead>
+                      <tr>
+                        <th>Product Image</th>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Individual Price</th>
+                        <th>Total Price</th>
+                        <th>Size</th>
+                        <th>Color</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <!-- {% for item in order_items %}
+                      <tr>
+                        {% with product_variant=item.product_variant %}
+                            {% with product=product_variant.prod_id %}
+                                {% with product_img=product.product_image.first %}
+                        <td class="align-middle"><img src="{{product_img.image.url}}" alt="" style="width: 50px;"> {{cart_item.product_variant.prod_id.pr_name}}</td>
+                                {% endwith %}
+                            {% endwith %}
+                        {% endwith %}
+                        <td>{{item.product_variant.prod_id.pr_name}}</td>   
+                        <td>{{item.quantity}}</td>
+                        <td>{{item.product_variant.price}}</td>
+                        <td>{{item.item_total_price}}</td>
+                        <td>{{item.product_variant.size}}</td>
+                        <td>{{item.product_variant.color}}</td>
+                      </tr>
+                      {% endfor %} -->
+                      <!-- Product details will be dynamically added here -->
+                    </tbody>
+                  </table>
+                  <button id="returnButton">Return</button>
+                  <button id="cancelButton">Cancel</button>
+                </div>
+                <script>
+                  // JavaScript code for displaying order details on row click
+                  document.querySelectorAll('.orderRow').forEach(row => {
+                    row.addEventListener('click', () => {
+                      const orderId = row.getAttribute('data-order-id');
+                      displayOrderDetails(orderId);
+                    });
+                  });
+                
+                  function displayOrderDetails(orderId) {
+                    // Here you would fetch order details from the server using orderId
+                    // For now, let's assume we have hardcoded sample data
+                    const orderDetails = [
+                      { 
+                        productImage: 'product1.jpg',
+                        productName: 'Product A',
+                        quantity: 2,
+                        individualPrice: '$10.00',
+                        totalPrice: '$20.00',
+                        size: 'Medium',
+                        color: 'Blue'
+                      },
+                      // Add more product details as needed
+                    ];
+                
+                    const orderDetailsTable = document.getElementById('orderDetailsTable');
+                    const tbody = orderDetailsTable.querySelector('tbody');
+                    tbody.innerHTML = '';
+                
+                    orderDetails.forEach(product => {
+                      const tr = document.createElement('tr');
+                      tr.innerHTML = `
+                        <td><img src="${product.productImage}" alt="Product Image"></td>
+                        <td>${product.productName}</td>
+                        <td>${product.quantity}</td>
+                        <td>${product.individualPrice}</td>
+                        <td>${product.totalPrice}</td>
+                        <td>${product.size}</td>
+                        <td>${product.color}</td>
+                      `;
+                      tbody.appendChild(tr);
+                    });
+                
+                    document.getElementById('orderDetails').style.display = 'block';
+                  }
+                
+                  // JavaScript code for return and cancel buttons
+                  document.getElementById('returnButton').addEventListener('click', () => {
+                    // Code to handle return action
+                    alert('Return action clicked');
+                  });
+                
+                  document.getElementById('cancelButton').addEventListener('click', () => {
+                    // Code to handle cancel action
+                    alert('Cancel action clicked');
+                  });
+                  document.addEventListener('click', (event) => {
+                      const orderDetails = document.getElementById('orderDetails');
+                      const orderTable = document.getElementById('orderTable');
+                      const clickedElement = event.target;
+                  
+                      if (!orderDetails.contains(clickedElement) && !orderTable.contains(clickedElement)) {
+                        orderDetails.style.display = 'none';
+                      }
+                    });
+                </script>
+              
+                {% endblock form %}
+          
+    {% block right %}
+    <!-- <div class="row mt-5">
+   </div>
+   <div class="row mt-5 ml-3" style="background-color:#D19C97;width:100%;height:80%;">
+</div> -->
+
+    {% endblock right %}
+            
+
+
+
+        

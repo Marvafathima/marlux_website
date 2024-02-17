@@ -1,7 +1,7 @@
 from django.db import models
 from home .models import CustomUser,CartItem,Cart,Address,UserAddress
 from category .models import Products,ProductVar,ProductImage
-
+from decimal import Decimal
 
 
 # Create your models here.
@@ -45,14 +45,15 @@ class Order(models.Model):
     created_at=models.DateField(auto_now_add=True)
     updated_at=models.DateField(auto_now=True)
     total_qnty=models.IntegerField(default=1)
+    grand_total=models.FloatField(null=True)
     # coupen=models.ForeignKey(Coupon, on_delete=models.CASCADE, null=True, blank=True)
 
-    def __str__(self):
-        return self.user_det.user_name
     def save(self, *args, **kwargs):
         # Calculate tax as 5% of the order total
         if self.order_total is not None:
-            self.tax = 0.05 * self.order_total
+            x=0.02
+            self.tax = float(x)* float(self.order_total)
+            self.grand_total= float(self.order_total) + self.tax
         else:
             self.tax = None
         super().save(*args, **kwargs)
@@ -64,7 +65,6 @@ class OrderProduct(models.Model):
     order=models.ForeignKey(Order, on_delete=models.CASCADE)
     product_variant=models.ForeignKey(ProductVar, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
-    price=models.FloatField()
     ordered=models.BooleanField(default=False)
     created_at=models.DateField(auto_now_add=True)
     updated_at=models.DateField(auto_now=True)

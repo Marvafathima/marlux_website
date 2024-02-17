@@ -32,55 +32,45 @@ def cart_to_order(request,cart_id):
         'cust_detail':cust_detail
     }
     return render (request,'checkout.html',{'context':context})
-    # except:
-    #     messages.error(request,"You don't have any items in your cart.Add something to cart to place order")
-        # return redirect('cart')
-    # user=request.user
-    # try:
-    #     cart=Cart.objects.get(id=cart_id)
-    #     cartitems=CartItem.objects.filter(cart=cart)
-    #     address=Address.objects.get(id=address_id,is_default=True)
-    #     total_qnty=cart.total_qnty
-    #     total_price=float(cart.total_price)
-    # # with transaction.atomic():
-    #     order=Order.objects.create(user=user,order_total=total_price,order_name="order")
-    #     for items in cartitems:
-    #         product_variant=items.product_variant
-    #         quantity=items.quantity
-    #         price=items.item_total_price
-    #         OrderProduct.objects.create(
-    #             order=order,
-    #             product_variant=product_variant,
-    #             quantity=quantity,
-    #             price=price,
-    #             item_total_price=items.item_total_price
-    #             )
-    #     cart.is_ordered=True
-    #     cart.save()
-    #     order_items=OrderProduct.objects.filter(order=order)
-    #     print("yesss!!!!!!!!!!!worked")
-    #     return render(request,'checkout.html',{'order_items':order_items,'order':order})
-    # except Cart.DoesNotExist:
-    #     print("exception has occured babyy")
-    #     messages.error(request, "You don't have any items in your cart.")
-    #     # return render(request,'checkout.html')
-    #     return redirect('cart')
-# @login_required
-# def confirm_order(request,order_id):
-#     user=request.user
-#     try:
-#         cart=Cart.objects.get(user=user)
-#         order=Order.objects.get(id=order_id)
-#         order.is_ordered=True
-#         order.status='Confirmed'
-#         order.save()
-#         cart.delete()
-#         messages.success(request,"order placed successfully!")
-#         return redirect('order_list',order_id=order.id)
+def order_display(request):
+    user=request.user
+    cart=Cart.objects.get(user=user.id)
+    items=CartItem.objects.filter(cart=cart)
+    cart_user=CustomUser.objects.get(id=user.id)
+    address=Address.objects.get(user=user,is_default=True)
+    cust_detail=UserAddress.objects.get(user=user)
+    order_address=OrderAddress.objects.create(
+        user=user,
+        house_name=address.house_name,
+        street=address.street,
+        city=address.city,
+        district=address.district,
+        landmark=address.landmark,
+        state=address.state,
+        postal_code=address.postal_code,
+        country = address.country
+      
+    )
+    order=Order.objects.create(user=user,address=order_address,order_total=cart.cart_total,total_qnty=cart.total_qnty)
+    for item in items:
+         OrderProduct.objects.create(
+                    order=order,
+                    product_variant=item.product_variant,
+                    quantity=item.quantity,
+                    item_total_price=item.item_total_price
+                )
+   
+   
+    od_items=OrderProduct.objects.filter(order=order)
+   
+    return render (request,'orderdisplay.html',{
+        'order':order,
+        'order_items':od_items,
+        'address':order_address,
+        'user':cart_user,
+        'user_detail':cust_detail
 
-#     except Cart.DoesNotExist:
-#         messages.error(request, "You don't have any items in your cart.")
-#         return redirect('cart')
+    })
 
-# def order_list(request,)
-    
+def order_item_display(request):
+    pass
