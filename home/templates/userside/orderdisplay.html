@@ -20,15 +20,15 @@
                   </thead>
                   <tbody>
                     <!-- Rows of order data will be dynamically added here -->
-                    
-                    <tr data-order-id="{{ order.id }}" class="orderRow">
-                      <td>{{order.id}}</td>
-                      <td>{{order.total_qnty}}</td>   
-                      <td>{{order.order_total}}</td>
-                      <td>{{order.tax}}</td>
-                      <td>{{order.grand_total}}</td>
-                      <td>{{order.status}}</td>
-                      <td>{{order.created_at}}</td>
+                   
+                    <tr data-order-id="{{ oder.id }}" class="orderRow">
+                      <td>{{oder.id}}</td>
+                      <td>{{oder.total_qnty}}</td>   
+                      <td>{{oder.order_total}}</td>
+                      <td>{{oder.tax}}</td>
+                      <td>{{oder.grand_total}}</td>
+                      <td>{{oder.status}}</td>
+                      <td>{{oder.created_at}}</td>
                     </tr>
                     <!-- Add more rows as needed -->
                   </tbody>
@@ -66,6 +66,7 @@
                         <td>{{item.product_variant.color}}</td>
                       </tr>
                       {% endfor %} 
+                     
                       <!-- Product details will be dynamically added here -->
                     </tbody>
                   </table>

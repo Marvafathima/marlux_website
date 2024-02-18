@@ -1,0 +1,27 @@
+{% extends 'profilebase.html' %}
+
+{% block profilehead %} 
+<h2>Your Orders</h2>{% endblock profilehead %} 
+{% block form %}
+{% load static %}
+<<style>
+    .button {
+        position: absolute;
+        top: 50%; /* Position the button 50% from the top of the container */
+        left: 50%; /* Position the button 50% from the left of the container */
+        transform: translate(-50%, -50%); /* Center the button within the container */
+        border-radius: 10px;
+    }
+</style>
+<!-- Cart Start -->
+<!-- <div class="col text-start">
+    <h1>No Order History</h1>
+</div> -->
+<div class="row align-content-center justify-content-center">
+ 
+    <div class="col text-center">
+        <img src="{% static 'tem_two/img/empty-folder.png'%}" style="height:50%;" >
+        <a class="button btn btn-lg btn-primary">No History</a>
+    </div>
+</div>
+{% endblock form %}

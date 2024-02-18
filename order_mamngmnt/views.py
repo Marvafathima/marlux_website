@@ -33,47 +33,53 @@ def cart_to_order(request,cart_id):
     }
     return render (request,'checkout.html',{'context':context})
 def order_display(request):
-    user=request.user
-    cart=Cart.objects.get(user=user.id)
-    items=CartItem.objects.filter(cart=cart)
-    cart_user=CustomUser.objects.get(id=user.id)
-    address=Address.objects.get(user=user,is_default=True)
-    cust_detail=UserAddress.objects.get(user=user)
-    order_address=OrderAddress.objects.create(
-        user=user,
-        house_name=address.house_name,
-        street=address.street,
-        city=address.city,
-        district=address.district,
-        landmark=address.landmark,
-        state=address.state,
-        postal_code=address.postal_code,
-        country = address.country
-      
-    )
-    order=Order.objects.create(user=user,address=order_address,order_total=cart.cart_total,total_qnty=cart.total_qnty)
-    for item in items:
-         OrderProduct.objects.create(
-                    order=order,
-                    product_variant=item.product_variant,
-                    quantity=item.quantity,
-                    item_total_price=item.item_total_price
-                )
-   
-   
-    od_items=OrderProduct.objects.filter(order=order)
-    cart.delete()
-    items.delete()
-    if cart is None:
-        print("order placed successfully")
-    return render (request,'orderdisplay.html',{
-        'order':order,
-        'order_items':od_items,
-        'address':order_address,
-        'user':cart_user,
-        'user_detail':cust_detail
+    try:
+        user=request.user
+        cart=Cart.objects.get(user=user.id)
+        items=CartItem.objects.filter(cart=cart)
+        cart_user=CustomUser.objects.get(id=user.id)
+        address=Address.objects.get(user=user,is_default=True)
+        cust_detail=UserAddress.objects.get(user=user)
+        order_address=OrderAddress.objects.create(
+            user=user,
+            house_name=address.house_name,
+            street=address.street,
+            city=address.city,
+            district=address.district,
+            landmark=address.landmark,
+            state=address.state,
+            postal_code=address.postal_code,
+            country = address.country
+        
+        )
+        order=Order.objects.create(user=user,address=order_address,order_total=cart.cart_total,total_qnty=cart.total_qnty)
+        for item in items:
+            OrderProduct.objects.create(
+                        order=order,
+                        product_variant=item.product_variant,
+                        quantity=item.quantity,
+                        item_total_price=item.item_total_price
+                    )
+    
+    
+        od_items=OrderProduct.objects.filter(order=order)
+        cart.delete()
+        items.delete()
+        if cart is None:
+            print("order placed successfully")
+        return render (request,'orderdisplay.html',{
+            'order':order,
+            'order_items':od_items,
+            'address':order_address,
+            'user':cart_user,
+            'user_detail':cust_detail
 
-    })
+        })
+    except:
+        return HttpResponse("Error placing Order")
+      
+        # except:
+        #     return render(request,'nohistory.html')
 
 def order_item_display(request,order_id):
     order_items=OrderProduct.objects.filter(order=order_id)
@@ -91,6 +97,15 @@ def order_item_display(request,order_id):
         })
        
     return JsonResponse(order_details, safe=False)
-    
 def order_history(request):
+    user=request.user
+    orders=Order.objects.filter(user=user)
+    product_item=[]
+    for order in orders:
+        items=OrderProduct.objects.get(order=order)
+        product_item.append(items)
+        address=OrderAddress.objects.get(id=order.address.id)
+
+def admin_orderlist(request):
+
     pass
