@@ -1,0 +1,80 @@
+{% extends 'profilebase.html'%}
+
+ {% block profilehead %} <h3>My Orders </h3> {% endblock profilehead %}
+             
+                {% block form %}
+                <h1>Order History</h1>
+
+                <table id="orderTable">
+                  <thead>
+                    {% for data in order_data%}
+                    <tr>
+                      <th>Order ID</th>
+                      <!-- <th>Order Item</th> -->
+                      <th>Quantity</th>
+                      <th>Order Price</th>
+                      <th>Tax/GST</th>
+                      <th>Grand Total</th>
+                      <th>Status</th>
+                      <th>Date of Ordering</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Rows of order data will be dynamically added here -->
+                   
+                    <tr class="orderRow">
+                      <td>{{data.order.id}}</td>
+                      <td>{{data.order.total_qnty}}</td>   
+                      <td>{{data.order.order_total}}</td>
+                      <td>{{data.order.tax}}</td>
+                      <td>{{data.order.grand_total}}</td>
+                      <td>{{data.order.status}}</td>
+                      <td>{{data.order.created_at}}</td>
+                    </tr>
+                    <!-- Add more rows as needed -->
+                  </tbody>
+                </table>
+                
+                <div id="orderDetails">
+                  <h2>Order Details</h2>
+                  <table id="orderDetailsTable">
+                    <thead>
+                      <tr>
+                        <th>Product Image</th>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Individual Price</th>
+                        <th>Total Price</th>
+                        <th>Size</th>
+                        <th>Color</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for item in data.items %}
+                      <tr>
+                       
+                        <td class="align-middle"><img src="{{item.image.image.url}}" alt="" style="width: 50px;"> {{cart_item.product_variant.prod_id.pr_name}}</td>
+                                
+                        <td>{{item.pr_name}}</td>   
+                        <td>{{item.quantity}}</td>
+                        <td>{{item.price}}</td>
+                        <td>{{item.total_price}}</td>
+                        <td>{{item.size}}</td>
+                        <td>{{item.color}}</td>
+                      </tr>
+                      {% endfor %} 
+                      {% endfor %} 
+                      <!-- Product details will be dynamically added here -->
+                    </tbody>
+                  </table>
+                  <button id="returnButton">Return</button>
+                  <button id="cancelButton">Cancel</button>
+                </div>
+               
+              
+                {% endblock form %}
+          
+    {% block right %}
+    
+
+    {% endblock right %}

@@ -98,13 +98,42 @@ def order_item_display(request,order_id):
        
     return JsonResponse(order_details, safe=False)
 def order_history(request):
-    user=request.user
-    orders=Order.objects.filter(user=user)
-    product_item=[]
+    user = request.user
+    orders = Order.objects.filter(user=user).order_by('-created_at')  
+    
+    addresses = []
+    order_data=[]
     for order in orders:
-        items=OrderProduct.objects.get(order=order)
-        product_item.append(items)
-        address=OrderAddress.objects.get(id=order.address.id)
+        order_items=OrderProduct.objects.filter(order=order)
+        order_details = []
+        
+    
+        for product in order_items:
+            img=ProductImage.objects.filter(img_id=product.product_variant.prod_id).first()
+            order_details.append({
+                'image': img,
+                'pr_name': product.product_variant.prod_id.pr_name,
+                'quantity': product.quantity,
+                'price': product.product_variant.price,
+                'totalPrice': product.item_total_price,
+                'size': product.product_variant.size,
+                'color': product.product_variant.color,
+            })
+        order_data.append({
+            'order':order,
+            'items':order_details,
+
+
+        })
+        
+        # Retrieve address for the current order
+        address = OrderAddress.objects.get(id=order.address.id)
+        addresses.append(address)
+
+    return render(request, 'order_history.html', {
+        'order_data':order_data,
+        'addresses':addresses
+    })
 
 def admin_orderlist(request):
 
