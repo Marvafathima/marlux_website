@@ -17,6 +17,7 @@
                       <th>Grand Total</th>
                       <th>Status</th>
                       <th>Date of Ordering</th>
+                      <th></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -30,6 +31,8 @@
                       <td>{{data.order.grand_total}}</td>
                       <td>{{data.order.status}}</td>
                       <td>{{data.order.created_at}}</td>
+                      <td><button id="returnButton">Return</button></td>
+                      <td><button id="cancelButton">Cancel</button></td>
                     </tr>
                     <!-- Add more rows as needed -->
                   </tbody>
@@ -58,17 +61,17 @@
                         <td>{{item.pr_name}}</td>   
                         <td>{{item.quantity}}</td>
                         <td>{{item.price}}</td>
-                        <td>{{item.total_price}}</td>
+                        <td>{{item.item_total_price}}</td>
                         <td>{{item.size}}</td>
                         <td>{{item.color}}</td>
                       </tr>
                       {% endfor %} 
+                      
                       {% endfor %} 
                       <!-- Product details will be dynamically added here -->
                     </tbody>
                   </table>
-                  <button id="returnButton">Return</button>
-                  <button id="cancelButton">Cancel</button>
+                  
                 </div>
                
               

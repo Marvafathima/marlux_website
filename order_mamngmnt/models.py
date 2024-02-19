@@ -65,6 +65,7 @@ class OrderProduct(models.Model):
     order=models.ForeignKey(Order, on_delete=models.CASCADE)
     product_variant=models.ForeignKey(ProductVar, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
+    price=models.FloatField(default=0)
     ordered=models.BooleanField(default=False)
     created_at=models.DateField(auto_now_add=True)
     updated_at=models.DateField(auto_now=True)

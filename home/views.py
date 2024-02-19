@@ -206,10 +206,13 @@ def remove_from_cart(request):
 def cart_count(request):
     user=request.user
     if user is not None:
-        cart=Cart.objects.get(user=user)
-        count=cart.total_qnty
-        print(count,'***************************')
-        return JsonResponse({'count':count})
+        try:
+            cart=Cart.objects.get(user=user)
+            count=cart.total_qnty
+            print(count,'***************************')
+            return JsonResponse({'count':count})
+        except:
+            return JsonResponse({'count':0})
     else:
         return JsonResponse({'count':0})
 def user_login(request):

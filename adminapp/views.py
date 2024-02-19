@@ -59,25 +59,4 @@ def user_block(request,user_id):
 
 
 
-    
-#     user_list=CustomUser.objects.all('id','email','is_active','date_joined')
-#     user_detail=UserAddress.objects.values('user_name','phone_number')
-#     #combining both query set
-#     combined_data=[]
-#     for user in user_list:
-#         user_id = user.get('id')
-#         user_address_detail = user_detail.filter(user_id=user_id).first()
-#         combined_data.append({**user, **user_address_detail})
-#     items_per_page = 15
-#     paginator = Paginator(combined_data, items_per_page)
-#     page = request.GET.get('page', 1)
-    
-#     try:
-#         users = paginator.page(page)
-#     except PageNotAnInteger:
-#         users = paginator.page(1)
-#     except EmptyPage:
-#         users = paginator.page(paginator.num_pages)
-
-#     context = {'userlist': users}
-#     return render(request, "adminside/userlist.html", context)
+ 
