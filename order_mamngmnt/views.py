@@ -143,43 +143,21 @@ def order_history(request):
         })
   
 def admin_orderlist(request):
-    # user=CustomUser.objects.select_related('useraddress','address').filter(address__is_default=True).values(
-    #     'id','email','useraddress__user_name','useraddress__phone_number',
-    #     'address__house_name',
-    #     'address__street',
-    #     'address__city',
-    #     'address__district',
-    #     'address__landmark',
-    #     'address__state',
-    #     'address__postal_code',
-    #     'address__country'
-        
-    #     )
-    users = CustomUser.objects.all()
-    orders_data = []
+    order_data=Order.objects.select_related('user','address').prefetch_related('orderproduct__product_variant','user__useraddress').all()
     
-    for user in users:
-        orders = Order.objects.filter(user=user)
-        for order in orders:
-            order_items = OrderProduct.objects.filter(order=order)
-            order_item_data = []
-            for item in order_items:
-                order_item_data.append({
-                    'product_name': item.product_variant.prod_id.pr_name,
-                    'quantity': item.quantity,
-                    'price': item.product_variant.price,
-                    'item_total_price': item.item_total_price,
-                })
-                
-            orders_data.append({
-                'user_email': user.email,
-                'order_id': order.id,
-                'order_total': order.order_total,
-                'tax': order.tax,
-                'status': order.status,
-                'items': order_item_data,
-            })
+    for order in order_data:
+    
+        print(order.user.email,"useremail")
+        
+        for pr in order.orderproduct.all():
+            print(pr.product_variant.price)
+        for us in order.user.useraddress.all():
+            print(us.user_name)
 
-    return render(request, 'all_orders.html', {'orders_data': orders_data})
+        
+
+    
+    
+    return render (request,'orderlist.html',{'orders':order_data})
     
     

@@ -36,8 +36,8 @@ class Order(models.Model):
         ('Return','Return')
 
     )
-    user=models.ForeignKey(CustomUser, on_delete=models. CASCADE)
-    address=models.ForeignKey(OrderAddress, on_delete=models.CASCADE,null=True)
+    user=models.ForeignKey(CustomUser, on_delete=models. CASCADE,related_name="user_order")
+    address=models.ForeignKey(OrderAddress, on_delete=models.CASCADE,null=True,related_name="address_order")
     order_total=models.FloatField(null=True) 
     tax=models.FloatField(null=True)
     status=models.CharField(max_length=10, choices=STATUS, default='Pending')
@@ -62,7 +62,7 @@ class Order(models.Model):
 
 
 class OrderProduct(models.Model):
-    order=models.ForeignKey(Order, on_delete=models.CASCADE)
+    order=models.ForeignKey(Order, on_delete=models.CASCADE,related_name='orderproduct')
     product_variant=models.ForeignKey(ProductVar, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=1)
     price=models.FloatField(default=0)

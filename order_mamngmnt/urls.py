@@ -5,5 +5,5 @@ urlpatterns=[
     path('order_display/',views.order_display,name='order_display'),
     path('order_item_display/',views.order_item_display,name='order_item_display'),
     path('order_history/',views.order_history,name='order_history'),
-
+  path('admin_orderlist/',views.admin_orderlist,name='admin_orderlist'),
 ]
