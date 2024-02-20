@@ -101,15 +101,19 @@
                         <h6 class="font-weight-medium">Subtotal</h6>
                         <h6 class="font-weight-medium" id="subtotal_{{carts.id}}">₹{{carts.total_price}}</h6>
                     </div>
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between mb-3 pt-1">
                         <h6 class="font-weight-medium">Shipping</h6>
                         <h6 class="font-weight-medium">₹{{carts.shipping}}</h6>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3 pt-1">
+                        <h6 class="font-weight-medium">Tax</h6>
+                        <h6 class="font-weight-medium" id="tax_{{carts.id}}">₹{{carts.tax|floatformat:2}}</h6>
                     </div>
                 </div>
                 <div class="card-footer border-secondary bg-transparent">
                     <div class="d-flex justify-content-between mt-2">
                         <h5 class="font-weight-bold">Total</h5>
-                        <h5 class="font-weight-bold"id="cart_total_{{carts.id}}" >₹{{carts.cart_total}}</h5>
+                        <h5 class="font-weight-bold"id="cart_total_{{carts.id}}" >₹{{carts.cart_total|floatformat:2}}</h5>
                     </div>
                     <a href="{% url 'checkout' carts.id %}"class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</a>
                 </div>
@@ -179,6 +183,7 @@ $(document).ready(function() {
                 location.reload();
                 $('#subtotal_' + cartId).text(response.subtotal); 
                 $('#cart_total_' + cartId).text(response.cart_total);
+                $('#tax_' + cartId).text(response.tax);
                
             },
             error: function(xhr, errmsg, err) {
@@ -208,7 +213,7 @@ $(document).ready(function() {
                location.reload();
                $('#subtotal_' + cartId).text(response.subtotal); 
                $('#cart_total_' + cartId).text(response.cart_total);
-              
+               $('#tax_' + cartId).text(response.tax);
             },
             error: function(xhr, errmsg, err) {
                 console.log(xhr.status + ": " + xhr.responseText);
@@ -252,6 +257,7 @@ $(document).ready(function() {
             $('#itemTotalPrice_' + itemId).text(response.total_price);
             $('#subtotal_' + cartId).text(response.subtotal); 
             $('#cart_total_' + cartId).text(response.cart_total);
+            $('#tax_' + cartId).text(response.tax);
             updatecartcount();
             // Update total price or any other relevant UI here
         },

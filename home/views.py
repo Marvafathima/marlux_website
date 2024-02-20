@@ -15,26 +15,11 @@ from django.db.models import Min
 from django.db.models import F, Sum
 from django.views.decorators.csrf import csrf_protect
 
-# from django.contrib.auth.tokens import default_token_generator
-# from django.contrib.auth import views as auth_views
-# from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-# from django.template.loader import render_to_string
-# from django.utils.encoding import force_bytes,force_str
-# from django.urls import reverse
-# from django.contrib.sites.shortcuts import get_current_site
 def index(request):
-    # products = Products.objects.annotate(
-    #     lowest_price=Min('product_varient__price'),
-    #     prod_image=Min('product_image__image')).values('pr_name','lowest_price','prod_image')
-    # for product in products:
-    #     print(product['prod_image']) 
+   
     products=Products.objects.all()
     category=Category.objects.all()
     user=request.user
-    # if user is not None:
-    #     cart=Cart.objects.get(user=user)
-    #     cart_quantity=cart.total_qnty
-    #     print(cart_quantity)
     return render(request,'userside/index.html',{'products':products,'categories':category,'cart_count':6})
     
    
@@ -165,7 +150,8 @@ def update_cart_item(request):
             'quantity': cart_item.quantity,
             'total_price': cart_item.item_total_price,
             'subtotal':cart.total_price,
-            'cart_total':cart.cart_total                                                                                                                                              
+            'cart_total':cart.cart_total,
+            'tax':cart.tax                                                                                                                                              
         })
     except CartItem.DoesNotExist:
         return JsonResponse({'error': 'Cart item not found'}, status=404)
@@ -196,7 +182,8 @@ def remove_from_cart(request):
             return JsonResponse({'message': 'Product removed from the cart',
                                  'total_qnty':new_qnty,
                                  'subtotal':cart.total_price,
-                                 'cart_total':cart.cart_total
+                                 'cart_total':cart.cart_total,
+                                 'tax':cart.tax
                                  
                                  }, )
         except CartItem.DoesNotExist:
