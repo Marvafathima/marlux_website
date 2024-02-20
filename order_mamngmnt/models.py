@@ -71,5 +71,5 @@ class OrderProduct(models.Model):
     updated_at=models.DateField(auto_now=True)
     item_total_price=models.DecimalField(default=0,decimal_places=2,max_digits=10,null=True) 
     def save(self, *args, **kwargs):
-        self.item_total_price = self.quantity * self.product_variant.price
+        self.item_total_price = self.quantity * self.price
         super().save(*args, **kwargs)

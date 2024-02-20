@@ -54,13 +54,16 @@ def order_display(request):
     )
     order=Order.objects.create(user=user,address=order_address,order_total=cart.cart_total,total_qnty=cart.total_qnty)
     for item in items:
-        OrderProduct.objects.create(
+        ox=OrderProduct.objects.create(
                     order=order,
                     product_variant=item.product_variant,
                     quantity=item.quantity,
-                    price=item.product_variant.price
+                    price=item.product_variant.price,
                     
                 )
+        print(ox.item_total_price,"this is the total price of the vaariant")
+        
+        # ox.item_total_price=ox.quantity* ox.price
 
 
     od_items=OrderProduct.objects.filter(order=order)
@@ -96,6 +99,7 @@ def order_item_display(request,order_id):
             'size': product.product_variant.size,
             'color': product.product_variant.color,
         })
+        print(product.item_total_price,"checking the value being fetdched")
     
     return JsonResponse(order_details, safe=False)
 def order_history(request):
@@ -124,6 +128,7 @@ def order_history(request):
                     'size': product.product_variant.size,
                     'color': product.product_variant.color,
                 })
+                print(product.item_total_price,"history total price checking")
             order_data.append({
                 'order':order,
                 'items':order_details,

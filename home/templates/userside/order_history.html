@@ -30,12 +30,12 @@
                       <td class="align-middle">{{data.order.id}}</td>
                       <td class="align-middle">{{data.order.total_qnty}}</td>   
                       <td class="align-middle">{{data.order.order_total}}</td>
-                      <td class="align-middle">{{data.order.tax}}</td>
+                      <td class="align-middle">{{data.order.tax|floatformat:2}}</td>
                       <td class="align-middle">{{data.order.grand_total}}</td>
                       <td class="align-middle">{{data.order.status}}</td>
                       <td class="align-middle">{{data.order.created_at}}</td>
-                      <td class="align-middle"><button id="returnButton">Return</button></td>
-                      <td class="align-middle"><button id="cancelButton">Cancel</button></td>
+                      <td class="align-middle"><button class="align-middle btn-primary" id="returnButton">Return</button></td>
+                      <td class="align-middle"><button class="align-middle btn-danger"  id="cancelButton">Cancel</button></td>
                     </tr>
                     <!-- Add more rows as needed -->
                   </tbody>
@@ -64,7 +64,7 @@
                         <td class="align-middle">{{item.pr_name}}</td>   
                         <td class="align-middle">{{item.quantity}}</td>
                         <td class="align-middle">{{item.price}}</td>
-                        <td class="align-middle">{{item.item_total_price}}</td>
+                        <td class="align-middle">{{item.totalPrice}}</td>
                         <td class="align-middle">{{item.size}}</td>
                         <td class="align-middle">{{item.color}}</td>
                       </tr>
