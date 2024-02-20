@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from category .models import ProductVar
 from .managers import CustomUserManager
-from decimal import Decimal
+from decimal import Decimal,ROUND_HALF_UP
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
@@ -50,12 +50,12 @@ class Cart(models.Model):
     total_price=models.DecimalField(default=0,decimal_places=2,max_digits=10,null=True)        
     is_ordered=models.BooleanField(default=False)
     def calculate_cart_total(self):
-        self.cart_total = self.shipping + self.total_price +self.tax
+        self.cart_total = (self.shipping + self.total_price +self.tax).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
 
     def save(self, *args, **kwargs):
         if self.total_price is not None:
             x=0.02
-            self.tax= Decimal(x) * self.total_price
+            self.tax= (Decimal(x) * self.total_price).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
             
         else:
             self.tax = None

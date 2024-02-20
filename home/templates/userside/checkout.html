@@ -123,20 +123,21 @@
                 </div> -->
             </div>
             <div class="col-lg-6">
-                <div class="card border-secondary mb-5">
-                    <div class="card-header bg-secondary border-0">
+                <div class="card border-secondary mb-5 ">
+                    <div class="card-header bg-secondary border-0 ">
                         <h4 class="font-weight-semi-bold m-0">Order Total</h4>
                     </div>
                     <div class="card-body">
-                        <div class="col d-flex justify-content-between "><h5 class="font-weight-medium mb-3">Products</h5>
-                            <h5 class="font-weight-medium mb-3">Quantity</h5>  
-                            <h5 class="font-weight-medium mb-3">Price</h5>  
+                        <div class=" d-flex justify-content-around">
+                            <div class="col lg-4"><h5 class="font-weight-medium mb-3">Products</h5></div>
+                            <div class="col lg-4"><h5 class="font-weight-medium mb-3 pr-2">Quantity</h5></div>  
+                            <div><h5 class="font-weight-medium mb-3">Price</h5></div> 
                         </div>
                         {% for items in context.cart_items %}
-                        <div class="d-flex justify-content-between">
-                            <p>{{items.product_variant.prod_id.pr_name}}</p>
-                            <p>{{items.quantity}}</p>
-                            <p>{{items.item_total_price}}</p>
+                        <div class="d-flex justify-content-around ">
+                           <div class="col lg-4"> <p>{{items.product_variant.prod_id.pr_name}}</p></div>
+                           <div class="col lg-4 pl-5"><p>{{items.quantity}}</p></div>
+                           <div><p>{{items.item_total_price}}</p></div>
                         </div>
                         {% endfor %}
                        

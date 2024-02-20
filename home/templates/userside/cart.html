@@ -12,6 +12,8 @@
                 <thead class="bg-secondary text-dark">
                     <tr>
                         <th>Products</th>
+                        <th>Size</th>
+                        <th>Color</th>
                         <th>Price</th>
                         <th>Quantity</th>
                         <th>Total</th>
@@ -28,7 +30,8 @@
                                 {% endwith %}
                             {% endwith %}
                         {% endwith %}
-                        
+                        <td class="align-middle">{{cart_item.product_variant.size}}</td>
+                        <td class="align-middle">{{cart_item.product_variant.color}}</td>
                         <td class="align-middle">₹{{cart_item.product_variant.price}}</td>
                         <!-- <input type="hidden" class="cart-item-id" value="{{ cart_item.id }}"> -->
                         <td class="align-middle">
