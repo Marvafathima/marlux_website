@@ -4,10 +4,12 @@
              
                 {% block form %}
                 <h1>Order History</h1>
-
-                <table id="orderTable">
-                  <thead>
-                    {% for data in order_data%}
+                {% for data in order_data%}
+                <table  class="table table-bordered text-center mb-0" id="orderTable">
+                  <thead class="bg-secondary text-dark">
+                    
+                    <br>
+                    <br>
                     <tr>
                       <th>Order ID</th>
                       <!-- <th>Order Item</th> -->
@@ -18,30 +20,31 @@
                       <th>Status</th>
                       <th>Date of Ordering</th>
                       <th></th>
+                      <th></th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody class="align-middle">
                     <!-- Rows of order data will be dynamically added here -->
                    
                     <tr class="orderRow">
-                      <td>{{data.order.id}}</td>
-                      <td>{{data.order.total_qnty}}</td>   
-                      <td>{{data.order.order_total}}</td>
-                      <td>{{data.order.tax}}</td>
-                      <td>{{data.order.grand_total}}</td>
-                      <td>{{data.order.status}}</td>
-                      <td>{{data.order.created_at}}</td>
-                      <td><button id="returnButton">Return</button></td>
-                      <td><button id="cancelButton">Cancel</button></td>
+                      <td class="align-middle">{{data.order.id}}</td>
+                      <td class="align-middle">{{data.order.total_qnty}}</td>   
+                      <td class="align-middle">{{data.order.order_total}}</td>
+                      <td class="align-middle">{{data.order.tax}}</td>
+                      <td class="align-middle">{{data.order.grand_total}}</td>
+                      <td class="align-middle">{{data.order.status}}</td>
+                      <td class="align-middle">{{data.order.created_at}}</td>
+                      <td class="align-middle"><button id="returnButton">Return</button></td>
+                      <td class="align-middle"><button id="cancelButton">Cancel</button></td>
                     </tr>
                     <!-- Add more rows as needed -->
                   </tbody>
-                </table>
+                </table> 
                 
-                <div id="orderDetails">
-                  <h2>Order Details</h2>
-                  <table id="orderDetailsTable">
-                    <thead>
+              <div id="orderDetails">
+                 
+                  <table class="table table-bordered text-center mb-2" id="orderDetailsTable">
+                    <thead class="bg-secondary text-dark">
                       <tr>
                         <th>Product Image</th>
                         <th>Product Name</th>
@@ -51,19 +54,19 @@
                         <th>Size</th>
                         <th>Color</th>
                       </tr>
-                    </thead>
-                    <tbody>
+                   </thead>
+                    <tbody class="align-middle"> 
                       {% for item in data.items %}
                       <tr>
                        
                         <td class="align-middle"><img src="{{item.image.image.url}}" alt="" style="width: 50px;"> {{cart_item.product_variant.prod_id.pr_name}}</td>
                                 
-                        <td>{{item.pr_name}}</td>   
-                        <td>{{item.quantity}}</td>
-                        <td>{{item.price}}</td>
-                        <td>{{item.item_total_price}}</td>
-                        <td>{{item.size}}</td>
-                        <td>{{item.color}}</td>
+                        <td class="align-middle">{{item.pr_name}}</td>   
+                        <td class="align-middle">{{item.quantity}}</td>
+                        <td class="align-middle">{{item.price}}</td>
+                        <td class="align-middle">{{item.item_total_price}}</td>
+                        <td class="align-middle">{{item.size}}</td>
+                        <td class="align-middle">{{item.color}}</td>
                       </tr>
                       {% endfor %} 
                       
@@ -72,7 +75,7 @@
                     </tbody>
                   </table>
                   
-                </div>
+               </div> 
                
               
                 {% endblock form %}
