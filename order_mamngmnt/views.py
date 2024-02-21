@@ -145,19 +145,24 @@ def order_history(request):
 def admin_orderlist(request):
     order_data=Order.objects.select_related('user','address').prefetch_related('orderproduct__product_variant','user__useraddress').all()
     
-    for order in order_data:
+    # for order in order_data:
     
-        print(order.user.email,"useremail")
+    #     print(order.user.email,"useremail")
         
-        for pr in order.orderproduct.all():
-            print(pr.product_variant.price)
-        for us in order.user.useraddress.all():
-            print(us.user_name)
+    #     for pr in order.orderproduct.all():
+    #         print(pr.product_variant.price)
+    #     for us in order.user.useraddress.all():
+    #         print(us.user_name) 
+    return render (request,'orderlist.html',{'orders':order_data,'status_choices': Order.STATUS})
+@require_POST   
+def update_status(request,order_id):
+    order = get_object_or_404(Order, id=order_id)
+    new_status = request.POST.get('status')
+    if new_status in dict(Order.STATUS):
+        order.status = new_status
+        order.save()
+    return redirect('admin_orderlist')
 
-        
 
     
-    
-    return render (request,'orderlist.html',{'orders':order_data})
-    
-    
+

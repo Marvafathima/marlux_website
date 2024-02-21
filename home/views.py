@@ -307,10 +307,10 @@ def shop(request):
 def user_profile(request):
     user=request.user
     profile=CustomUser.objects.get(id=user.id)
-    useraddress = UserAddress.objects.get(user=user)
-    
+    print(profile.email)
     if request.method=='GET':
-        if useraddress is not None:
+        try:
+            useraddress = UserAddress.objects.get(user=user)
             profile=CustomUser.objects.get(id=user.id)
             useraddress = UserAddress.objects.get(user=user)
             us_detail={
@@ -321,7 +321,7 @@ def user_profile(request):
             'phone_number':useraddress.phone_number
             }
             return render (request,'userprofile.html',{'us':us_detail})
-        else:
+        except:
             return render (request,'userprofile.html')
     else:
         name=request.POST.get('name')
