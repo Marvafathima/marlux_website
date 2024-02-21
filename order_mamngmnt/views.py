@@ -153,7 +153,7 @@ def admin_orderlist(request):
     #         print(pr.product_variant.price)
     #     for us in order.user.useraddress.all():
     #         print(us.user_name) 
-    return render (request,'orderlist.html',{'orders':order_data,'status_choices': Order.STATUS})
+    return render (request,'oorderllist.html',{'orders':order_data,'status_choices': Order.STATUS})
 @require_POST   
 def update_status(request,order_id):
     order = get_object_or_404(Order, id=order_id)

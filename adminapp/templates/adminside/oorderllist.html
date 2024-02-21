@@ -1,0 +1,195 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% block extra_link %}
+
+<!-- Data Table JS
+		============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/jquery.dataTables.min.css' %}">
+
+<!-- responsive CSS
+		============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/responsive.css' %}">
+        
+        <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+        <!-- Google Fonts
+            ============================================ -->
+        <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700,900" rel="stylesheet">
+        <!-- Bootstrap CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/bootstrap.min.css' %}">
+        <!-- font awesome CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/font-awesome.min.css' %}">
+        <!-- owl.carousel CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">
+        <link rel="stylesheet" href="{% static 'csss/owl.theme.css' %}">
+        <link rel="stylesheet" href="{% static 'csss/owl.transitions.css' %}">
+        <!-- meanmenu CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/meanmenu/meanmenu.min.css' %}">
+        <!-- animate CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/animate.css' %}">
+        <!-- normalize CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/normalize.css' %}">
+        <!-- wave CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/wave/waves.min.css' %}">
+        <link rel="stylesheet" href="{% static 'csss/wave/button.css' %}">
+        <!-- mCustomScrollbar CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'css/scrollbar/jquery.mCustomScrollbar.min.css' %}">
+        <!-- Notika icon CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/notika-custom-icon.css' %}">
+        <!-- Data Table JS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/jquery.dataTables.min.css' %}">
+        <!-- main CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/main.css' %}">
+        <!-- style CSS
+            ============================================ -->
+        <link rel="stylesheet" href="style.css">
+        <!-- responsive CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/responsive.css' %}">
+        <!-- modernizr JS
+            ============================================ -->
+        <script src="{% static 'js/vendor/modernizr-2.8.3.min.js' %}"></script>
+{% endblock extra_link %}
+{% block userlist %}
+
+ <div class="data-table-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="data-table-list">
+                    <div class="basic-tb-hd">
+                        <h2>Order List</h2>
+
+                    </div>
+                    <div class="table-responsive">
+                        <table id="data-table-basic" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th> Order ID</th>
+                                    <th> User Email</th>
+                                    <th> quantity</th>
+                                    <th> Price</th>
+                                    <th> Status</th>
+                                    <th> Order Date </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for order in orders %}
+                                <tr>
+                                    <td>{{order.id}}</td>
+                                    <td >{{order.user.email}}</td>
+                                    <td> {{order.total_qnty}}</td>
+                                    <td>{{order.grand_total}}</td>
+                                    <td> 
+                                        <form action="{% url 'update_status' order.id %}" method="post">
+                                        {% csrf_token %}
+                                        <select name="status">
+                                          {% for choice in status_choices %}
+                                          <option value="{{ choice.0 }}" {% if order.status == choice.0 %} selected {% endif %}>{{ choice.1 }}</option>
+                                          {% endfor %}
+                                        </select>
+                                        <button type="submit">Update</button>
+                                      </form> </td>
+                                    <td>{{order.created_at}}</td>
+                                    {% endfor %}
+                                   
+                                </tr>
+                               
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th> Order ID</th>
+                                    <th> User Email</th>
+                                    <th> quantity</th>
+                                    <th> Price</th>
+                                    <th> Status</th>
+                                    <th> Order Date </th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Data Table area End-->
+<script src="{% static 'jss/data-table/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'jss/data-table/data-table-act.js' %}"></script>
+  <!-- jquery
+		============================================ -->
+        <script src="{% static 'jss/vendor/jquery-1.12.4.min.js' %}"></script>
+        <!-- bootstrap JS
+            ============================================ -->
+        <script src="{% static 'jss/bootstrap.min.js' %}"></script>
+        <!-- wow JS
+            ============================================ -->
+        <script src="{% static 'jss/wow.min.js' %}"></script>
+        <!-- price-slider JS
+            ============================================ -->
+        <script src="{% static 'jss/jquery-price-slider.js' %}"></script>
+        <!-- owl.carousel JS
+            ============================================ -->
+        <script src="{% static 'jss/owl.carousel.min.js' %}"></script>
+        <!-- scrollUp JS
+            ============================================ -->
+        <script src="{% static 'jss/jquery.scrollUp.min.js' %}"></script>
+        <!-- meanmenu JS
+            ============================================ -->
+        <script src="{% static 'jss/meanmenu/jquery.meanmenu.js' %}"></script>
+        <!-- counterup JS
+            ============================================ -->
+        <script src="{% static 'jss/counterup/jquery.counterup.min.js' %}"></script>
+        <script src="jss/counterup/waypoints.min.js' %}"></script>
+        <script src="{% static 'jss/counterup/counterup-active.js' %}"></script>
+        <!-- mCustomScrollbar JS
+            ============================================ -->
+        <script src="{% static 'jss/scrollbar/jquery.mCustomScrollbar.concat.min.js' %}"></script>
+        <!-- sparkline JS
+            ============================================ -->
+        <script src="{% static 'jss/sparkline/jquery.sparkline.min.js' %}"></script>
+        <script src="{% static 'jss/sparkline/sparkline-active.js' %}"></script>
+        <!-- flot JS
+            ============================================ -->
+        <script src="{% static 'jss/flot/jquery.flot.js' %}"></script>
+        <script src="{% static 'jss/flot/jquery.flot.resize.js' %}"></script>
+        <script src="{% static 'jss/flot/flot-active.js' %}"></script>
+        <!-- knob JS
+            ============================================ -->
+        <script src="{% static 'jss/knob/jquery.knob.js' %}"></script>
+        <script src="{% static 'jss/knob/jquery.appear.js' %}"></script>
+        <script src="{% static 'jss/knob/knob-active.js' %}"></script>
+        <!--  Chat JS
+            ============================================ -->
+        <script src="{% static 'jss/chat/jquery.chat.js' %}"></script>
+        <!--  todo JS
+            ============================================ -->
+        <script src="{% static 'jss/todo/jquery.todo.js' %}"></script>
+        <!--  wave JS
+            ============================================ -->
+        <script src="{% static 'jss/wave/waves.min.js' %}"></script>
+        <script src="{% static 'jss/wave/wave-active.js' %}"></script>
+        <!-- plugins JS
+            ============================================ -->
+        <script src="{% static 'jss/plugins.js' %}"></script>
+        <!-- Data Table JS
+            ============================================ -->
+        <script src="{% static 'jss/data-table/jquery.dataTables.min.js' %}"></script>
+        <script src="{% static 'jss/data-table/data-table-act.js' %}"></script>
+        <!-- main JS
+            ============================================ -->
+        <script src="{% static 'jss/main.js' %}"></script>
+        <!-- tawk chat JS
+            ============================================ -->
+        <!-- <script src="{% static 'jss/tawk-chat.js' %}"></script> -->
+{% endblock userlist %}
