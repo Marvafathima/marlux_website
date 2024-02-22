@@ -14,6 +14,7 @@ from django.db.models import F, Sum
 from django.views.decorators.csrf import csrf_protect
 from .models import Order,OrderAddress,OrderProduct
 from django.db import transaction
+from django.core.serializers.json import DjangoJSONEncoder
 # Create your views here.
 @login_required
 def cart_to_order(request,cart_id):
@@ -145,14 +146,16 @@ def order_history(request):
 def admin_orderlist(request):
     order_data=Order.objects.select_related('user','address').prefetch_related('orderproduct__product_variant','user__useraddress').all()
     
-    # for order in order_data:
+    for order in order_data:
     
-    #     print(order.user.email,"useremail")
+        print(order.user.email,"useremail")
         
-    #     for pr in order.orderproduct.all():
-    #         print(pr.product_variant.price)
-    #     for us in order.user.useraddress.all():
-    #         print(us.user_name) 
+        for pr in order.orderproduct.all():
+            print(pr.product_variant.prod_id.pr_name)
+            print(pr.product_variant.price,"unit price")
+            print(pr.item_total_price)
+        for us in order.user.useraddress.all():
+            print(us.user_name) 
     return render (request,'orderlist.html',{'orders':order_data,'status_choices': Order.STATUS})
 @require_POST   
 def update_status(request,order_id):
@@ -163,6 +166,33 @@ def update_status(request,order_id):
         order.save()
     return redirect('admin_orderlist')
 
+def get_order_products(request,order_id):
+    print("get_order_products called")
+    orders=Order.objects.get(pk=order_id)
+    user=orders.user
+    customer=CustomUser.objects.get(id=user.id)
+    customer_detail=UserAddress.objects.get(user=user.id)
+    print(customer.email)
+    order_products = OrderProduct.objects.filter(order=order_id)
+    # Construct a list of dictionaries containing order product data
+    order_product_data = []
+    for order_product in order_products:
+        imgs=ProductImage.objects.filter(img_id=order_product.product_variant.prod_id).first()
+        img=imgs.image.url
+        order_product_data.append({
+            'product_name': order_product.product_variant.prod_id.pr_name,
+            'quantity': order_product.quantity,
+            'total_price': order_product.item_total_price,
+            'individual_price': order_product.price,
+            'image_url': img,  # Assuming 'image' is a field in your ProductVariant model
+            'color': order_product.product_variant.color.color,
+            'size': order_product.product_variant.size.size,
+            
+            # Add more fields as needed
+        })
+
+        print(order_product.price)
+    return render (request, 'order_iem_detail.html',{'order_products': order_product_data,'orders':orders,'customer':customer,'customer_detail':customer_detail})
 
     
 
