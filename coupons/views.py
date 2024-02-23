@@ -1,6 +1,8 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from .models import Coupon
 from category .models import Products,Category,Subcategory,ProductVar,Brand, Color, Size,ProductImage
+from home .models import Cart,CartItem,CustomUser
+from order_mamngmnt .models import Order,OrderProduct
 from django.http import HttpResponse
 from django.contrib import messages
 from django.db.models import Q
@@ -19,8 +21,8 @@ def create_coupon(request):
         expiration_date = request.POST.get('expiration_date')
         usage_limit = request.POST.get('usage_limit')
         user_limit=request.POST.get('user_limit')
-        
-        minimum_order_amount=request.POST.get('min_amount')
+        purchase_count=request.POST.get('purchase_count')
+        minimum_order_amount=request.POST.get('minimum_order_amount')
         description=request.POST.get('description')
         if 'active' in request.POST:
             active=request.POST.get('active')=='on'
@@ -35,7 +37,8 @@ def create_coupon(request):
                 user_limit=user_limit,
                 active=active,
                 minimum_order_amount=minimum_order_amount,
-                description=description
+                description=description,
+                purchase_count=purchase_count
 
             )
             
@@ -84,9 +87,11 @@ def update_coupon(request,id):
             user_limit=request.POST.get('user_limit')
             coupon.user_limit=user_limit
         if 'minimum_order_amount' in request.POST:
-            minimum_order_amount=request.POST.get('min_amount')
+            minimum_order_amount=request.POST.get('minimum_order_amount')
             coupon.minimum_order_amount=minimum_order_amount
-
+        if 'purchase_count' in request.POST:
+            purchase_count=request.POST.get('purchase_count')
+            coupon.purchase_count=purchase_count
         if 'description' in request.POST:    
             description=request.POST.get('description')
             coupon.description=description
@@ -104,3 +109,18 @@ def delete_coupon(request,id):
     coupon.delete()
     return redirect('view_coupon')
         
+def user_coupons(request):
+    coupon=Coupon.objects.all()
+    return render(request,'coupons.html',{'coupons':coupon})
+def apply_coupon(request):
+    pass
+    # user=request.user
+    # code=request.POST.get('code')
+    # try: 
+    #     coupon=Coupon.objects.get(code=code)
+    #     if coupon.is_valid():
+    #         user=request.user
+    #         cart=Cart.objects.get(user=user)
+    #         grand_total=cart.cart_total
+        
+

@@ -60,14 +60,18 @@
             </table>
         </div>
         <div class="col-lg-4">
-            <form class="mb-5" action="">
+            <form class="mb-5" action="{% url 'apply_coupon' %}" method="POST">
                 <div class="input-group">
-                    <input type="text" class="form-control p-4" placeholder="Coupon Code">
+                    <input type="text" name="code" class="form-control p-4" placeholder="Coupon Code">
                     <div class="input-group-append">
                         <button class="btn btn-primary">Apply Coupon</button>
                     </div>
                 </div>
+                <a href="{% url 'user_coupons' %}" class="ml-3 mt-3 mb-5">view coupon details</a>
+            </form>
+                
                 <div class="card border-secondary mb-5">
+
                     <div class="card-header bg-secondary border-0">
                         <h4 class="font-weight-semi-bold m-0">Delivery Address</h4>
                     </div>
@@ -94,7 +98,7 @@
                 </div>
                 {% endif %}
             </div>
-            </form>
+            
             <div class="card border-secondary mb-5">
                 <div class="card-header bg-secondary border-0">
                     <h4 class="font-weight-semi-bold m-0">Cart Summary</h4>

@@ -83,6 +83,7 @@
                                     <th> User Limit</th>
                                     <th> disc.percentage/<br>amount</th>
                                     <th> Min.Purchase Amount</th>
+                                    <th>Purchase Count</th>
                                     <th> Status</th>
                                     <th> Order Date </th>
                                     <th></th>
@@ -104,7 +105,8 @@
                                     {% endif %}
                                     
 
-                                    <td>{{coupon.minimum_purchase_amount}}</td>
+                                    <td>{{coupon.minimum_order_amount}}</td>
+                                    <td>{{coupon.purchase_count}}</td>
                                     <td>{{coupon.expiration_date}}</td> 
                                     <td>{{coupon.active}}</td>
                                     <td><a href="{% url 'update_coupon' id=coupon.id %}" class="btn btn-sm btn-primary">Edit</a></td>

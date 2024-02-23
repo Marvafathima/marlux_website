@@ -1,0 +1,64 @@
+{% extends 'main.html' %}
+{% block content %}
+ 
+ 
+ 
+ 
+ 
+ <style>
+    .coupon {
+      width: 300px;
+      height: auto;
+      border: 1px solid black;
+      background-color: #f2f2f2;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      margin: 10px auto;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .coupon-code {
+      font-size: 36px;
+      font-weight: bold;
+      color: red;
+      margin-bottom: 10px;
+    }
+
+    .expiry-date {
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    .terms {
+      font-size: 10px;
+      text-align: left;
+    }
+  
+  </style>
+
+<div class="row">
+    {% for coupon in coupons %}
+    <div class="col-lg-3">
+        <div class="coupon">
+            <div class="logo">Code:{{coupon.code}}</div>
+            {% if coupon.discount_percentage %}
+            <div class="coupon-code">{{coupon.discount_percentage|floatformat:0}}%</div>
+           {% else %}
+           <div class="coupon-code">₹{{coupon.discount_amount}}</div>
+          {% endif %}
+            <div class="expiry-date">{{coupon.expiration_date}}</div>
+           <div class="terms">
+              <p class="text-center">{{coupon.description}}</p>
+            </div>
+          </div>
+    </div>
+    {% endfor %}
+</div> 
+{% endblock content %}
