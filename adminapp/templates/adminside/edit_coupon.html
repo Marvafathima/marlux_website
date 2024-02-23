@@ -1,0 +1,90 @@
+{% extends 'newtemp.html' %}
+{% block new %}
+{% if messages %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+   {% for message in messages%}
+   <strong>SUCCESS:</strong> {{ message }}
+   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+ {% endfor %}
+</div>
+{% endif %}
+<div class="container"><div class="row justify-content-center">
+
+   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 m-5">
+       <div class="contact-form sm-res-mg-t-30 tb-res-mg-t-30 tb-res-mg-t-0">
+           <div class="contact-hd sm-form-hd">
+               <div class="breadcomb-ctn"><h2 class="text-center ">Edit Coupon</h2></div>
+               
+           </div>
+           <div class="contact-form-int">
+               <form action="{% url 'update_coupon' coupon.id %}" method="POST">
+                  {% csrf_token %}
+               <div class="form-group">
+                   <div class="form-single nk-int-st widget-form">
+                       <input type="text" class="form-control" name="code" value="{{coupon.code}}" autocomplete="off" placeholder="Coupon code"/>
+                   </div>
+               </div>
+                <div class="row">
+               <div class="form-group col-6 d-flex">
+                   <div class="form-single nk-int-st widget-form">
+                       <input type="number" class="form-control" name="discount_amount" {% if coupon.discount_amount%} value="{{coupon.discount_amount}}" {% endif %}placeholder="Discount Amount" />
+                   </div>
+               </div>
+
+               <div class="form-group col-6 d-flex">
+                   <div class="form-single nk-int-st widget-form">
+                       <input type="number" class="form-control" name="discount_percentage" {% if coupon.discount_percentage %} value="{{coupon.discount_percentage|floatformat}}" {% endif %} placeholder="Discount Percentage" />
+                   </div>
+               </div></div>
+
+               <div class="form-group">
+                   <div class="form-single nk-int-st widget-form">
+                       <input type="date" class="form-control" placeholder="Expiry date" value="{{coupon.expiration_date}}"name="expiration_date" />
+                   </div>
+               </div>
+               <div class="row">
+               <div class="form-group col-6 d-flex">
+                   <div class="form-single nk-int-st widget-form">
+                       <input type="number" class="form-control" placeholder="Usage Limit"  value="{{coupon.usage_limit}}"name="usage_limit" />
+                   </div></div>
+                   <div class="form-group col-6 d-flex">
+                   <div class="form-single nk-int-st widget-form">
+                       <input type="number" class="form-control" placeholder="User Limit" value="{{coupon.user_limit}}" name="user_limit" />
+                   </div>
+               </div></div>
+               <div class="form-group">
+                   <div class="form-single nk-int-st widget-form">
+                       <input type="number" class="form-control" value="{{coupon.minimum_order_amount}}"placeholder="minimum_purchase_amount" name="minimum_order_amount" />
+                   </div>
+               </div>
+               <div class="form-group">
+                   <div class="form-single nk-int-st widget-form">
+                       <textarea name="description" class="form-control" placeholder="Description" >{{coupon.description}}</textarea>
+                   </div>
+               </div>
+            
+                   <div class="toggle-select-act mg-t-30">
+                       <div class="nk-toggle-switch" data-ts-color="lime">
+                           <label for="ts6" class="ts-label">Activate</label>
+                           <input id="ts6" name="active" {% if coupon.active  %} checked {% endif %} type="checkbox" hidden="hidden">
+                           <label for="ts6" class="ts-helper"></label>
+                       </div>
+                   </div>
+               
+              
+               <div class="contact-btn mt-3 ">
+                   <input href="{% url 'view_coupon' %}" class="button btn btn-lg " type="submit" value="Create">
+               </div>
+           </form>
+           </div>
+       </div>
+   </div>
+   
+
+
+
+
+
+</div></div>
+
+{% endblock new %}

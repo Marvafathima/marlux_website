@@ -1,0 +1,129 @@
+{% extends 'newtemp.html' %}
+{% block new %}
+
+<!-- <style>
+    .coupon {
+      width: 300px;
+      height: auto;
+      border: 1px solid black;
+      background-color: #f2f2f2;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      margin: 10px auto;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .coupon-code {
+      font-size: 36px;
+      font-weight: bold;
+      color: red;
+      margin-bottom: 10px;
+    }
+
+    .expiry-date {
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    .terms {
+      font-size: 10px;
+      text-align: left;
+    }
+  
+  </style>
+
+<div class="row">
+    {% for coupon in coupons %}
+    <div class="col-lg-4">
+        <div class="coupon">
+            <div class="logo">{{coupon.code}}</div>
+            {% if coupon.discount_percentage %}
+            <div class="coupon-code">{{coupon.discount_percentage|floatformat:0}}%</div>
+           {% else %}
+           <div class="coupon-code">₹{{coupon.discount_amount}}</div>
+          {% endif %}
+            <div class="expiry-date">{{coupon.expiration_date}}</div>
+            <div class="row ">
+            <div class="col-lg-6 limits">usage limit:{{coupon.usage_limit}}</div>
+            <div class="col-lg-6 limits">user limit:{{coupon.user_limit}}</div>
+        </div> -->
+            <!-- <div class="terms">
+              <p class="text-center">{{coupon.description}}</p>
+            </div>
+          </div>
+    </div>
+    {% endfor %}
+</div> --> 
+
+  
+<div class="data-table-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="data-table-list">
+                    <div class="basic-tb-hd">
+                        <h2>Coupon List</h2>
+
+                    </div>
+                    <div class="table-responsive">
+                        <table id="data-table-basic"class="table table-success table-striped  ">
+                            <thead>
+                                <tr>
+                                    <th> Coupon ID</th>
+                                    <th> Coupon Code</th>
+                                    <th>Description</th>
+                                    <th> Usage Limit</th>
+                                    <th> User Limit</th>
+                                    <th> disc.percentage/<br>amount</th>
+                                    <th> Min.Purchase Amount</th>
+                                    <th> Status</th>
+                                    <th> Order Date </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for coupon in coupons %}
+                                <tr class="order-row" data-order-id="{{ order.id }}">
+                                    <td>{{coupon.id}}</td>
+                                    <td >{{coupon.code}}</td>
+                                    <td> {{coupon.description}}</td>
+                                    <td>{{coupon.usage_limit}}</td>
+                                    <td>{{coupon.user_limit}}</td>
+                                    {% if coupon.discount_percentage %}
+                                    <td>{{coupon.discount_percentage|floatformat:0}}%</td>
+                                    {%else %}
+                                    <td>₹{{coupon.discount_amount|floatformat:0}}</td>
+                                    {% endif %}
+                                    
+
+                                    <td>{{coupon.minimum_purchase_amount}}</td>
+                                    <td>{{coupon.expiration_date}}</td> 
+                                    <td>{{coupon.active}}</td>
+                                    <td><a href="{% url 'update_coupon' id=coupon.id %}" class="btn btn-sm btn-primary">Edit</a></td>
+                              
+                                    {% endfor %}
+                                   
+                                </tr>
+                               
+                            </tbody>
+                           
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+             
+
+
+
+{% endblock new %}

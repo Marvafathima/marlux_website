@@ -25,6 +25,7 @@ urlpatterns = [
     path('',include('adminapp.urls')),
     path('',include('category.urls')),
     path('',include('order_mamngmnt.urls')),
+    path('',include('coupons.urls')),
     # path('', include('django.contrib.auth.urls')),
 
 

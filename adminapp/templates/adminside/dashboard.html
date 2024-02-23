@@ -138,6 +138,39 @@
                         </ul>
                     </li>
                     
+                    <li>
+
+                        <a href="javascript:;" data-show="emailtemplate">
+                            <i class="fa fa-files-o"></i>
+                             Coupon management
+                            <i class="downarrow fa-solid fa-chevron-down"></i>
+                        </a>
+
+                        <ul class="submenus" id="emailtemplate">
+
+                            <li>
+                                <a href="{% url 'create_coupon' %}">
+                                    <i class="fa fa-square"></i>
+                                   Create Coupon
+                                </a>
+                            </li>
+
+                            <!-- <li>
+                                <a href="">
+                                    <i class="fa fa-square"></i>
+                                    Edit Coupon
+                                </a>
+                            </li> -->
+                           <li>
+                                <a href="{% url 'view_coupon' %}">
+                                    <i class="fa fa-square"></i>
+                                    View Coupon
+                                </a>
+                            </li> 
+
+ 
+                        </ul>
+                    </li>
 
 
 
@@ -148,6 +181,8 @@
                            Users
                         </a>
                     </li>
+
+                    
                     <li>
                         <a href="{% url 'admin_orderlist' %}">
                             <i class="fa-solid fa-add"></i>
@@ -155,34 +190,7 @@
                         </a>
                     </li>
 
-
-                    <li>
-
-                        <a href="javascript:;" data-show="emailtemplate">
-                            <i class="fa fa-files-o"></i>
-                             Email Template
-                            <i class="downarrow fa-solid fa-chevron-down"></i>
-                        </a>
-
-                        <ul class="submenus" id="emailtemplate">
-
-                            <li>
-                                <a href="AddEmailTemplate.html">
-                                    <i class="fa fa-square"></i>
-                                   Add new template
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="AllEmailTemplate.html">
-                                    <i class="fa fa-square"></i>
-                                    All email template
-                                </a>
-                            </li>
- 
-                        </ul>
-                    </li>
-
+                   
 
 
 
