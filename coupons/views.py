@@ -7,6 +7,8 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.http import JsonResponse
+from decimal import Decimal
+from django.template.defaultfilters import date
 # Create your views here.
 def create_coupon(request):
     if request.method == 'POST':
@@ -36,6 +38,7 @@ def create_coupon(request):
                 description=description
 
             )
+            
             if discount_amount:
                 coupon.discount_amount=discount_amount
             if discount_percentage:
@@ -56,29 +59,48 @@ def view_coupon(request):
     except:
         return render (request,'view_coupon.html')
 def update_coupon(request,id):
+    print("update called")
     coupon=Coupon.objects.get(id=id)
+    # coupon.expiration_date = date(coupon.expiration_date, 'd/m/Y') 
+    print(coupon.expiration_date)
     if request.method=="POST":
         if 'code' in request.POST:
             code = request.POST.get('code')
-        if 'discount_amount' in request.POST:    
+            coupon.code=code
+        try:     
             discount_amount = request.POST.get('discount_amount')
-        if 'discount_percentage' in request.POST:    
+            coupon.discount_amount=Decimal(discount_amount)
+        except:   
             discount_percentage=request.POST.get('discount_percentage')
+            coupon.discount_percentage=Decimal(discount_percentage)
         if 'expiration_date' in request.POST:  
             expiration_date = request.POST.get('expiration_date')
+            coupon.expiration_date=expiration_date
+            
         if 'usage_limit' in request.POST:    
             usage_limit = request.POST.get('usage_limit')
+            coupon.usage_limit=usage_limit
         if 'user_limit' in request.POST:    
             user_limit=request.POST.get('user_limit')
+            coupon.user_limit=user_limit
         if 'minimum_order_amount' in request.POST:
             minimum_order_amount=request.POST.get('min_amount')
+            coupon.minimum_order_amount=minimum_order_amount
+
         if 'description' in request.POST:    
             description=request.POST.get('description')
+            coupon.description=description
         if 'active' in request.POST:
             active=request.POST.get('active')=='on'
         else:
             active = False
-        return render (request,'view_coupon.html')
+        coupon.active=active
+        coupon.save()
+        return redirect('view_coupon')
     else:
         return render(request,'edit_coupon.html',{'coupon':coupon})
+def delete_coupon(request,id):
+    coupon=Coupon.objects.get(pk=id)
+    coupon.delete()
+    return redirect('view_coupon')
         
