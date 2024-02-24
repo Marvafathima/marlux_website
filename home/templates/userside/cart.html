@@ -1,5 +1,16 @@
 {% extends 'main.html' %}
+{%block cart %}{% endblock cart %}
 {% block content %}
+
+{% if messages %}
+<div class="alert {% if message.tags == 'error' %}alert-danger alert-dismissible fade show{% elif message.tags == 'success' %}alert-success alert-dismissible fade show {% endif %}" role="alert">
+    {% for message in messages%}
+    <strong>{{ message.tags }}</strong> {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  {% endfor %}
+</div>
+{% endif %}
+
 <!-- Cart Start -->
 <div id="success-message" style="display: none;">
     <p id="success-message-text"></p>
@@ -61,10 +72,11 @@
         </div>
         <div class="col-lg-4">
             <form class="mb-5" action="{% url 'apply_coupon' %}" method="POST">
+                 {% csrf_token %}
                 <div class="input-group">
                     <input type="text" name="code" class="form-control p-4" placeholder="Coupon Code">
                     <div class="input-group-append">
-                        <button class="btn btn-primary">Apply Coupon</button>
+                        <input href="{% url 'apply_coupon' %}" type="submit" class="btn btn-primary" value="Apply Coupon">
                     </div>
                 </div>
                 <a href="{% url 'user_coupons' %}" class="ml-3 mt-3 mb-5">view coupon details</a>
@@ -129,6 +141,7 @@
     </div>
 </div>
 <!-- Cart End -->
+{% block scripts%}{% endblock scripts%}
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {

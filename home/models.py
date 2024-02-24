@@ -49,6 +49,7 @@ class Cart(models.Model):
     cart_total=models.DecimalField(default=0,decimal_places=2,max_digits=10,null=True)
     total_price=models.DecimalField(default=0,decimal_places=2,max_digits=10,null=True)        
     is_ordered=models.BooleanField(default=False)
+    coupon_count=models.IntegerField(default=0)
     def calculate_cart_total(self):
         self.cart_total = (self.shipping + self.total_price +self.tax).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
 

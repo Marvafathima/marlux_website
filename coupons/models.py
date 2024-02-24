@@ -15,10 +15,11 @@ class Coupon(models.Model):
     minimum_order_amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     active = models.BooleanField(default=True)
     user_limit = models.IntegerField(default=1)
+    user_count=models.IntegerField(default=0)
     description = models.TextField(blank=True)
 
     def is_valid(self):
-        return self.active and self.usage_count < self.usage_limit and self.expiration_date > timezone.now()
+        return self.active and self.usage_count < self.usage_limit  and self.user_count < self.user_limit  and self.expiration_date > timezone.now()
 
     def save(self, *args, **kwargs):
         # Convert your_field to uppercase before saving
