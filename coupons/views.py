@@ -114,67 +114,83 @@ def user_coupons(request):
     coupon=Coupon.objects.all()
     return render(request,'coupons.html',{'coupons':coupon})
 def apply_coupon(request):
-    print("apply coupon called$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
     user=request.user
-    code=request.POST.get('code')
-    print(code) 
-    coupon=Coupon.objects.get(code=code)
-    if coupon.discount_amount:
-        print(coupon.discount_amount)
-    else:
-        print(coupon.discount_percentage)
-    if coupon.is_valid():
-        cart=Cart.objects.get(user=user.id)
-        cart_items=CartItem.objects.filter(cart__user=user.id)
-        try:
-        
-            address=Address.objects.get(user=user,is_default=True)
-        except:
-            address=None
-        grand_total=cart.total_price
-        user_limit=cart.coupon_count
-        print(cart.total_price,cart.coupon_count,"coupon valid")
-        try:
-            order_count=Order.objects.filter(user=user).count()
-           
-        except:
-            order_count=0
-    
-        if coupon.minimum_order_amount==None:
-            coupon.minimum_order_amount=0
-        
-        if float(grand_total)>= float(coupon.minimum_order_amount) and user_limit<=1 and order_count>=coupon.purchase_count:
-            if coupon.discount_amount:
-                cart.total_price-=coupon.discount_amount
-                cart.save()
-            else:
-                grand_total=(coupon.discount_percentage * grand_total)/100
-                cart.total_price-=grand_total
-                cart.save()
-            coupon.usage_count +=1
-            coupon.user_count +=1
-            user_limit +=1
-            cart.coupon_count=user_limit
-            # cart.cart_total=grand_total
-            cart.save()
-            print(cart.total_price,"this is the new total")
-            messages.success(request,"coupon applied successfully!")
+    code=request.POST.get('code') 
+    try:
+        coupon=Coupon.objects.get(code=code)
+        if coupon.discount_amount:
+            print(coupon.discount_amount)
         else:
-            coupon.active==False
-            coupon.save()
-            print("exceeded the limit")
-            messages.error(request,"coupon limit exceeded")
+            print(coupon.discount_percentage)
+        if coupon.is_valid():
+            cart=Cart.objects.get(user=user.id)
+            cart_items=CartItem.objects.filter(cart__user=user.id)
+            try:
+            
+                address=Address.objects.get(user=user,is_default=True)
+            except:
+                address=None
+            grand_total=cart.total_price
+            user_limit=cart.coupon_count
+            print(cart.total_price,cart.coupon_count,"coupon valid")
+            try:
+                order_count=Order.objects.filter(user=user).count()
+            
+            except:
+                order_count=0
         
-        return render(request,'cart.html',{'carts':cart,'cart_items':cart_items,'address':address})
-    else:
-        messages.error(request,"Coupon is not valid")
-        return redirect('cart')
+            if coupon.minimum_order_amount==None:
+                coupon.minimum_order_amount=0
+            if float(grand_total)< float(coupon.minimum_order_amount):
+                messages.error(request,"oops.total purchase amount is low to apply this coupon.add more to cart.")
+                return render(request,'cart.html',{'carts':cart,'cart_items':cart_items,'address':address})
+            if user_limit>10:
+                messages.error(request,"It seems like you have Already applied a coupon")
+                return render(request,'cart.html',{'carts':cart,'cart_items':cart_items,'address':address})
+            if order_count != coupon.purchase_count:
+                messages.error(request,"you are not eligible for this coupon.either you need to be either  new to the website or a regular customer")
+                return render(request,'cart.html',{'carts':cart,'cart_items':cart_items,'address':address})
+            if float(grand_total)>= float(coupon.minimum_order_amount) and user_limit<=10 and order_count==coupon.purchase_count:
+                if coupon.discount_amount:
+                    cart.coupon_price=cart.total_price-coupon.discount_amount
+                    cart.coupon_cart_total=cart.coupon_price+cart.tax+cart.shipping
+                    # cart.total_price-=coupon.discount_amount
+                    print(cart.coupon_cart_total,"this is the coupon total price")
+                    cart.save()
+                else:
+                    grand_total=(coupon.discount_percentage * grand_total)/100
+                    cart.coupon_price=cart.total_price-grand_total
+                    cart.coupon_cart_total=cart.coupon_price+cart.tax+cart.shipping
+                    # cart.total_price-=grand_total
+                    print(cart.coupon_cart_total,"this is the coupon total price")
+                    cart.save()
+                if cart.total_qnty !=0:
+                    coupon.usage_count +=1
+                    coupon.user_count +=1
+                    user_limit +=1
+                    cart.coupon_count=user_limit
+                    # cart.cart_total=grand_total
+                    cart.save()
+                print(cart.coupon_price,"this is the new total")
+                messages.success(request,"coupon applied successfully!")
+                return render(request,'cart.html',{'carts':cart,'cart_items':cart_items,'address':address,'coupon':coupon})
+            else:
+                coupon.active==False
+                coupon.save()
+                print("exceeded the limit")
+                messages.error(request,"coupon limit exceeded")
+            
+            return render(request,'cart.html',{'carts':cart,'cart_items':cart_items,'address':address})
+        else:
+            messages.error(request,"Coupon is not valid")
+            return redirect('cart')
     
-    # except:
-    #     messages.error(request,"No matching coupon found!!Apply valid code")
-    #     return redirect('cart')
+    except:
+        messages.error(request,"No matching coupon found!!Apply valid code")
         
-# coupon.usage_count == coupon.usage_limit and coupon.user_count == coupon.user_limit and coupon.expiration_date < timezone.now():
+    return redirect('cart')
+        
+
  
    
         

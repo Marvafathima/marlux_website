@@ -120,6 +120,13 @@
                         <h6 class="font-weight-medium">Subtotal</h6>
                         <h6 class="font-weight-medium" id="subtotal_{{carts.id}}">₹{{carts.total_price}}</h6>
                     </div>
+                    {% if coupon %}
+                    <div class="d-flex justify-content-between mb-3 pt-1">
+                        <h6 class="font-weight-medium">Discount</h6>
+                        <h6 class="font-weight-medium text-danger">{% if coupon.discount_amount %}-₹{{coupon.discount_amount}} {%else %}-{{coupon.discount_percentage|floatformat:0}}%  {%endif %} </h6>
+                        <h6 class="font-weight-medium text-danger" >₹{{carts.coupon_price|floatformat:2}}</h6>
+                    </div>
+                    {%endif %}
                     <div class="d-flex justify-content-between mb-3 pt-1">
                         <h6 class="font-weight-medium">Shipping</h6>
                         <h6 class="font-weight-medium">₹{{carts.shipping}}</h6>
@@ -130,10 +137,19 @@
                     </div>
                 </div>
                 <div class="card-footer border-secondary bg-transparent">
+                    {% if coupon %}
+                    <div class="d-flex justify-content-between mt-2">
+                        <h5 class="font-weight-bold">Total</h5>
+                        <p style="font: size 10px;">₹<s>{{carts.cart_total|floatformat:2}}</s></p>
+                        <h5 class="font-weight-bold">₹{{carts.coupon_cart_total|floatformat:2}}</h5>
+                    </div>
+
+
+                    {% else %}
                     <div class="d-flex justify-content-between mt-2">
                         <h5 class="font-weight-bold">Total</h5>
                         <h5 class="font-weight-bold"id="cart_total_{{carts.id}}" >₹{{carts.cart_total|floatformat:2}}</h5>
-                    </div>
+                    </div>{% endif %}
                     <a href="{% url 'checkout' carts.id %}"class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</a>
                 </div>
             </div>
