@@ -144,13 +144,13 @@ def apply_coupon(request):
             if float(grand_total)< float(coupon.minimum_order_amount):
                 messages.error(request,"oops.total purchase amount is low to apply this coupon.add more to cart.")
                 return render(request,'cart.html',{'carts':cart,'cart_items':cart_items,'address':address})
-            if user_limit>10:
+            if user_limit>40:
                 messages.error(request,"It seems like you have Already applied a coupon")
                 return render(request,'cart.html',{'carts':cart,'cart_items':cart_items,'address':address})
             if order_count != coupon.purchase_count:
                 messages.error(request,"you are not eligible for this coupon.either you need to be either  new to the website or a regular customer")
                 return render(request,'cart.html',{'carts':cart,'cart_items':cart_items,'address':address})
-            if float(grand_total)>= float(coupon.minimum_order_amount) and user_limit<=10 and order_count==coupon.purchase_count:
+            if float(grand_total)>= float(coupon.minimum_order_amount) and user_limit<=40 and order_count==coupon.purchase_count:
                 if coupon.discount_amount:
                     cart.coupon_price=cart.total_price-coupon.discount_amount
                     cart.coupon_cart_total=cart.coupon_price+cart.tax+cart.shipping
@@ -164,13 +164,14 @@ def apply_coupon(request):
                     # cart.total_price-=grand_total
                     print(cart.coupon_cart_total,"this is the coupon total price")
                     cart.save()
-                if cart.total_qnty !=0:
-                    coupon.usage_count +=1
-                    coupon.user_count +=1
-                    user_limit +=1
-                    cart.coupon_count=user_limit
-                    # cart.cart_total=grand_total
-                    cart.save()
+                # if cart.total_qnty !=0:
+                #     coupon.usage_count +=1
+                #     coupon.user_count +=1
+                #     user_limit +=1
+                #     cart.coupon_count=user_limit
+                #     # cart.cart_total=grand_total
+                #     cart.save()
+                cart.coupon_applied==True
                 print(cart.coupon_price,"this is the new total")
                 messages.success(request,"coupon applied successfully!")
                 return render(request,'cart.html',{'carts':cart,'cart_items':cart_items,'address':address,'coupon':coupon})
@@ -191,7 +192,8 @@ def apply_coupon(request):
     return redirect('cart')
         
 
- 
+    
+
    
         
 

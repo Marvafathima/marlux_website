@@ -3,7 +3,7 @@
 {% block content %}
 
 {% if messages %}
-<div class="alert {% if message.tags == 'error' %}alert-danger alert-dismissible fade show{% elif message.tags == 'success' %}alert-success alert-dismissible fade show {% endif %}" role="alert">
+<div class="alert {% if message.tags == 'error' %}alert-danger alert-dismissible fade show {% elif message.tags == 'success' %}alert-success alert-dismissible fade show {% endif %}" role="alert">
     {% for message in messages%}
     <strong>{{ message.tags }}</strong> {{ message }}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -123,8 +123,8 @@
                     {% if coupon %}
                     <div class="d-flex justify-content-between mb-3 pt-1">
                         <h6 class="font-weight-medium">Discount</h6>
-                        <h6 class="font-weight-medium text-danger">{% if coupon.discount_amount %}-₹{{coupon.discount_amount}} {%else %}-{{coupon.discount_percentage|floatformat:0}}%  {%endif %} </h6>
-                        <h6 class="font-weight-medium text-danger" >₹{{carts.coupon_price|floatformat:2}}</h6>
+                        <h6 class="font-weight-medium text-danger" >{% if coupon.discount_amount %}-₹{{coupon.discount_amount}} {%else %}-{{coupon.discount_percentage|floatformat:0}}%  {%endif %} </h6>
+                        <h6 class="font-weight-medium text-danger"id="discount_{{carts.id}}" >₹{{carts.coupon_price|floatformat:2}}</h6>
                     </div>
                     {%endif %}
                     <div class="d-flex justify-content-between mb-3 pt-1">
@@ -140,8 +140,8 @@
                     {% if coupon %}
                     <div class="d-flex justify-content-between mt-2">
                         <h5 class="font-weight-bold">Total</h5>
-                        <p style="font: size 10px;">₹<s>{{carts.cart_total|floatformat:2}}</s></p>
-                        <h5 class="font-weight-bold">₹{{carts.coupon_cart_total|floatformat:2}}</h5>
+                        <p style="font: size 10px;" id="cart_total_{{carts.id}}">₹<s>{{carts.cart_total|floatformat:2}}</s></p>
+                        <h5 class="font-weight-bold" id="coupon_cart_total_{{carts.id}}">₹{{carts.coupon_cart_total|floatformat:2}}</h5>
                     </div>
 
 
@@ -219,8 +219,13 @@ $(document).ready(function() {
                 location.reload();
                 $('#subtotal_' + cartId).text(response.subtotal); 
                 $('#cart_total_' + cartId).text(response.cart_total);
+                if (response.coupon_price && response.coupon_cart_total){
+                    $('#discount_' + cartId).text(response.coupon_price);
+                    $('#coupon_cart_total_' + cartId).text(response.coupon_cart_total);
+                } 
+                
                 $('#tax_' + cartId).text(response.tax);
-               
+                updatecartcount();
             },
             error: function(xhr, errmsg, err) {
                 console.log(xhr.status + ": " + xhr.responseText);
@@ -249,7 +254,12 @@ $(document).ready(function() {
                location.reload();
                $('#subtotal_' + cartId).text(response.subtotal); 
                $('#cart_total_' + cartId).text(response.cart_total);
+               if (response.coupon_price && response.coupon_cart_total){
+                $('#discount_' + cartId).text(response.coupon_price);
+                $('#coupon_cart_total_' + cartId).text(response.coupon_cart_total);
+            } 
                $('#tax_' + cartId).text(response.tax);
+               updatecartcount();
             },
             error: function(xhr, errmsg, err) {
                 console.log(xhr.status + ": " + xhr.responseText);
@@ -294,6 +304,10 @@ $(document).ready(function() {
             $('#subtotal_' + cartId).text(response.subtotal); 
             $('#cart_total_' + cartId).text(response.cart_total);
             $('#tax_' + cartId).text(response.tax);
+            if (response.coupon_price && response.coupon_cart_total){
+                $('#discount_' + cartId).text(response.coupon_price);
+                $('#coupon_cart_total_' + cartId).text(response.coupon_cart_total);
+            } 
             updatecartcount();
             // Update total price or any other relevant UI here
         },

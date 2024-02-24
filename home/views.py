@@ -139,12 +139,29 @@ def update_cart_item(request):
         cart = Cart.objects.get(id=cart_id)
         cart.total_qnty = CartItem.objects.filter(cart=cart).count()
         if cart.total_qnty==0:
-            cart.total_price =0
+            cart.delete()
+            return render(request,'emptycart.html')
         else:
+            old_price=cart.total_price
             cart.total_price = CartItem.objects.filter(cart=cart).aggregate(total_price=Sum('item_total_price'))['total_price']
-        
+            new_price=cart.total_price
         cart.save()
-        
+        if cart.coupon_price:
+            price_diff=new_price-old_price
+            cart.coupon_price+=price_diff
+            cart.coupon_cart_total+=price_diff
+            cart.save()
+            return JsonResponse({
+            'success': True,
+            'quantity': cart_item.quantity,
+            'total_price': cart_item.item_total_price,
+            'subtotal':cart.total_price,
+            'cart_total':cart.cart_total,
+            'tax':cart.tax,
+            'coupon_price':cart.coupon_price,
+            'coupon_cart_total':cart.coupon_cart_total                                                                                                                                          
+        })
+            
         return JsonResponse({
             'success': True,
             'quantity': cart_item.quantity,
@@ -169,23 +186,35 @@ def remove_from_cart(request):
         try:
             cart_item = CartItem.objects.get(id=item_id)
             cart=Cart.objects.get(id=cart_id)
-            qnty=cart_item.quantity 
-            cart.total_qnty=cart.total_qnty-1
-            new_qnty= cart.total_qnty
-            if(cart.total_qnty)==0:
-                cart.total_price=0.00
+            cart.total_price-=cart_item.item_total_price
             cart_item.delete()
+           
+            qnty=cart_item.quantity 
+            cart.total_qnty = CartItem.objects.filter(cart=cart).count()
+            # cart.total_qnty=cart.total_qnty-1
+            new_qnty= cart.total_qnty
+
+            # cart_item.delete()
+            if(cart.total_qnty)==0:
+                # cart.total_price=0.00
+                # if cart.coupon_price:
+                #     cart.coupon_price==0
+                #     cart.coupon_cart_total==0
+                cart.delete()
+                return render(request,'emptycart.html')
+            
+            # cart.total_qnty = CartItem.objects.filter(cart=cart).count()
             cart.save()
             print(cart.total_price,"NEW UPDATED PRICE AFTER REMOVAL")
-
-
+    
             return JsonResponse({'message': 'Product removed from the cart',
-                                 'total_qnty':new_qnty,
-                                 'subtotal':cart.total_price,
-                                 'cart_total':cart.cart_total,
-                                 'tax':cart.tax
-                                 
-                                 }, )
+                                'total_qnty':new_qnty,
+                                'subtotal':cart.total_price,
+                                'cart_total':cart.cart_total,
+                                'tax':cart.tax
+                                
+                                }, )
+           
         except CartItem.DoesNotExist:
             return JsonResponse({'error': 'Cart item not found'},)
     else:

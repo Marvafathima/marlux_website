@@ -50,6 +50,7 @@ class Cart(models.Model):
     total_price=models.DecimalField(default=0,decimal_places=2,max_digits=10,null=True)        
     is_ordered=models.BooleanField(default=False)
     coupon_count=models.IntegerField(default=0)
+    coupon_applied=models.BooleanField(default=False)
     coupon_price=models.DecimalField(default=0,decimal_places=2,max_digits=10,null=True)
     coupon_cart_total=models.DecimalField(default=0,decimal_places=2,max_digits=10,null=True)
     def calculate_cart_total(self):
