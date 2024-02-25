@@ -183,7 +183,7 @@ def apply_coupon(request):
                     # cart.total_price-=grand_total
                     print(cart.coupon_cart_total,"this is the coupon total price")
                     cart.save()
-                cart.applied_coupon=coupon.id
+                cart.applied_coupon=coupon
                 print(cart.coupon_price,"this is the new total")
                 messages.success(request,"coupon applied successfully!")
                 return render(request,'cart.html',{'carts':cart,'cart_items':cart_items,'address':address,'coupon':coupon})
@@ -198,7 +198,7 @@ def apply_coupon(request):
         else:
             messages.error(request,"Coupon is not valid")
             return redirect('cart')
-    
+
     except:
         messages.error(request,"No matching coupon found!!Apply valid code")
         
