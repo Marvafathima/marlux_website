@@ -15,6 +15,7 @@ from django.views.decorators.csrf import csrf_protect
 from .models import Order,OrderAddress,OrderProduct
 from django.db import transaction
 from django.core.serializers.json import DjangoJSONEncoder
+from coupons .models import Coupon
 # Create your views here.
 @login_required
 def cart_to_order(request,cart_id):
@@ -26,13 +27,17 @@ def cart_to_order(request,cart_id):
     address=Address.objects.get(user=us,is_default=True)
     cust_detail=UserAddress.objects.get(user=us)
     if cart.coupon_cart_total:
-        
+        coupon=Coupon.objects.get(id=cart.applied_coupon)
+        coupon.usage_count +=1
+        coupon.user_count +=1
+        coupon.save()
     context={
         'cart':cart,
         'cart_items':cart_items,
         'address':address,
         'user':user,
-        'cust_detail':cust_detail
+        'cust_detail':cust_detail,
+        'coupon':coupon
     }
     return render (request,'checkout.html',{'context':context})
 def order_display(request):

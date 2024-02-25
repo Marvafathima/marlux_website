@@ -130,6 +130,7 @@ def user_coupons(request):
 def apply_coupon(request):
     user=request.user
     code=request.POST.get('code') 
+    print(code,'this is the code')
     try:
         coupon=Coupon.objects.get(code=code)
         if coupon.discount_amount:
@@ -182,14 +183,7 @@ def apply_coupon(request):
                     # cart.total_price-=grand_total
                     print(cart.coupon_cart_total,"this is the coupon total price")
                     cart.save()
-                # if cart.total_qnty !=0:
-                #     coupon.usage_count +=1
-                #     coupon.user_count +=1
-                #     user_limit +=1
-                #     cart.coupon_count=user_limit
-                #     # cart.cart_total=grand_total
-                #     cart.save()
-                cart.coupon_applied==True
+                cart.applied_coupon=coupon.id
                 print(cart.coupon_price,"this is the new total")
                 messages.success(request,"coupon applied successfully!")
                 return render(request,'cart.html',{'carts':cart,'cart_items':cart_items,'address':address,'coupon':coupon})
