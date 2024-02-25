@@ -22,7 +22,8 @@ def create_coupon(request):
         expiration_date = request.POST.get('expiration_date')
         usage_limit = request.POST.get('usage_limit')
         user_limit=request.POST.get('user_limit')
-        purchase_count=request.POST.get('purchase_count')
+        if 'purchase_count' in request.POST:
+            purchase_count=request.POST.get('purchase_count')
         minimum_order_amount=request.POST.get('minimum_order_amount')
         description=request.POST.get('description')
         if 'active' in request.POST:
@@ -39,9 +40,12 @@ def create_coupon(request):
                 active=active,
                 minimum_order_amount=minimum_order_amount,
                 description=description,
-                purchase_count=purchase_count
+               
 
             )
+            if purchase_count:
+                 coupon.purchase_count=purchase_count
+
             
             if discount_amount:
                 coupon.discount_amount=discount_amount
@@ -90,9 +94,19 @@ def update_coupon(request,id):
         if 'minimum_order_amount' in request.POST:
             minimum_order_amount=request.POST.get('minimum_order_amount')
             coupon.minimum_order_amount=minimum_order_amount
+       
         if 'purchase_count' in request.POST:
             purchase_count=request.POST.get('purchase_count')
-            coupon.purchase_count=purchase_count
+            if purchase_count.strip():
+  
+                try:
+                    purchase_count=int(purchase_count)
+                    coupon.purchase_count=purchase_count
+                except:
+                    
+                    print("no purchase count")
+            else:
+                coupon.purchase_count=None
         if 'description' in request.POST:    
             description=request.POST.get('description')
             coupon.description=description
@@ -147,9 +161,13 @@ def apply_coupon(request):
             if user_limit>40:
                 messages.error(request,"It seems like you have Already applied a coupon")
                 return render(request,'cart.html',{'carts':cart,'cart_items':cart_items,'address':address})
-            if order_count != coupon.purchase_count:
-                messages.error(request,"you are not eligible for this coupon.either you need to be either  new to the website or a regular customer")
-                return render(request,'cart.html',{'carts':cart,'cart_items':cart_items,'address':address})
+            if coupon.purchase_count is not None:
+                if order_count != coupon.purchase_count:
+                    messages.error(request,"you are not eligible for this coupon.either you need to be either  new to the website or a regular customer")
+                    return render(request,'cart.html',{'carts':cart,'cart_items':cart_items,'address':address})
+            else:
+                order_count=None
+            
             if float(grand_total)>= float(coupon.minimum_order_amount) and user_limit<=40 and order_count==coupon.purchase_count:
                 if coupon.discount_amount:
                     cart.coupon_price=cart.total_price-coupon.discount_amount
@@ -175,6 +193,7 @@ def apply_coupon(request):
                 print(cart.coupon_price,"this is the new total")
                 messages.success(request,"coupon applied successfully!")
                 return render(request,'cart.html',{'carts':cart,'cart_items':cart_items,'address':address,'coupon':coupon})
+            
             else:
                 coupon.active==False
                 coupon.save()
@@ -190,7 +209,7 @@ def apply_coupon(request):
         messages.error(request,"No matching coupon found!!Apply valid code")
         
     return redirect('cart')
-        
+       
 
     
 

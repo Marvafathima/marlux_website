@@ -11,7 +11,7 @@ class Coupon(models.Model):
     expiration_date = models.DateTimeField()
     usage_limit = models.IntegerField(default=1)
     usage_count = models.IntegerField(default=0)
-    purchase_count=models.IntegerField(default=0)
+    purchase_count=models.IntegerField(null=True,blank=True)
     minimum_order_amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     active = models.BooleanField(default=True)
     user_limit = models.IntegerField(default=1)

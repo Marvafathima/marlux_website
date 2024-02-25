@@ -25,6 +25,8 @@ def cart_to_order(request,cart_id):
     user=CustomUser.objects.get(id=us.id)
     address=Address.objects.get(user=us,is_default=True)
     cust_detail=UserAddress.objects.get(user=us)
+    if cart.coupon_cart_total:
+        
     context={
         'cart':cart,
         'cart_items':cart_items,
