@@ -11,7 +11,7 @@
             <p class="card-text">{{address.district}},{{address.state}},{{address.country}}</p>
             
             <div class="form-check">
-                <input class="form-check-input  default-address" type="radio" name="defaultAddress" value="{{ address.id }}" id="defaultAddress{{ address.id }} {% if address.is_default %} checked {% endif %}" >
+                <input class="form-check-input  default-address" type="radio" name="defaultAddress" value="{{ address.id }}" id="defaultAddress{{ address.id }}" {% if address.is_default %} checked {% endif %} >
                 <label class="form-check-label" for="defaultAddress{{ address.id }}">
                     Set as Default
                 </label>

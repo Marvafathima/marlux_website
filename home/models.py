@@ -80,7 +80,7 @@ class CartItem(models.Model):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
     product_variant = models.ForeignKey(ProductVar, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
-    price=models.DecimalField(default=0,decimal_places=2,max_digits=10,null=True) 
+    price=models.DecimalField(default=1,decimal_places=2,max_digits=10,null=True) 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     item_total_price=models.DecimalField(default=0,decimal_places=2,max_digits=10,null=True) 
@@ -89,7 +89,7 @@ class CartItem(models.Model):
         if self.pk:  # If the instance has already been saved (i.e., it's an update)
             old_cart_item = CartItem.objects.get(pk=self.pk)
             if old_cart_item.quantity != self.quantity:  # Check if quantity has changed
-                self.item_total_price = self.quantity * self.product_variant.price
+                self.item_total_price = self.quantity * self.price
         else:  # If it's a new instance
             self.item_total_price = self.quantity * self.product_variant.price
         

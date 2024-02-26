@@ -3,189 +3,145 @@
     {% block content%}
     <div class="container-fluid pt-5">
         <div class="row px-xl-5 justify-content-between">
-            <div class="col-lg-4">
-                <div class="mb-4">
-                    <h4 class="font-weight-semi-bold mb-4">Billing Address</h4>
-                    <div class="row">
-                        <div class="col-md-6 form-group">
-                            <label>User Name</label>
-                            <input class="form-control" type="text" placeholder="User name" value="{{context.cust_detail.user_name}}">
-                        </div>
-                        <!-- <div class="col-md-6 form-group">
-                            <label>Last Name</label>
-                            <input class="form-control" type="text" placeholder="Doe">
-                        </div> -->
-                        <div class="col-md-6 form-group">
-                            <label>E-mail</label>
-                            <input class="form-control" type="text" placeholder="example@email.com" value="{{user.email}}" >
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Mobile No</label>
-                            <input class="form-control" type="text" placeholder="+123 456 789" value="{{context.cust_detail.phone_number}}">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>House Name</label>
-                            <input class="form-control" type="text" placeholder="123 Street" value="{{context.address.house_name}}">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Street</label>
-                            <input class="form-control" type="text" placeholder="123 Street" value="{{context.address.street}}">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>City</label>
-                            <input class="form-control" type="text" placeholder="New York" value="{{context.address.city}}">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>District</label>
-                            <input class="form-control" type="text" placeholder="New York" value="{{context.address.district}}">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>State</label>
-                            <input class="form-control" type="text" placeholder="New York" value="{{context.address.state}}" >
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>pin Code</label>
-                            <input class="form-control" type="text" placeholder="123" value="{{context.address.postal_code}}">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Country</label>
-                            <input class="form-control" type="text" placeholder="New York" value="{{context.address.country}}" >
-
-                        </div>
-                        
-                       
-                        <!-- <div class="col-md-12 form-group">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="newaccount">
-                                <label class="custom-control-label" for="newaccount">Create an account</label>
-                            </div>
-                        </div> -->
-                        <div class="card-footer border-secondary bg-transparent">
-                            <a href="{% url 'addressdisplay' %}"  class="btn btn-sm btn-block btn-primary  my-3 py-3">Edit or Change Address</a>
-                        </div>
-                        <div class="col-md-12 form-group" style="display:none;">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="shipto">
-                                <label class="custom-control-label" for="shipto"  data-toggle="collapse" data-target="#shipping-address">Ship to different address</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- <div class="collapse mb-4" id="shipping-address">
-                    <h4 class="font-weight-semi-bold mb-4">Shipping Address</h4>
-                    <div class="row">
-                        <div class="col-md-6 form-group">
-                            <label>First Name</label>
-                            <input class="form-control" type="text" placeholder="John">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Last Name</label>
-                            <input class="form-control" type="text" placeholder="Doe">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>E-mail</label>
-                            <input class="form-control" type="text" placeholder="example@email.com">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Mobile No</label>
-                            <input class="form-control" type="text" placeholder="+123 456 789">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Address Line 1</label>
-                            <input class="form-control" type="text" placeholder="123 Street">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Address Line 2</label>
-                            <input class="form-control" type="text" placeholder="123 Street">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>Country</label>
-                            <select class="custom-select">
-                                <option selected>United States</option>
-                                <option>Afghanistan</option>
-                                <option>Albania</option>
-                                <option>Algeria</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>City</label>
-                            <input class="form-control" type="text" placeholder="New York">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>State</label>
-                            <input class="form-control" type="text" placeholder="New York">
-                        </div>
-                        <div class="col-md-6 form-group">
-                            <label>ZIP Code</label>
-                            <input class="form-control" type="text" placeholder="123">
-                        </div>
-                    </div>
-                </div> -->
-            </div>
-            <div class="col-lg-6">
-                <div class="card border-secondary mb-5 ">
+           
+            <div class="col-lg-7">
+                 <!-- order detail ends here -->
+                
+                <!-- order detail ends here -->
+                 <!-- order detail table starts here -->
+                 <div class="card-body">
+                 <div class="card border-secondary mb-5 ">
                     <div class="card-header bg-secondary border-0 ">
-                        <h4 class="font-weight-semi-bold m-0">Order Total</h4>
+                        <h4 class="font-weight-semi-bold m-0 text-center">Order Total</h4>
                     </div>
-                    <div class="card-body">
-                        <div class=" d-flex justify-content-around">
-                            <div class="col lg-4"><h5 class="font-weight-medium mb-3">Products</h5></div>
-                            <div class="col lg-4"><h5 class="font-weight-medium mb-3 pr-2">Quantity</h5></div>  
-                            <div><h5 class="font-weight-medium mb-3">Price</h5></div> 
-                        </div>
-                        {% for items in context.cart_items %}
-                        <div class="d-flex justify-content-around ">
-                           <div class="col lg-4"> <p>{{items.product_variant.prod_id.pr_name}}</p></div>
-                           <div class="col lg-4 pl-5"><p>{{items.quantity}}</p></div>
-                           <div><p>{{items.item_total_price}}</p></div>
-                        </div>
-                        {% endfor %}
-                       
+                    
+                        <table class="table table-bordered text-center mb-0">
+                            <thead class="bg-secondary text-dark">
+                                <tr>
+                                    <th>Products</th>
+                                    <th>Quantity</th>
+                                    <th>Size</th>
+                                    <th>Color</th>
+                                    <th>Price</th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody class="align-middle">
+                                {% for items in context.cart_items %}   
+                                <tr>
+                                    <td class="text-start" >{{items.product_variant.prod_id.pr_name}}</td>
+                                    <td class="align-middle">{{items.quantity}}</td>
+                                    <td class="align-middle">{{items.product_variant.size}}</td>
+                                    <td class="align-middle">{{items.product_variant.color}}</td>
+                                    <td class="align-middle" >{{items.item_total_price}}</td>
+                                </tr> {% endfor %}
+                                </table> 
+
+                        </table>
                         <hr class="mt-0">
                         <div class="d-flex justify-content-between mb-3 pt-1">
                             <h6 class="font-weight-medium">Subtotal</h6>
-                            <h6 class="font-weight-medium">{{context.cart.total_price}}</h6>
+                            <h6 class="font-weight-medium">₹{{context.cart.total_price}}</h6>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3 pt-1">
+                            <h6 class="font-weight-medium">Tax</h6>
+                            <h6 class="font-weight-medium">₹{{context.cart.tax}}</h6>
                         </div>
                         <div class="d-flex justify-content-between">
                             <h6 class="font-weight-medium">Shipping</h6>
-                            <h6 class="font-weight-medium">{{context.cart.shipping}}</h6>
+                            <h6 class="font-weight-medium">₹{{context.cart.shipping}}</h6>
                         </div>
+                        {% if context.cart.applied_coupon %}
+                        <div class="d-flex justify-content-between">
+                            <h6 class="font-weight-medium">Discount</h6>
+                            {% if context.cart.applied_coupon.discount_amount %}
+                            <h6 class="font-weight-medium text-danger">- ₹{{context.cart.applied_coupon.discount_amount}}</h6>
+                        {% else %} 
+                        <h6 class="font-weight-medium text-danger">- {{context.cart.applied_coupon.discount_percentage}}%</h6>
+                        {% endif %}
+                    
                     </div>
+                    <div class="card-footer border-secondary bg-transparent">
+                        <div class="d-flex justify-content-between mt-2">
+                            <h5 class="font-weight-bold">Total</h5>
+                            <h6 class="font-weight-medium"><s>{{context.cart.cart_total}}</s></h6>
+                            <h5 class="font-weight-bold text-danger">{{context.cart.coupon_cart_total}}</h5>
+                        </div>
+                    </div>{% else %}
                     <div class="card-footer border-secondary bg-transparent">
                         <div class="d-flex justify-content-between mt-2">
                             <h5 class="font-weight-bold">Total</h5>
                             <h5 class="font-weight-bold">{{context.cart.cart_total}}</h5>
                         </div>
-                    </div>
-                </div>
+                    </div>{% endif %}
+                </div> </div>
+
+                  <!-- order detail table ends here -->
+                
+            </div>
+            <div class="col-lg-4">
                 <div class="card border-secondary mb-5">
+
                     <div class="card-header bg-secondary border-0">
-                        <h4 class="font-weight-semi-bold m-0">Payment</h4>
+                        <h4 class="font-weight-semi-bold m-0">Delivery Address</h4>
                     </div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <div class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input" name="payment" id="paypal">
-                                <label class="custom-control-label" for="paypal">Paypal</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input" name="payment" id="directcheck">
-                                <label class="custom-control-label" for="directcheck">Direct Check</label>
-                            </div>
-                        </div>
-                        <div class="">
-                            <div class="custom-control custom-radio">
-                                <input type="radio" class="custom-control-input" name="payment" id="banktransfer">
-                                <label class="custom-control-label" for="banktransfer">Bank Transfer</label>
-                            </div>
-                        </div>
-                    </div>
+                    {% if not context.address %}
                     <div class="card-footer border-secondary bg-transparent">
-                        <a  href="{% url 'order_display' %}" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3">Place Order</a>
+                        <a href="{% url 'addressdisplay' %}"  class="btn btn-sm btn-block btn-primary  my-3 py-3">Add Address</a>
+                    </div>
+                       
+                        <!-- <div class="form-check">
+                            <input class="form-check-input  default-address" type="radio" name="defaultAddress" value="{{ address.id }}" id="defaultAddress{{ address.id }} {% if address.is_default %} checked {% endif %}" >
+                            <label class="form-check-label" for="defaultAddress{{ address.id }}">
+                                Set as Default
+                            </label>
+                    </div> -->
+                    {% else %}
+                    <div class="card-body ">
+                        <h5 class="card-title text-center text-capitalize">{{context.address.house_name}}</h5>
+                        <p class="card-text text-center text-capitalize">{{context.address.street}},{{context.address.city}},{{context.address.postal_code}}</p>
+                        <p class="card-text text-center text-capitalize">{{context.address.district}},{{context.address.state}},{{context.address.country}}</p>
+                        
+                    <div class="card-footer border-secondary bg-transparent">
+                        <a href="{% url 'addressdisplay' %}"  class="btn btn-sm btn-block btn-primary  my-3 py-3">Edit or Change Address</a>
                     </div>
                 </div>
+                {% endif %}
+            </div>
+            <div class="card border-secondary mb-5">
+                <div class="card-header bg-secondary border-0">
+                    <h4 class="font-weight-semi-bold m-0">Payment</h4>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <div class="custom-control custom-radio">
+                            <input type="radio" class="custom-control-input" name="payment" id="paypal">
+                            <label class="custom-control-label" for="paypal">COD</label>
+                        </div>  </div>
+                        <div class="form-group">
+                        <div class="custom-control custom-radio">
+                            <input type="radio" class="custom-control-input" name="payment" id="paypal">
+                            <label class="custom-control-label" for="paypal">Paypal</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="custom-control custom-radio">
+                            <input type="radio" class="custom-control-input" name="payment" id="directcheck">
+                            <label class="custom-control-label" for="directcheck">Direct Check</label>
+                        </div>
+                    </div>
+                    <div class="">
+                        <div class="custom-control custom-radio">
+                            <input type="radio" class="custom-control-input" name="payment" id="banktransfer">
+                            <label class="custom-control-label" for="banktransfer">Bank Transfer</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer border-secondary bg-transparent">
+                    <a  href="{% url 'order_display' %}" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3">Place Order</a>
+                </div>
+            </div>
+                
             </div>
         </div>
     </div>

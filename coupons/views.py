@@ -184,6 +184,7 @@ def apply_coupon(request):
                     print(cart.coupon_cart_total,"this is the coupon total price")
                     cart.save()
                 cart.applied_coupon=coupon
+                cart.save()
                 print(cart.coupon_price,"this is the new total")
                 messages.success(request,"coupon applied successfully!")
                 return render(request,'cart.html',{'carts':cart,'cart_items':cart_items,'address':address,'coupon':coupon})

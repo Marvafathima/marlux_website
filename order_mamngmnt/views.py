@@ -27,7 +27,7 @@ def cart_to_order(request,cart_id):
     address=Address.objects.get(user=us,is_default=True)
     cust_detail=UserAddress.objects.get(user=us)
     if cart.coupon_cart_total:
-        coupon=Coupon.objects.get(id=cart.applied_coupon)
+        coupon=Coupon.objects.get(id=cart.applied_coupon.id)
         coupon.usage_count +=1
         coupon.user_count +=1
         coupon.save()
@@ -60,7 +60,16 @@ def order_display(request):
         country = address.country
     
     )
+    
+
     order=Order.objects.create(user=user,address=order_address,order_total=cart.cart_total,total_qnty=cart.total_qnty)
+    if cart.coupon_cart_total:
+        coupon=Coupon.objects.get(id=cart.applied_coupon.id)
+        order.discount_total=cart.coupon_price
+        order.discount_grand_total=cart.coupon_cart_total
+        order.applied_coupon=coupon.id
+        order.save()
+    
     for item in items:
         ox=OrderProduct.objects.create(
                     order=order,

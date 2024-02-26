@@ -75,7 +75,9 @@ def add_to_cart(request):
        
     cart, created = Cart.objects.get_or_create(user=user)
     cart_item, created = CartItem.objects.get_or_create(cart=cart, product_variant=product_var)
-   
+    cart_item.price=product_var.price
+    cart_item.save()
+    print(cart_item.price,"this is cart item price")
     if not created:
         # If the cart item already exists, update the quantity
         cart_item.quantity += int(quantity)
