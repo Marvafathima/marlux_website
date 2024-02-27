@@ -115,36 +115,56 @@
                 <div class="card-body">
                     <div class="form-group">
                         <div class="custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" name="payment" id="paypal">
-                            <label class="custom-control-label" for="paypal">COD</label>
+                            <input type="radio" class="custom-control-input" name="payment" id="directcheck">
+                            <label class="custom-control-label" for="directcheck">COD</label>
                         </div>  </div>
                         <div class="form-group">
                         <div class="custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" name="payment" id="paypal">
-                            <label class="custom-control-label" for="paypal">Paypal</label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="custom-control custom-radio">
-                            <input type="radio" class="custom-control-input" name="payment" id="directcheck">
-                            <label class="custom-control-label" for="directcheck">Direct Check</label>
-                        </div>
-                    </div>
-                    <div class="">
-                        <div class="custom-control custom-radio">
                             <input type="radio" class="custom-control-input" name="payment" id="banktransfer">
-                            <label class="custom-control-label" for="banktransfer">Bank Transfer</label>
+                            <label class="custom-control-label" for="banktransfer">Pay with razorpay</label>
                         </div>
                     </div>
+                    
+                    
                 </div>
                 <div class="card-footer border-secondary bg-transparent">
-                    <a  href="{% url 'order_display' %}" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3">Place Order</a>
+                    <a id="place-order-btn" href="{% url 'order_display' %}" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3" style="display: none;">Place Order</a>
                 </div>
-            </div>
+                <div class="card-footer border-secondary bg-transparent">
+                <button id="pay-btn" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3" style="display: none;">Pay Now</button>
+            </div></div>
                 
             </div>
         </div>
     </div>
     <!-- Checkout End -->
-
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var codRadio = document.getElementById('directcheck');
+            var razorpayRadio = document.getElementById('banktransfer');
+            var placeOrderButton = document.getElementById('place-order-btn');
+            var payNowButton = document.getElementById('pay-btn');
+    
+            // Function to handle radio button change event
+            function handlePaymentMethodChange() {
+                if (codRadio.checked) {
+                    // If COD is selected, show Place Order button and hide Pay Now button
+                    placeOrderButton.style.display = 'block';
+                    payNowButton.style.display = 'none';
+                } else if (razorpayRadio.checked) {
+                    // If Razorpay is selected, show Pay Now button and hide Place Order button
+                    placeOrderButton.style.display = 'none';
+                    payNowButton.style.display = 'block';
+                }
+            }
+    
+            // Listen for changes in the radio buttons
+            codRadio.addEventListener('change', handlePaymentMethodChange);
+            razorpayRadio.addEventListener('change', handlePaymentMethodChange);
+    
+            // Initially hide the buttons based on the default selection
+            handlePaymentMethodChange();
+        });
+    </script>
+    
 {% endblock content %}

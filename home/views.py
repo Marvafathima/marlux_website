@@ -35,8 +35,12 @@ def product_detail(request, id):
     varients = ProductVar.objects.filter(prod_id=products)
     colors = Color.objects.filter(product_color__prod_id=products).distinct()
     sizes = Size.objects.filter(product_size__prod_id=products).distinct()
-   
-    return render(request, 'userside/detail.html', {'products': products, 'images': images, 'varients': varients, 'colors': colors, 'sizes': sizes})
+    try:
+        user=request.user
+        user_detail=CustomUser.objects.get(id=user.id)
+        return render(request, 'userside/detail.html', {'products': products, 'images': images, 'varients': varients, 'colors': colors, 'sizes': sizes,'user_detail':user_detail})
+    except:
+        return render(request, 'userside/detail.html', {'products': products, 'images': images, 'varients': varients, 'colors': colors, 'sizes': sizes})
 
 def get_sizes(request):
     if request.method == 'GET' and request.is_ajax():
@@ -60,6 +64,7 @@ def get_price(request):
         return JsonResponse({'price': None}) 
 @login_required(login_url='login')
 def add_to_cart(request):
+
     color_id = request.GET.get('color_id')
     size_id = request.GET.get('size_id')
     quantity = request.GET.get('quantity')
@@ -72,7 +77,7 @@ def add_to_cart(request):
     if not user.is_authenticated:
         messages.info(request,"Login to add items to the cart")
         return redirect('login')
-       
+    
     cart, created = Cart.objects.get_or_create(user=user)
     cart_item, created = CartItem.objects.get_or_create(cart=cart, product_variant=product_var)
     cart_item.price=product_var.price
@@ -98,7 +103,10 @@ def add_to_cart(request):
         cart.cart_total=cart.shipping+cart.total_price
         cart.save()
     return JsonResponse({'message': 'Product added to cart successfully.'})
-
+    
+def cart_login_redirect(request,id):
+    messages.error(request,"you need to login first to add items to the cart!")
+    return redirect('login')
 def cart(request):
     print('cart selected')
     user=request.user

@@ -122,8 +122,18 @@
                                     </button>
                                 </div>
                             </div>
+                            {% if user_detail %}
                             <button class="btn btn-primary px-3" id="addToCartBtn"><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</button>
-                        </div>
+                            {% else %}
+                            <a href="{% url 'cart_login_redirect' product.id %}" class="btn btn-primary px-3" ><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</a>
+                        {% endif%} 
+                       
+                        
+                    
+                    
+                    </div>
+
+
               
                 <div class="d-flex pt-2">
                     <p class="text-dark font-weight-medium mb-0 mr-2">Share on:</p>
