@@ -49,6 +49,9 @@ class Order(models.Model):
     updated_at=models.DateField(auto_now=True)
     total_qnty=models.IntegerField(default=1)
     grand_total=models.FloatField(null=True)
+    razorpay_order_id = models.CharField(max_length=500,null=True,blank=True)
+    razorpay_payment_id = models.CharField(max_length=500,null=True,blank=True)
+    razorpay_signature = models.CharField(max_length=500,null=True,blank=True)
     # coupen=models.ForeignKey(Coupon, on_delete=models.CASCADE, null=True, blank=True)
 
     def save(self, *args, **kwargs):

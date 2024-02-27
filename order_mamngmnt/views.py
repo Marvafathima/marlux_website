@@ -26,20 +26,30 @@ def cart_to_order(request,cart_id):
     user=CustomUser.objects.get(id=us.id)
     address=Address.objects.get(user=us,is_default=True)
     cust_detail=UserAddress.objects.get(user=us)
-    if cart.coupon_cart_total:
+    if cart.applied_coupon:
         coupon=Coupon.objects.get(id=cart.applied_coupon.id)
         coupon.usage_count +=1
         coupon.user_count +=1
         coupon.save()
-    context={
-        'cart':cart,
-        'cart_items':cart_items,
-        'address':address,
-        'user':user,
-        'cust_detail':cust_detail,
-        'coupon':coupon
-    }
-    return render (request,'checkout.html',{'context':context})
+        context={
+            'cart':cart,
+            'cart_items':cart_items,
+            'address':address,
+            'user':user,
+            'cust_detail':cust_detail,
+            'coupon':coupon
+        }
+        return render (request,'checkout.html',{'context':context})
+    else:
+        context={
+            'cart':cart,
+            'cart_items':cart_items,
+            'address':address,
+            'user':user,
+            'cust_detail':cust_detail,
+        }
+
+        return render (request,'checkout.html',{'context':context})
 def order_display(request):
     
     user=request.user

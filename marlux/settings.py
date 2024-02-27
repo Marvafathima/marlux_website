@@ -164,6 +164,7 @@ EMAIL_HOST_PASSWORD = 'choa kmab vgur armg'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 
+
 RAZORPAY_ID = "rzp_test_ZCCSyrCe5ZqrEH"
 RAZORPAY_SECRET = "0jXHYc59iwAKVWDMphgnXlh"
 #For To Enable Popus in Django or else it will block the payment popup

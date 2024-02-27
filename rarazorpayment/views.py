@@ -41,15 +41,15 @@ def payment_view(request):
         'user_name':user_name,
         'phone_number':phone_number
     }
-    return render(request,'payment.html',context)
+    return render(request,'checkout.html',context)
 client=razorpay.Client(auth=(settings.RAZORPAY_ID,settings.RAZORPAY_SECRET))
-def initiate_payment(notes,order_reciept,amount,currency='INR'):
+def initiate_payment(notes,order_receipt,amount,currency='INR'):
     data={
         'amount':amount*100,
         'currency':currency,
         'payment_capture':'1',
         'notes':notes,
-        'reciept':order_reciept
+        'reciept':order_receipt
     }
     response=client.order.create(data=data)
     return response['id']
@@ -77,7 +77,24 @@ def payment_success_view(request):
     #         return HTTPResponse("404 Error")
 
 
-
+def payment_success_view(request):
+   order_id = request.POST.get('order_id')
+   payment_id = request.POST.get('razorpay_payment_id')
+   signature = request.POST.get('razorpay_signature')
+   params_dict = {
+       'razorpay_order_id': order_id,
+       'razorpay_payment_id': payment_id,
+       'razorpay_signature': signature
+   }
+   try:
+       client.utility.verify_payment_signature(params_dict)
+       # Payment signature verification successful
+       # Perform any required actions (e.g., update the order status)
+       return render(request, 'payment_success.html')
+   except razorpay.errors.SignatureVerificationError as e:
+       # Payment signature verification failed
+       # Handle the error accordingly
+       return render(request, 'payment_failure.html')
 
 
 

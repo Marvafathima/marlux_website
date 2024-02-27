@@ -166,5 +166,50 @@
             handlePaymentMethodChange();
         });
     </script>
-    
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <form action="{% url 'payment_success' %}" method="POST">
+        <input type="hidden" name="order_id" value="{{ order_id }}">
+ <script>
+       var options = {
+           "key": "{{ rzp_test_ZCCSyrCe5ZqrEH }}",
+           "amount": "{{ amount }}",
+           "currency": "INR",
+           "name": "MARLUX",
+           "description": "Payment Description",
+           "order_id": "{{ order_id }}",
+           "handler": function(response) {
+               // Handle the payment success response
+               // You can submit the form or redirect to a success page
+               document.forms[0].submit();
+           },
+           "prefill": {
+               "name": "{{context.user_name}}",
+               "email": "{{request.user.email}}",
+               "contact": "+91" + "{{context.phone_number}}"
+           },
+          
+
+           "theme": {
+            "color": "#3399cc"
+        }
+       };
+       var rzp1 = new Razorpay(options);
+       
+       rzp1.on('payment.failed', function (response){
+               alert(response.error.code);
+               alert(response.error.description);
+               alert(response.error.source);
+               alert(response.error.step);
+               alert(response.error.reason);
+               alert(response.error.metadata.order_id);
+               alert(response.error.metadata.payment_id);
+       });
+       if (payNowButton.style.display !== 'none') {
+        payNowButton.addEventListener('click', function(e) {
+        console.log("pay button clicked")
+           rzp1.open();
+           e.preventDefault();
+       }); }
+   </script>
+</form>
 {% endblock content %}
