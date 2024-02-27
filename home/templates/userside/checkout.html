@@ -2,14 +2,72 @@
     <!-- Checkout Start -->
     {% block content%}
     <div class="container-fluid pt-5">
+       
         <div class="row px-xl-5 justify-content-between">
-           
-            <div class="col-lg-7">
+            
+            <div class="col-lg-6">
+               
                  <!-- order detail ends here -->
-                
+                 <form action="" method="POST">
+                    {% csrf_token %}
+                 <div class="mb-4">
+                    <h4 class="font-weight-semi-bold mb-4">Billing Address</h4>
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label>User Name</label>
+                            <input class="form-control" type="text" placeholder="User name"   name="user_name"  value="{{context.cust_detail.user_name}}"required>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>E-mail</label>
+                            <input class="form-control" type="text" placeholder="example@email.com"   name="email"  value="{{user.email}}"required >
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>Mobile No</label>
+                            <input class="form-control" type="text" placeholder="+123 456 789"   name="phone_number"  value="{{context.cust_detail.phone_number}}"required>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>House Name</label>
+                            <input class="form-control" type="text" placeholder="123 Street"   name="house_name"  value="{{context.address.house_name}}"required>
+                        </div>
+                        <div class="col-md-6 form-group">
+
+                            <label>Street</label>
+                            <input class="form-control" type="text" placeholder="123 Street"   name="street"  value="{{context.address.street}}"required>
+                        </div>
+                        <div class="col-md-6 form-group">
+
+                            <label>City</label>
+                            <input class="form-control" type="text" placeholder="New York"   name="city"  value="{{context.address.city}}"required>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>District</label>
+                            <input class="form-control" type="text" placeholder="New York"   name="district"  value="{{context.address.district}}"required>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>State</label>
+                            <input class="form-control" type="text" placeholder="New York"  name="state"  value="{{context.address.state}}" required>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>pin Code</label>
+                            <input class="form-control" type="text" placeholder="123" name="pin_code"  value="{{context.address.postal_code}}"required>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label>Country</label>
+                            <input class="form-control" type="text" placeholder="New York" name="country" value="{{context.address.country}}" required>
+
+                        </div>
+                        {% if context.cart.applied_coupon %}
+                        
+                            <input class="form-control" type="hidden" name="amount" value="{{context.cart.coupon_cart_total}}"required >
+                         {% else %}
+                         <input class="form-control" type="hidden" name="amount" value="{{context.cart.cart_total}}" >
+                       {% endif %}
+                        <div class="card-footer border-secondary bg-transparent">
+                            <a href="{% url 'addressdisplay' %}"  class="btn btn-sm btn-block btn-primary  my-3 py-3">Edit or Change Address</a>
+                        </div>
                 <!-- order detail ends here -->
                  <!-- order detail table starts here -->
-                 <div class="card-body">
+                 <!-- <div class="card-body">
                  <div class="card border-secondary mb-5 ">
                     <div class="card-header bg-secondary border-0 ">
                         <h4 class="font-weight-semi-bold m-0 text-center">Order Total</h4>
@@ -74,11 +132,13 @@
                             <h5 class="font-weight-bold">{{context.cart.cart_total}}</h5>
                         </div>
                     </div>{% endif %}
-                </div> </div>
+                </div> </div> -->
 
                   <!-- order detail table ends here -->
                 
-            </div>
+            </div></div>
+                 </form>
+        </div>
             <div class="col-lg-4">
                 <div class="card border-secondary mb-5">
 
@@ -108,10 +168,23 @@
                 </div>
                 {% endif %}
             </div>
-            <a href="{% url 'payment_success' %}">Go to payment</a>
             <div class="card border-secondary mb-5">
+                <form action="" method="POST">
+                    {% csrf_token %}
                 <div class="card-header bg-secondary border-0">
                     <h4 class="font-weight-semi-bold m-0">Payment</h4>
+                </div>
+                <div class="col-md-6 form-group" >
+                   
+                    <input class="form-control" type="hidden" placeholder="User name"   name="user_name"  value="{{context.cust_detail.user_name}}"required>
+                </div>
+                <div class="col-md-6 form-group">
+               
+                    <input class="form-control" type="hidden" placeholder="example@email.com"   name="email"  value="{{user.email}}"required >
+                </div>
+                <div class="col-md-6 form-group">
+                   >
+                    <input class="form-control" type="hidden" placeholder="+123 456 789"   name="phone_number"  value="{{context.cust_detail.phone_number}}"required>
                 </div>
                 <div class="card-body">
                     <div class="form-group">
@@ -125,6 +198,7 @@
                             <label class="custom-control-label" for="banktransfer">Pay with razorpay</label>
                         </div>
                     </div>
+
                     
                     
                 </div>
@@ -132,10 +206,11 @@
                     <a id="place-order-btn" href="{% url 'order_display' %}" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3" style="display: none;">Place Order</a>
                 </div>
                 <div class="card-footer border-secondary bg-transparent">
-                <button id="pay-btn" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3" style="display: none;">Pay Now</button>
-            </div></div>
+                <button type="button" id="pay-btn" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3 payWithRazorpay" style="display: none;">Pay Now</button>
+            </div></form></div>
                 
             </div>
+            
         </div>
     </div>
     <!-- Checkout End -->
@@ -167,10 +242,17 @@
             handlePaymentMethodChange();
         });
     </script>
+    
+    {% block mainscript %}  
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <form action="{% url 'payment_success' %}" method="POST">
-        <input type="hidden" name="order_id" value="{{ order_id }}">
- <script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    
+    
+    {% endblock mainscript %}
+   
+    <!-- <form action="{% url 'payment_success' %}" method="POST">
+        <input type="hidden" name="order_id" value="{{ order_id }}"> -->
+ <!-- <script>
        var options = {
            "key": "{{ rzp_test_ZCCSyrCe5ZqrEH }}",
            "amount": "{{ amount }}",
@@ -211,6 +293,6 @@
            rzp1.open();
            e.preventDefault();
        }); }
-   </script>
-</form>
+   </script> -->
+<!-- </form> -->
 {% endblock content %}

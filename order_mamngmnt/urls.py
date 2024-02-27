@@ -7,6 +7,6 @@ urlpatterns=[
     path('order_history/',views.order_history,name='order_history'),
     path('admin_orderlist/',views.admin_orderlist,name='admin_orderlist'),
     path('orderlist/<int:order_id>/',views.update_status,name='update_status'),
-    path('get_order_products/<int:order_id>/',views.get_order_products,name='get_order_products')
-
+    path('get_order_products/<int:order_id>/',views.get_order_products,name='get_order_products'),
+    path('proceed_to_pay/',views.razorpaycheck,name='proceed_to_pay'),
 ]

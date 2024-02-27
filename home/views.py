@@ -368,6 +368,8 @@ def user_profile(request):
         phone_number=request.POST.get('number')
         profile.email=email
         profile.save()
+       
+        useraddress = UserAddress.objects.get(user=user)
         useraddress.user_name=name
         useraddress.phone_number=phone_number
        

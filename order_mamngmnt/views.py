@@ -50,6 +50,32 @@ def cart_to_order(request,cart_id):
         }
 
     return render (request,'checkout.html',{'context':context})
+
+def razorpaycheck(request):
+    print("razoraja calleddd")
+    cart=Cart.objects.get(user=request.user)
+    cart_total=0
+    if cart.applied_coupon:
+        cart_total=cart.coupon_cart_total
+    else:
+        cart_total=cart.cart_total
+    
+    user=CustomUser.objects.get(id=request.user.id)
+    address=Address.objects.get(user=request.user,is_default=True)
+    user_detail=UserAddress.objects.get(user=request.user)
+    user_name=user_detail.user_name
+    email=user.email
+    phone_number=user_detail.phone_number
+    return JsonResponse({
+        'total_price':cart_total,
+        'user_name':user_name,
+        'email':email,
+        'phone_number': phone_number
+
+    })
+
+
+
 def order_display(request):
     
     user=request.user
