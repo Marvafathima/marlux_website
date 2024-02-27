@@ -68,7 +68,9 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [ os.path.join(BASE_DIR, 'home', 'templates','userside'),
             os.path.join(BASE_DIR, 'adminapp', 'templates', 'adminside'),
-            os.path.join(BASE_DIR,'category','templates')],
+            os.path.join(BASE_DIR,'category','templates'),
+            os.path.join(BASE_DIR,'rarazorpayment','templates')
+            ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -161,3 +163,8 @@ EMAIL_HOST_USER = 'marvafathima62@gmail.com'
 EMAIL_HOST_PASSWORD = 'choa kmab vgur armg'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
+
+RAZORPAY_ID = "rzp_test_ZCCSyrCe5ZqrEH"
+RAZORPAY_SECRET = "0jXHYc59iwAKVWDMphgnXlh"
+#For To Enable Popus in Django or else it will block the payment popup
+SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"

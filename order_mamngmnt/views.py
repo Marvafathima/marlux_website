@@ -67,6 +67,7 @@ def order_display(request):
         coupon=Coupon.objects.get(id=cart.applied_coupon.id)
         order.discount_total=cart.coupon_price
         order.discount_grand_total=cart.coupon_cart_total
+        order.is_ordered=True
         order.applied_coupon=coupon.id
         order.save()
     
@@ -84,6 +85,7 @@ def order_display(request):
 
 
     od_items=OrderProduct.objects.filter(order=order)
+    
     cart.delete()
     items.delete()
     if cart is None:

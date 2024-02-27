@@ -54,6 +54,12 @@ class Cart(models.Model):
     applied_coupon=models.ForeignKey(Coupon,null=True,on_delete=models.CASCADE,related_name="applied_coupon")
     coupon_price=models.DecimalField(default=0,decimal_places=2,max_digits=10,null=True)
     coupon_cart_total=models.DecimalField(default=0,decimal_places=2,max_digits=10,null=True)
+    
+    razorpay_order_id = models.CharField(max_length=500,null=True,blank=True)
+    razorpay_payment_id = models.CharField(max_length=500,null=True,blank=True)
+    razorpay_signature = models.CharField(max_length=500,null=True,blank=True)
+    
+    
     def calculate_cart_total(self):
         self.cart_total = (self.shipping + self.total_price +self.tax).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
         self.coupon_cart_total=(self.shipping + self.coupon_price +self.tax)
