@@ -1,0 +1,61 @@
+{% extends 'main.html'%}
+{% block content %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <form action="{% url 'payment_success' %}" method="POST">
+        
+        <input name="order_id" value="{{ order_id }}">
+        <input  name="user_name" value="{{ context.user_name }}">
+        <input  name="amount" value="{{ context.amount }}">
+        <input name="orderid" value="{{ context.orderId }}">
+        <input  name="phone_number" value="{{ context.phone_number}}">
+
+        <div class="card-footer border-secondary bg-transparent">
+            <button id="rzp-button1" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3"  type="submit">Pay Now</button>
+        </div>
+   <script>
+       var options = {
+           "key": "{{ rzp_test_ZCCSyrCe5ZqrEH }}",
+           "amount": "{{ amount }}",
+           "currency": "INR",
+           "name": "MARLUX",
+           "description": "Payment Description",
+           "order_id": "{{ order_id }}",
+           "handler": function(response) {
+            alert(response.razorpay_payment_id);
+            alert(response.razorpay_order_id);
+            alert(response.razorpay_signature);
+               // Handle the payment success response
+               // You can submit the form or redirect to a success page
+               //document.forms[0].submit();
+           },
+           "prefill": {
+               "name": "{{context.user_name}}",
+               "email": "{{request.user.email}}",
+               "contact": "+91" + "{{context.phone_number}}"
+           },
+          
+
+           "theme": {
+            "color": "#3399cc"
+        }
+       };
+       var rzp1 = new Razorpay(options);
+       
+       rzp1.on('payment.failed', function (response){
+               alert(response.error.code);
+               alert(response.error.description);
+               alert(response.error.source);
+               alert(response.error.step);
+               alert(response.error.reason);
+               alert(response.error.metadata.order_id);
+               alert(response.error.metadata.payment_id);
+       });
+      document.getElementById('rzp-button1').onclick= function(e) {
+        console.log("pay button clicked")
+           rzp1.open();
+           e.preventDefault();
+       }; 
+   </script> 
+</form>
+
+{% endblock content %}

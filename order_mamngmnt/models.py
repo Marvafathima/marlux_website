@@ -36,6 +36,12 @@ class Order(models.Model):
         ('Return','Return')
 
     )
+    PAYMENT_STATUS_CHOICES = (
+        ('cod', 'COD'),
+        ('pending', 'Pending'),
+        ('successful', 'Successful'),
+        ('failed', 'Failed'),
+    )
     user=models.ForeignKey(CustomUser, on_delete=models. CASCADE,related_name="user_order")
     address=models.ForeignKey(OrderAddress, on_delete=models.CASCADE,null=True,related_name="address_order")
     order_total=models.FloatField(null=True) 
@@ -49,6 +55,7 @@ class Order(models.Model):
     updated_at=models.DateField(auto_now=True)
     total_qnty=models.IntegerField(default=1)
     grand_total=models.FloatField(null=True)
+    payment_status = models.CharField(max_length=10, choices=PAYMENT_STATUS_CHOICES, default='pending')
     razorpay_order_id = models.CharField(max_length=500,null=True,blank=True)
     razorpay_payment_id = models.CharField(max_length=500,null=True,blank=True)
     razorpay_signature = models.CharField(max_length=500,null=True,blank=True)

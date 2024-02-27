@@ -6,95 +6,191 @@ from django.shortcuts import render,redirect
 from order_mamngmnt .models import Order,OrderAddress,OrderProduct
 from django.utils import timezone
 from django.conf import settings
-from home .models import CustomUser,UserAddress
+from home .models import CustomUser,UserAddress,Cart,CartItem,Address
 import razorpay
 from django.conf import settings
 # Create your views here.
 
 
 def payment_view(request):
-    
-    order=Order.objects.get(user=request.user,is_ordered=False)
-    user_detail=UserAddress.objects.get(user=request.user)
-    user_name=user_detail.user_name
-    phone_number=user_detail.phone_number
-    order_amount=order.discount_grand_total
-    notes={
-    'house_name':order.address.house_name,
-    'street:order':order.address.street,
-    'city:order':order.address.city,
-    ' district':order.address.district,
-    'landmark':order.address.landmark,
-    'state':order.address.state,
-    'postal_code':order.address.postal_code,
-    'country ':order.address.country
-    }
-    order_receipt =order.id
-    order_id=initiate_payment(notes,order_receipt,order_amount)
-    order.razorpay_order_id =order_id["id"]
-    order.save()
-    context={
-        'order_id':order_id,
-        'amount':order_amount,
-        'order':order,
-        'orderId':order.id,
-        'user_name':user_name,
-        'phone_number':phone_number
-    }
-    return render(request,'checkout.html',context)
-client=razorpay.Client(auth=(settings.RAZORPAY_ID,settings.RAZORPAY_SECRET))
-def initiate_payment(notes,order_receipt,amount,currency='INR'):
-    data={
+    if request.method=="POST":
+        amount=request.POST.get('amount')
+        orderid=request.POST.get('orderid')
+        username=request.POST.get('user_name')
+        phone_number=request.POST.get('phone_number')
+        currency='INR'
+        data={
         'amount':amount*100,
         'currency':currency,
         'payment_capture':'1',
-        'notes':notes,
-        'reciept':order_receipt
+        'reciept':orderid
     }
-    response=client.order.create(data=data)
-    return response['id']
-def payment_success_view(request):
-   order_id = request.POST.get('order_id')
-   payment_id = request.POST.get('razorpay_payment_id')
-   signature = request.POST.get('razorpay_signature')
-   params_dict = {
-       'razorpay_order_id': order_id,
-       'razorpay_payment_id': payment_id,
-       'razorpay_signature': signature
-   }
-   try:
-       client.utility.verify_payment_signature(params_dict)
+        client=razorpay.Client(auth=('rzp_test_ZCCSyrCe5ZqrEH','0jXHYc59iwAKVWDMphgnXlh'))
+        response_payment=client.order.create(data=data)
+        print(response_payment)
+        return render(request,'paysample.html')
+    else:
+        cart=Cart.objects.get(user=request.user,is_ordered=False)
+        user_detail=UserAddress.objects.get(user=request.user)
+        address=Address.objects.get(user=request.user,is_default=True)
+        user_name=user_detail.user_name
+        phone_number=user_detail.phone_number
+        order_amount=cart.coupon_cart_total
+        notes={
+        'house_name':address.house_name,
+        'street:order':address.street,
+        'city:order':address.city,
+        ' district':address.district,
+        'landmark':address.landmark,
+        'state':address.state,
+        'postal_code':address.postal_code,
+        'country ':address.country
+        }
+        # currency='INR'
+        # data={
+        #     'amount':order_amount*100,
+        #     'currency':currency,
+        #     'payment_capture':'1',
+        #     'notes':notes,
+        #     'reciept':cart.id
+        # }
+        # order_receipt =cart.id
+        # client=razorpay.Client(auth=('rzp_test_ZCCSyrCe5ZqrEH','0jXHYc59iwAKVWDMphgnXlh'))
+        # response_payment=client.order.create(data=data)
+        # print(response_payment)
+        context={
+            'amount':order_amount,
+            'order':cart,
+            'orderId':cart.id,
+            'user_name':user_name,
+            'phone_number':phone_number
+        }
+        return render(request,'paysample.html',context)
+
+
+
+
+#     order_id=initiate_payment(notes,order_receipt,order_amount)
+#     cart.razorpay_order_id =order_id["id"]
+#     cart.save()
+#     context={
+#         'order_id':order_id,
+#         'amount':order_amount,
+#         'order':cart,
+#         'orderId':cart.id,
+#         'user_name':user_name,
+#         'phone_number':phone_number
+#     }
+#     return render(request,'checkout.html',context)
+# client=razorpay.Client(auth=(settings.RAZORPAY_ID,settings.RAZORPAY_SECRET))
+# def initiate_payment(notes,order_receipt,amount,currency='INR'):
+#     data={
+#         'amount':amount*100,
+#         'currency':currency,
+#         'payment_capture':'1',
+#         'notes':notes,
+#         'reciept':order_receipt
+#     }
+#     response=client.order.create(data=data)
+#     return response['id']
+# def payment_success_view(request):
+#    order_id = request.POST.get('order_id')
+#    payment_id = request.POST.get('razorpay_payment_id')
+#    signature = request.POST.get('razorpay_signature')
+#    params_dict = {
+    #    'razorpay_order_id': order_id,
+    #    'razorpay_payment_id': payment_id,
+    #    'razorpay_signature': signature
+#    }
+  # try:
+       #client.utility.verify_payment_signature(params_dict)
        # Payment signature verification successful
        # Perform any required actions (e.g., update the order status)
-       return render(request, 'payment_success.html')
-   except razorpay.errors.SignatureVerificationError as e:
+       #return render(request, 'payment_success.html')
+  # except razorpay.errors.SignatureVerificationError as e:
        # Payment signature verification failed
        # Handle the error accordingly
-       return render(request, 'payment_failure.html')
+       #return render(request, 'payment_failure.html')
 
     # except Order.DoesNotExist:
     #         print("Order not found")
     #         return HTTPResponse("404 Error")
 
+from django.views.decorators.csrf import csrf_exempt
 
+@csrf_exempt
 def payment_success_view(request):
-   order_id = request.POST.get('order_id')
-   payment_id = request.POST.get('razorpay_payment_id')
-   signature = request.POST.get('razorpay_signature')
-   params_dict = {
-       'razorpay_order_id': order_id,
-       'razorpay_payment_id': payment_id,
-       'razorpay_signature': signature
-   }
-   try:
-       client.utility.verify_payment_signature(params_dict)
+    if request.method=="POST":
+        amount=request.POST.get('amount')
+        orderid=request.POST.get('orderid')
+        username=request.POST.get('user_name')
+        phone_number=request.POST.get('phone_number')
+        currency='INR'
+        data={
+        'amount':amount*100,
+        'currency':currency,
+        'payment_capture':'1',
+        'reciept':orderid
+    }
+        client=razorpay.Client(auth=('rzp_test_ZCCSyrCe5ZqrEH','0jXHYc59iwAKVWDMphgnXlh'))
+        response_payment=client.order.create(data=data)
+        print(response_payment)
+        # return render(request,'paysample.html')
+
+    cart=Cart.objects.get(user=request.user,is_ordered=False)
+    user_detail=UserAddress.objects.get(user=request.user)
+    address=Address.objects.get(user=request.user,is_default=True)
+    user_name=user_detail.user_name
+    phone_number=user_detail.phone_number
+    order_amount=cart.coupon_cart_total
+    notes={
+    'house_name':address.house_name,
+    'street:order':address.street,
+    'city:order':address.city,
+    ' district':address.district,
+    'landmark':address.landmark,
+    'state':address.state,
+    'postal_code':address.postal_code,
+    'country ':address.country
+    }
+        # currency='INR'
+        # data={
+        #     'amount':order_amount*100,
+        #     'currency':currency,
+        #     'payment_capture':'1',
+        #     'notes':notes,
+        #     'reciept':cart.id
+        # }
+        # order_receipt =cart.id
+        # client=razorpay.Client(auth=('rzp_test_ZCCSyrCe5ZqrEH','0jXHYc59iwAKVWDMphgnXlh'))
+        # response_payment=client.order.create(data=data)
+        # print(response_payment)
+    context={
+        'amount':order_amount,
+        'order':cart,
+        'orderId':cart.id,
+        'user_name':user_name,
+        'phone_number':phone_number
+    }
+    return render(request,'paysample.html',context)
+   
+#    order_id = request.POST.get('order_id')
+#    payment_id = request.POST.get('razorpay_payment_id')
+#    signature = request.POST.get('razorpay_signature')
+#    params_dict = {
+#        'razorpay_order_id': order_id,
+#        'razorpay_payment_id': payment_id,
+#        'razorpay_signature': signature
+#    }
+#    try:
+#        client.utility.verify_payment_signature(params_dict)
        # Payment signature verification successful
        # Perform any required actions (e.g., update the order status)
-       return render(request, 'payment_success.html')
-   except razorpay.errors.SignatureVerificationError as e:
+#        return render(request, 'payment_success.html')
+#    except razorpay.errors.SignatureVerificationError as e:
        # Payment signature verification failed
        # Handle the error accordingly
-       return render(request, 'payment_failure.html')
+    #    return render(request, 'payment_failure.html')
 
 
 

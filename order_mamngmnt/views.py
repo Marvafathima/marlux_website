@@ -49,7 +49,7 @@ def cart_to_order(request,cart_id):
             'cust_detail':cust_detail,
         }
 
-        return render (request,'checkout.html',{'context':context})
+    return render (request,'checkout.html',{'context':context})
 def order_display(request):
     
     user=request.user
