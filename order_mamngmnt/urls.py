@@ -9,6 +9,7 @@ urlpatterns=[
     path('orderlist/<int:order_id>/',views.update_status,name='update_status'),
     path('get_order_products/<int:order_id>/',views.get_order_products,name='get_order_products'),
     path('proceed_to_pay/',views.razorpaycheck,name='proceed_to_pay'),
-    path('place_order',views.place_order,name="place_order")
+    path('place_order',views.place_order,name="place_order"),
+    path('my_orders/',views.my_orders,name="my_orders"),
 
 ]

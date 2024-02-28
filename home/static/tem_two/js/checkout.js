@@ -5,12 +5,18 @@ $(document).ready(function () {
         var name = $("input[name='user_name']").val();
         var email = $("input[name='email']").val();
         var phone_number = $("input[name='phone_number']").val();
-        var house_name=$("[house_name='house_name']").val();
-        var street=$("[street='street']").val();
-        var city=$("[city='city']").val();
-        var district=$("[district='district']").val();
-        var state=$("[state='state']").val();
-        var amount=$("[amount='amount']").val();
+        var house_name=$("input[name='house_name']").val();
+        var street=$("input[name='street']").val();
+        var city=$("input[name='city']").val();
+        var district=$("input[name='district']").val();
+        var state=$("input[name='state']").val();
+        var amount=$("input[name='amount']").val();
+        var payment_mode=$("input[name='payment_mode']").val();
+        var cartid=$("input[name='cartid']").val();
+        var token=$("[name='csrfmiddlewaretoken']").val();
+
+
+
         console.log(email)
     //     if(name == "" || email == "" || phone_number == "" ||house_name == "" ||street == "" ||city == "" ||district == "" || state == "" ||amount == "")
     // {
@@ -33,8 +39,35 @@ $(document).ready(function () {
                 "name": "MARLUX",
                 "description": "Thank You For Shopping With Us.",
                 // "order_id": "{{ order_id }}",
-                "handler": function(response) {
-                    alert(response.razorpay_payment_id);
+                "handler": function(responseb) {
+                    alert(responseb.razorpay_payment_id);
+                    data={
+
+                        "name":name ,
+                        "email":email,
+                        "phone_number":phone_number,
+                        "street":street,
+                        "city":city,
+                        "state":state,
+                        "amount":amount,
+                        "cartid":cartid,
+                        "payment_mode":payment_mode,
+                        "payment_id":responseb.razorpay_payment_id,
+                        csrfmiddlewaretoken:token
+
+                    }
+                    $.ajax({
+                       method: "POST",
+                        url: "/place_order",
+                        data: data,
+                        success: function (responsec) {
+                            // alert("payment succesful");
+                            swal("Congrats",responsec.status,"success").then((value) => {
+                                window.location.href='/my_orders'
+                              });
+                            
+                        }
+                    });
                     // alert(response.razorpay_order_id);
                     // alert(response.razorpay_signature);
                     
