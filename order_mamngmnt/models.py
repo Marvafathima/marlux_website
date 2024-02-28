@@ -59,6 +59,8 @@ class Order(models.Model):
     razorpay_order_id = models.CharField(max_length=500,null=True,blank=True)
     razorpay_payment_id = models.CharField(max_length=500,null=True,blank=True)
     razorpay_signature = models.CharField(max_length=500,null=True,blank=True)
+    payment_mode=models.CharField(max_length=500,null=True,blank=True)
+    tracking_number=models.CharField(max_length=500,null=True,blank=True)
     # coupen=models.ForeignKey(Coupon, on_delete=models.CASCADE, null=True, blank=True)
 
     def save(self, *args, **kwargs):

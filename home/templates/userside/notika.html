@@ -1,0 +1,195 @@
+
+{% load static %}
+
+ <!doctype html>
+<html class="no-js" lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Data Table | Notika - Notika Admin Template</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- favicon
+		============================================ -->
+        <link rel="shortcut icon" type="image/x-icon" href="{% static 'notika/notika/img/favicon.ico' %}">
+        <!-- Google Fonts
+            ============================================ -->
+        <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700,900" rel="stylesheet">
+        <!-- Bootstrap CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'notika/documentation/css/bootstrap.min.css' %}">
+        <!-- Bootstrap CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'notika/notika/css/font-awesome.min.css' %}">
+        <!-- owl.carousel CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'notika/notika/css/owl.carousel.css' %}">
+        <link rel="stylesheet" href="{% static 'notika/notika/css/owl.theme.css' %}">
+        <link rel="stylesheet" href="{% static 'notika/notika/css/owl.transitions.css' %}">
+        <!-- meanmenu CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'notika/notika/css/meanmenu/meanmenu.min.cs' %}">
+        <!-- animate CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'notika/notika/css/animate.css' %}">
+        <!-- normalize CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'notika/notika/css/normalize.css' %}">
+        <!-- mCustomScrollbar CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'notika/notika/css/scrollbar/jquery.mCustomScrollbar.min.css' %}">
+        <!-- jvectormap CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'notika/notika/css/jvectormap/jquery-jvectormap-2.0.3.css' %}">
+        <!-- notika icon CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'notika/notika/css/notika-custom-icon.css' %}">
+        <!-- wave CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'notika/notika/css/wave/waves.min.css' %}">
+        <!-- main CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'notika/notika/css/main.css' %}">
+        <!-- style CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'notika/documentation/style.css' %} ">
+        <!-- responsive CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'notika/notika/css/responsive.css' %}">
+         <!-- Data Table JS
+		============================================ -->
+    <link rel="stylesheet" href="{% static 'notika/notika/css/jquery.dataTables.min.css' %}">
+        <!-- modernizr JS
+     modernizr JS
+		============================================ -->
+    <script src="{% static 'notika/notika/js/vendor/modernizr-2.8.3.min.js' %}"></script>
+</head>
+
+<body>
+  
+    <!-- Data Table area Start-->
+    <div class="data-table-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="data-table-list">
+                        <div class="basic-tb-hd">
+                            <h2>Basic Example</h2>
+                            <p>It's just that simple. Turn your simple table into a sophisticated data table and offer your users a nice experience and great features without any effort.</p>
+                        </div>
+                        <div class="table-responsive">
+                            <table id="data-table-basic" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th> 
+                                        <th>Tracking No.</th> 
+                                        <th>Quantity</th>
+                                       <th>Order Price</th>
+                                       <th>Tax/GST</th>
+                                       <th>Grand Total</th>
+                                       <th>Status</th>
+                                       <th>Payment Mode</th>
+                                       <th>Payment Status</th>
+                                       <th>Date of Ordering</th>
+                                      
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for data in order_data%}
+                                    <tr>
+                                        <td>{{data.order.id}}</td>
+                                        <td>{{data.order.tracking_number}}</td> 
+                                        <td>{{data.order.total_qnty}}</td>   
+                                        <td >₹{{data.order.order_total}}</td>
+                                        <td>₹{{data.order.tax|floatformat:2}}</td>
+                                        <td>₹{{data.order.grand_total}}</td>
+                                        <td>{{data.order.status}}</td>
+                                        <td>{{data.order.payment_status}}</td>
+                                        <td>{{data.order.payment_mode}}</td>
+                                        <td>{{data.order.created_at}}</td>
+                                        
+                    </tr>           
+
+                       {% endfor %}
+
+
+
+
+                                 
+                                </tbody>
+                               
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Data Table area End-->
+   
+    <!-- jquery
+		============================================ -->
+    <script src="{% static 'notika/notika/js/vendor/jquery-1.12.4.min.js' %}"></script>
+    <!-- bootstrap JS
+		============================================ -->
+    <script src="{% static 'notika/notika/js/bootstrap.min.js' %}"></script>
+    <!-- wow JS
+		============================================ -->
+    <script src="{% static 'notika/notika/js/wow.min.js' %}"></script>
+    <!-- price-slider JS
+		============================================ -->
+    <script src="{% static 'notika/notika/js/jquery-price-slider.js' %}"></script>
+    <!-- owl.carousel JS
+		============================================ -->
+    <script src="{% static 'notika/notika/js/owl.carousel.min.js' %}"></script>
+    <!-- scrollUp JS
+		============================================ -->
+    <script src="{% static 'notika/notika/js/jquery.scrollUp.min.js' %}"></script>
+    <!-- meanmenu JS
+		============================================ -->
+    <script src="{% static 'notika/notika/js/meanmenu/jquery.meanmenu.js' %}"></script>
+    <!-- counterup JS
+		============================================ -->
+    <script src="{% static 'notika/notika/js/counterup/jquery.counterup.min.js' %}"></script>
+    <script src="{% static 'notika/notika/js/counterup/waypoints.min.js' %}"></script>
+    <script src="{% static 'notika/notika/js/counterup/counterup-active.js' %}"></script>
+    <!-- mCustomScrollbar JS
+		============================================ -->
+    <script src="{% static 'notika/notika/js/scrollbar/jquery.mCustomScrollbar.concat.min.js' %}"></script>
+    <!-- sparkline JS
+		============================================ -->
+    <script src="{% static 'notika/notika/js/sparkline/jquery.sparkline.min.js' %}"></script>
+    <script src="{% static 'notika/notika/js/sparkline/sparkline-active.js' %}"></script>
+    <!-- flot JS
+		============================================ -->
+    <script src="{% static 'notika/notika/js/flot/jquery.flot.js' %}"></script>
+    <script src="{% static 'notika/notika/js/flot/jquery.flot.resize.js' %}"></script>
+    <script src="{% static 'notika/notika/js/flot/flot-active.js' %}"></script>
+    <!-- knob JS
+		============================================ -->
+    <script src="{% static 'notika/notika/js/knob/jquery.knob.js' %}"></script>
+    <script src="{% static 'notika/notika/js/knob/jquery.appear.js' %}"></script>
+    <script src="{% static 'notika/notika/js/knob/knob-active.js' %}"></script>
+   
+    <!--  todo JS
+		============================================ -->
+    <script src="js/todo/jquery.todo.js' %}"></script>
+	<!--  wave JS
+		============================================ -->
+    <script src="{% static 'notika/notika/js/wave/waves.min.js' %}"></script>
+    <script src="{% static 'notika/notika/js/wave/wave-active.js' %}"></script>
+    <!-- plugins JS
+		============================================ -->
+    <script src="{% static 'notika/notika/js/plugins.js' %}"></script>
+    <!-- Data Table JS
+		============================================ -->
+    <script src="{% static 'notika/notika/js/data-table/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'notika/notika/js/data-table/data-table-act.js' %}"></script>
+    <!-- main JS
+		============================================ -->
+    <script src="{% static 'notika/notika/js/main.js' %}"></script>
+	
+</body>
+
+</html>

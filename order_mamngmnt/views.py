@@ -160,7 +160,7 @@ def order_item_display(request,order_id):
 def order_history(request):
     user = request.user
     
-    orders = Order.objects.filter(user=user).order_by('created_at')  
+    orders = Order.objects.filter(user=user).order_by('created_at') 
     if not orders.exists():
         return render(request,'nohistory.html')
     else:
@@ -169,8 +169,7 @@ def order_history(request):
         for order in orders:
             order_items=OrderProduct.objects.filter(order=order)
             order_details = []
-            print(order.id,"this are my ordersssss")
-            
+            print(order.payment_mode,order.tracking_number)
         
             for product in order_items:
                 img=ProductImage.objects.filter(img_id=product.product_variant.prod_id).first()
@@ -183,7 +182,7 @@ def order_history(request):
                     'size': product.product_variant.size,
                     'color': product.product_variant.color,
                 })
-                print(product.item_total_price,"history total price checking")
+                
             order_data.append({
                 'order':order,
                 'items':order_details,
@@ -191,8 +190,8 @@ def order_history(request):
         
             address = OrderAddress.objects.get(id=order.address.id)
             addresses.append(address)
-
-        return render(request, 'order_history.html', {
+#  return render(request, 'order_history.html', {
+        return render(request, 'notika.html', {
             'order_data':order_data,
             'addresses':addresses
         })
@@ -249,4 +248,96 @@ def get_order_products(request,order_id):
     return render (request, 'order_iem_detail.html',{'order_products': order_product_data,'orders':orders,'customer':customer,'customer_detail':customer_detail})
 
     
+import random
+def place_order(request):
+    if request.method=="POST":
+        name=request.POST.get('user_name')
+        email=request.POST.get('email')
+        phone_number=request.POST.get('phone_number')
+        house_name=request.POST.get('house_name')
+        street=request.POST.get('street')
+        city=request.POST.get('city')
+        district=request.POST.get(' district')
+        state=request.POST.get(' state')
+        pin_code=request.POST.get(' pin_code')
+        country= request.POST.get('country')
+        cartid=request.POST.get('cartid')
+        amount=request.POST.get('amount')
+        payment_mode=request.POST.get('payment_mode')
+        print(cartid,"this is the cart id")
+        if payment_mode=='cod' and float(amount)>1000:
+            messages.error(request,"Sorry,No COD available for purchase above 1000")
+            return redirect('checkout',cartid)
+        elif payment_mode =='cod' and float(amount)<=1000:
+            user=request.user
+            cart=Cart.objects.get(user=user.id)
+            items=CartItem.objects.filter(cart=cart)
+            cart_user=CustomUser.objects.get(id=user.id)
+            address=Address.objects.get(user=user,is_default=True)
+            cust_detail=UserAddress.objects.get(user=user)
+            order_address=OrderAddress.objects.create(
+                user=user,
+                house_name=address.house_name,
+                street=address.street,
+                city=address.city,
+                district=address.district,
+                landmark=address.landmark,
+                state=address.state,
+                postal_code=address.postal_code,
+                country = address.country
+            
+            )
+            payment_status='cod'
+            stat='Confirmed'
+            if stat in dict(Order.STATUS):
+                st=stat
+            if payment_status in dict(Order.PAYMENT_STATUS_CHOICES):
+                pay_status=payment_status
+            track_no='marlux'+str(random.randint(11111111,99999999))
+            order=Order.objects.create(user=user,
+                                       address=order_address,
+                                       order_total=cart.cart_total,
+                                       total_qnty=cart.total_qnty,
+                                       payment_mode=payment_mode,
+                                       tracking_number=track_no,
+                                       payment_status=pay_status,
+                                       status=st
+                                       )
+            print(order.tracking_number)
+            print(order.payment_mode)
+            print(order.payment_status)
+            try:
+                coupon=Coupon.objects.get(id=cart.applied_coupon.id)
+                order.discount_total=cart.coupon_price
+                order.discount_grand_total=cart.coupon_cart_total
+                order.is_ordered=True
+                order.applied_coupon=coupon.id
+                order.save()
+            except:
+                print("no coupon applied")
+            
+            for item in items:
+                ox=OrderProduct.objects.create(
+                            order=order,
+                            product_variant=item.product_variant,
+                            quantity=item.quantity,
+                            price=item.product_variant.price,
+                            
+                        )
+                print(ox.item_total_price,"this is the total price of the vaariant")
+                
+                # ox.item_total_price=ox.quantity* ox.price
 
+
+            od_items=OrderProduct.objects.filter(order=order)
+            
+            cart.delete()
+            items.delete()
+            if cart is None:
+                print("order placed successfully")
+                return HttpResponse("order succesful")
+            return HttpResponse("order succesful")
+        else:
+            return HttpResponse("razorpay not yet defined")
+    else:
+        return HttpResponse("a get method")

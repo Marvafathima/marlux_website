@@ -1,10 +1,17 @@
  {% extends 'main.html' %}
     <!-- Checkout Start -->
     {% block content%}
+    {% if messages %}
+    {% for  message in messages%}  
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+      <strong>{{message.tags}}!!</strong> {{message}}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+{% endfor%}{% endif%} 
     <div class="container-fluid pt-5">
        
         <div class="row px-xl-5 justify-content-between">
-            
+           
             <div class="col-lg-6">
                
                  <!-- order detail ends here -->
@@ -169,13 +176,13 @@
                 {% endif %}
             </div>
             <div class="card border-secondary mb-5">
-                <form action="" method="POST">
+                <form action="{% url 'place_order' %}" method="POST">
                     {% csrf_token %}
                 <div class="card-header bg-secondary border-0">
                     <h4 class="font-weight-semi-bold m-0">Payment</h4>
                 </div>
                 <div class="col-md-6 form-group" >
-                   
+                    <input class="form-control" type="hidden" placeholder="User name"   name="cartid"  value="{{context.cart.id}}"required>
                     <input class="form-control" type="hidden" placeholder="User name"   name="user_name"  value="{{context.cust_detail.user_name}}"required>
                 </div>
                 <div class="col-md-6 form-group">
@@ -183,9 +190,11 @@
                     <input class="form-control" type="hidden" placeholder="example@email.com"   name="email"  value="{{user.email}}"required >
                 </div>
                 <div class="col-md-6 form-group">
-                   >
+                   
                     <input class="form-control" type="hidden" placeholder="+123 456 789"   name="phone_number"  value="{{context.cust_detail.phone_number}}"required>
                 </div>
+                <!-- Hidden input field -->
+                <input type="hidden" id="paymentMode" name="payment_mode">
                 <div class="card-body">
                     <div class="form-group">
                         <div class="custom-control custom-radio">
@@ -198,12 +207,16 @@
                             <label class="custom-control-label" for="banktransfer">Pay with razorpay</label>
                         </div>
                     </div>
-
-                    
-                    
+                    {% if context.cart.applied_coupon %}
+                
+                    <input type="hidden" class="custom-control-input" name="amount" value="{{context.cart.coupon_cart_total}}" >
+                    {% else %}
+                    <input type="hidden" class="custom-control-input" name="amount" value="{{context.cart.cart_total}}" >
+               {% endif %}
+               
                 </div>
                 <div class="card-footer border-secondary bg-transparent">
-                    <a id="place-order-btn" href="{% url 'order_display' %}" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3" style="display: none;">Place Order</a>
+                    <button type="submit" id="place-order-btn" href="{% url 'place_order'%}" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3" style="display: none;">Place Order</button>
                 </div>
                 <div class="card-footer border-secondary bg-transparent">
                 <button type="button" id="pay-btn" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3 payWithRazorpay" style="display: none;">Pay Now</button>
@@ -220,17 +233,23 @@
             var razorpayRadio = document.getElementById('banktransfer');
             var placeOrderButton = document.getElementById('place-order-btn');
             var payNowButton = document.getElementById('pay-btn');
-    
+            var paymentmode=document.getElementById('paymentMode')
             // Function to handle radio button change event
             function handlePaymentMethodChange() {
                 if (codRadio.checked) {
                     // If COD is selected, show Place Order button and hide Pay Now button
+                    console.log("radio button clicked")
                     placeOrderButton.style.display = 'block';
                     payNowButton.style.display = 'none';
+                    paymentmode.value = "cod";
+                    console.log(paymentmode.value,"this is the value")
                 } else if (razorpayRadio.checked) {
                     // If Razorpay is selected, show Pay Now button and hide Place Order button
+                    console.log("radio button clicked")
                     placeOrderButton.style.display = 'none';
                     payNowButton.style.display = 'block';
+                    paymentmode.value = "razorpay";
+                    console.log(paymentmode.value,"this is the value")
                 }
             }
     
