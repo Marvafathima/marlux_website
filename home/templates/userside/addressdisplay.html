@@ -25,6 +25,7 @@
 {% endfor %}
 </div></div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
     $(document).ready(function() {
         // Attach click event handler to radio buttons
@@ -41,6 +42,11 @@
                 data: { address_id: addressId },
                 success: function(response) {
                     console.log(response); // Log the response to the console
+                    swal("Congrats",response.status,"success").then((value) => {
+                                
+                        window.location.href='/cart'
+                      });
+
                     // Optionally, update the UI or perform other actions based on the response
                 },
                 error: function(xhr, status, error) {

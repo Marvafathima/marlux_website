@@ -16,6 +16,14 @@ from .models import Order,OrderAddress,OrderProduct
 from django.db import transaction
 from django.core.serializers.json import DjangoJSONEncoder
 from coupons .models import Coupon
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
+from django.views.generic import TemplateView
+
+@method_decorator(never_cache, name='dispatch')
+class CheckoutView(TemplateView):
+    template_name = 'checkout.html'
+
 # Create your views here.
 @login_required
 def cart_to_order(request,cart_id):
@@ -162,7 +170,7 @@ def order_item_display(request,order_id):
 def order_history(request):
     user = request.user
     
-    orders = Order.objects.filter(user=user).order_by('created_at') 
+    orders = Order.objects.filter(Q(payment_status="cod")| Q(payment_status="successful"),user=user).order_by('created_at') 
     if not orders.exists():
         return render(request,'nohistory.html')
     else:

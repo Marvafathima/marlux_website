@@ -435,7 +435,7 @@ def set_default_address(request):
         address = Address.objects.get(pk=address_id)
         address.is_default = True
         address.save()
-        return JsonResponse({'message': 'Default address set successfully'}, status=200)
+        return JsonResponse({'status':"Default address added succesfully "})
     else:
         return JsonResponse({'error': 'Invalid request'}, status=400)
 def address_delete(request,id):

@@ -82,32 +82,34 @@
                             <table id="data-table-basic" class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th>Order ID</th> 
+                                        <!-- <th>Order ID</th>  -->
                                         <th>Tracking No.</th> 
                                         <th>Quantity</th>
                                        <th>Order Price</th>
                                        <th>Tax/GST</th>
                                        <th>Grand Total</th>
-                                       <th>Status</th>
-                                       <th>Payment Mode</th>
+                                       <!-- <th>Status</th> -->
+                                       <th>Payment Mode</th> 
                                        <th>Payment Status</th>
                                        <th>Date of Ordering</th>
-                                      
+                                      <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for data in order_data%}
                                     <tr>
-                                        <td>{{data.order.id}}</td>
+                                        <!-- <td>{{data.order.id}}</td> -->
                                         <td>{{data.order.tracking_number}}</td> 
                                         <td>{{data.order.total_qnty}}</td>   
                                         <td >₹{{data.order.order_total}}</td>
                                         <td>₹{{data.order.tax|floatformat:2}}</td>
                                         <td>₹{{data.order.grand_total}}</td>
-                                        <td>{{data.order.status}}</td>
+                                        <!--  <td>{{data.order.status}}</td> -->
+                                  
+                                        <td>{{data.order.payment_mode}}</td> 
                                         <td>{{data.order.payment_status}}</td>
-                                        <td>{{data.order.payment_mode}}</td>
                                         <td>{{data.order.created_at}}</td>
+                                        <th><a>view</a></th>
                                         
                     </tr>           
 

@@ -1,6 +1,7 @@
  {% extends 'main.html' %}
     <!-- Checkout Start -->
     {% block content%}
+    
     {% if messages %}
     {% for  message in messages%}  
     <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -15,7 +16,7 @@
             <div class="col-lg-6">
                
                  <!-- order detail ends here -->
-                 <form action="" method="POST">
+                 <!-- <form action="" method="POST">
                     {% csrf_token %}
                  <div class="mb-4">
                     <h4 class="font-weight-semi-bold mb-4">Billing Address</h4>
@@ -71,10 +72,10 @@
                        {% endif %}
                         <div class="card-footer border-secondary bg-transparent">
                             <a href="{% url 'addressdisplay' %}"  class="btn btn-sm btn-block btn-primary  my-3 py-3">Edit or Change Address</a>
-                        </div>
+                        </div> -->
                 <!-- order detail ends here -->
                  <!-- order detail table starts here -->
-                 <!-- <div class="card-body">
+                 <div class="card-body">
                  <div class="card border-secondary mb-5 ">
                     <div class="card-header bg-secondary border-0 ">
                         <h4 class="font-weight-semi-bold m-0 text-center">Order Total</h4>
@@ -139,12 +140,12 @@
                             <h5 class="font-weight-bold">{{context.cart.cart_total}}</h5>
                         </div>
                     </div>{% endif %}
-                </div> </div> -->
+                </div> </div>
 
                   <!-- order detail table ends here -->
                 
-            </div></div>
-                 </form>
+            <!-- </div></div>
+                 </form> -->
         </div>
             <div class="col-lg-4">
                 <div class="card border-secondary mb-5">

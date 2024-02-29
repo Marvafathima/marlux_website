@@ -63,7 +63,8 @@ $(document).ready(function () {
                         success: function (responsec) {
                             // alert("payment succesful");
                             swal("Congrats",responsec.status,"success").then((value) => {
-                                window.location.href='/my_orders'
+                                
+                                window.location.href='/order_history'
                               });
                             
                         }
