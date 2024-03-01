@@ -26,7 +26,9 @@ urlpatterns=[
     path('product_detail/<int:id>/cart_login_redirect/',views.cart_login_redirect,name='cart_login_redirect'),
     path('subcategory/<int:cat_id>/<int:subcat_id>/',views.subcategory_page,name='subcategory_page'),
     path('search/',views.search,name='search'),
-   
+    path('price_filter/',views.price_filter,name='price_filter'),
+    path('size_filter/',views.size_filter,name='size_filter'),
+    path('color_filter/',views.color_filter,name='color_filter'),
     # path('forgot_password/',views.forgot_password,name='forgot_password'),
     # path('forgot_password/', views.forgot_password, name='forgot_password'),
     # path('reset_password/<uidb64>/<token>/', views.reset_password, name='reset_password'),

@@ -30,7 +30,7 @@
         <h5 class="font-weight-semi-bold mb-4">Filter by price</h5>
         <form>
             <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                <input type="checkbox" class="custom-control-input" checked id="price-all">
+                <input type="checkbox" class="custom-control-input" checked id="price-all" data-min="0">
                 <label class="custom-control-label" for="price-all">All Price</label>
             </div>
             <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
@@ -54,7 +54,7 @@
                 
             </div>
             <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                <input type="checkbox" class="custom-control-input" id="price-5">
+                <input type="checkbox" class="custom-control-input" id="price-5" data-min="2000" >
                 <label class="custom-control-label" for="price-5">Above 2000</label>
                
             </div>
@@ -333,6 +333,31 @@
         </div> </div>
     <!-- </div> </div> </div> -->
     <!-- Shop End -->
-    
+    <script>
+        $(document).ready(function(){
+            // Event handler for checkbox clicks
+            $('input[type=checkbox]').change(function(){
+                var selectedRanges = [];
+                $('input[type=checkbox]:checked').each(function(){
+                    var minPrice = $(this).data('min');
+                    var maxPrice = $(this).data('max');
+                    selectedRanges.push({'min': minPrice, 'max': maxPrice});
+                });
+                // AJAX call to send selected ranges to server
+                $.ajax({
+                    type: 'POST',
+                    url: '/price_filter/',
+                    data: {'selected_ranges': selectedRanges},
+                    success: function(response){
+                        // Handle successful response (e.g., update UI with products)
+                    },
+                    error: function(xhr, errmsg, err){
+                        // Handle error
+                    }
+                });
+            });
+        });
+        
+    </script>
 
     {% endblock corousel %} </div>

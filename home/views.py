@@ -366,6 +366,14 @@ def search(request):
             else:
                 messages.error(request,"No matching items found!")
                 return redirect('home')
+            
+def price_filter(request):
+    pass
+def size_filter(request):
+    pass
+def color_filter(request):
+    pass
+
 
 
 

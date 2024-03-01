@@ -20,47 +20,50 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
 # from django.template.loader import render_to_string
-# from weasyprint.html import HTML
-@method_decorator(never_cache, name='dispatch')
-class CheckoutView(TemplateView):
-    template_name = 'checkout.html'
+# # from weasyprint.html import HTML
+# @method_decorator(never_cache, name='dispatch')
+# class CheckoutView(TemplateView):
+#     template_name = 'checkout.html'
 
 # Create your views here.
 @login_required
 def cart_to_order(request,cart_id):
+    # try:
+    cart=Cart.objects.get(id=cart_id)
+    cart_items=CartItem.objects.filter(cart=cart)
+    us=request.user
+    user=CustomUser.objects.get(id=us.id)
     try:
-        cart=Cart.objects.get(id=cart_id)
-        cart_items=CartItem.objects.filter(cart=cart)
-        us=request.user
-        user=CustomUser.objects.get(id=us.id)
         address=Address.objects.get(user=us,is_default=True)
         cust_detail=UserAddress.objects.get(user=us)
-        if cart.applied_coupon:
-            coupon=Coupon.objects.get(id=cart.applied_coupon.id)
-            coupon.usage_count +=1
-            coupon.user_count +=1
-            coupon.save()
-            context={
-                'cart':cart,
-                'cart_items':cart_items,
-                'address':address,
-                'user':user,
-                'cust_detail':cust_detail,
-                'coupon':coupon
-            }
-            return render (request,'checkout.html',{'context':context})
-        else:
-            context={
-                'cart':cart,
-                'cart_items':cart_items,
-                'address':address,
-                'user':user,
-                'cust_detail':cust_detail,
-            }
-
-        return render (request,'checkout.html',{'context':context})
     except:
-        return redirect('home')
+        messages.error(request,"please add address and other details before checking out!")
+        return redirect('cart')
+    if cart.applied_coupon:
+        coupon=Coupon.objects.get(id=cart.applied_coupon.id)
+        coupon.usage_count +=1
+        coupon.user_count +=1
+        coupon.save()
+        context={
+            'cart':cart,
+            'cart_items':cart_items,
+            'address':address,
+            'user':user,
+            'cust_detail':cust_detail,
+            'coupon':coupon
+        }
+        return render (request,'checkout.html',{'context':context})
+    else:
+        context={
+            'cart':cart,
+            'cart_items':cart_items,
+            'address':address,
+            'user':user,
+            'cust_detail':cust_detail,
+        }
+
+    return render (request,'checkout.html',{'context':context})
+
 
 def razorpaycheck(request):
     print("razoraja calleddd")

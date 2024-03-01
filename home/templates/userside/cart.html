@@ -2,14 +2,7 @@
 {%block cart %}{% endblock cart %}
 {% block content %}
 
-{% if messages %}
-<div class="alert {% if message.tags == 'error' %}alert-danger alert-dismissible fade show {% elif message.tags == 'success' %}alert-success alert-dismissible fade show {% endif %}" role="alert">
-    {% for message in messages%}
-    <strong>{{ message.tags }}</strong> {{ message }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  {% endfor %}
-</div>
-{% endif %}
+
 
 <!-- Cart Start -->
 <div id="success-message" style="display: none;">
