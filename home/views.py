@@ -235,7 +235,6 @@ def cart_count(request):
         try:
             cart=Cart.objects.get(user=user)
             count=cart.total_qnty
-            print(count,'***************************')
             return JsonResponse({'count':count})
         except:
             return JsonResponse({'count':0})
@@ -341,7 +340,34 @@ def user_logout(request):
 
 def shop(request):
     products=Products.objects.all()
-    return render (request,'mainshop.html',{'products': products})
+    category=Category.objects.prefetch_related('subcat').all()
+    return render (request,'mainshop.html',{'products': products,'categories':category})
+
+
+def subcategory_page(request,cat_id,subcat_id,):
+    product=Products.objects.filter(Q(subcat_id=subcat_id) & Q(cat_id=cat_id))
+    return render (request,'shop.html',{'prod':product})
+
+@require_POST
+def search(request):
+    print("search called")
+    if request.method=="POST":
+        print("post request called")
+        keyword=request.POST.get("keyword")
+        if keyword:
+            products=Products.objects.all()
+            product=Products.objects.filter(Q(pr_name__icontains=keyword)|
+                                            Q(cat_id__name__icontains=keyword)|
+                                            Q(brand_id__br_name__icontains=keyword)|
+                                            Q(subcat_id__sub_name__icontains=keyword)
+                                            )
+            if product:
+                return render(request,'shop.html',{'prod':product})
+            else:
+                messages.error(request,"No matching items found!")
+                return redirect('home')
+
+
 
 def user_profile(request):
     user=request.user

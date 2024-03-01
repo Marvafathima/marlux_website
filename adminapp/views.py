@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from django.http import HttpResponse
 from django.shortcuts import render,redirect
@@ -10,7 +10,8 @@ from django.contrib.auth import authenticate,login,logout
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
-from home.models import UserAddress ,CustomUser
+from home.models import UserAddress ,CustomUser,Address
+
 
 # Create your views here.
 @ensure_csrf_cookie
@@ -55,6 +56,7 @@ def user_block(request,user_id):
     us.is_active=False
     us.save()
     return redirect('adminapp:userlist')
+
 
 
 

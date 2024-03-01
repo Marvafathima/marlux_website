@@ -23,7 +23,9 @@ urlpatterns=[
     path('delete_address/<int:id>/',views.address_delete,name='delete_address'),
     path('update_address/<int:id>/',views.update_address,name='update_address'),
     path('user_password/',views.user_password,name='user_password'),
-    path('product_detail/<int:id>/cart_login_redirect/',views.cart_login_redirect,name='cart_login_redirect')
+    path('product_detail/<int:id>/cart_login_redirect/',views.cart_login_redirect,name='cart_login_redirect'),
+    path('subcategory/<int:cat_id>/<int:subcat_id>/',views.subcategory_page,name='subcategory_page'),
+    path('search/',views.search,name='search'),
    
     # path('forgot_password/',views.forgot_password,name='forgot_password'),
     # path('forgot_password/', views.forgot_password, name='forgot_password'),

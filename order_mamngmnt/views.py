@@ -19,7 +19,8 @@ from coupons .models import Coupon
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
-
+# from django.template.loader import render_to_string
+# from weasyprint.html import HTML
 @method_decorator(never_cache, name='dispatch')
 class CheckoutView(TemplateView):
     template_name = 'checkout.html'
@@ -220,6 +221,15 @@ def admin_orderlist(request):
         for us in order.user.useraddress.all():
             print(us.user_name) 
     return render (request,'orderlist.html',{'orders':order_data,'status_choices': Order.STATUS})
+
+
+
+
+
+
+
+
+
 @require_POST   
 def update_status(request,order_id):
     order = get_object_or_404(Order, id=order_id)

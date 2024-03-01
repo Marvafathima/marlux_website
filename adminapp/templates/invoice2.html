@@ -1,0 +1,42 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order Invoice - {{ order.order_id }}</title>
+    <link rel="stylesheet" href="{% static 'admin/css/base.css' %}">
+</head>
+<body>
+    <h1>Order Invoice - {{ order.order_id }}</h1>
+    <p>Customer: {{ order.user.username }}</p>
+    <p>Email: {{ order.user.email }}</p>
+    <p>Phone Number: {{ order.user.phone_number }}</p>
+    <p>Order Date: {{ order.created_at }}</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.items.all %}
+                <tr>
+                    <td>{{ item.product.name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.product.price }}</td>
+                    <td>{{ item.get_total_price }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3">Total</td>
+                <td>{{ order.total_price }}</td>
+            </tr>
+        </tfoot>
+    </table>
+</body>
+</html>

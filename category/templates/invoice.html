@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Template</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 10px;
+            padding: 0; /* Remove padding to eliminate margins */
+        }
+        .container {
+            max-width: 100%; /* Set width to 100% for full page width */
+        }
+        .divs{
+            max-width: 100%;
+            height: 5px;
+            background-color: #ccc; 
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+        
+        .invoice-heading {
+            text-align: center; /* Ensure center alignment */
+            font-size: 30px;
+           
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* Align addresses vertically */
+        }
+        .address-block {
+            width: 49%; /* Adjust for equal or custom widths */
+            padding: 10px;
+            border-right: 10px solid #ccc; /* Add vertical line between addresses */
+        }
+        .address-block:last-child {
+            border-right: none; /* Remove border for the last block */
+            text-align: end;
+        }
+        .table-container {
+            margin-top: 30px;
+        }
+        table {
+            width: 90%;
+            margin-left: 50px;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        th {
+            text-align: left;
+            background-color: #f0f0f0;
+        }
+        /* Add horizontal line below addresses */
+        .header hr {
+            flex: 1 0 auto; /* Stretch horizontally */
+            height: 1px;
+            background-color: #ccc;
+            margin: 10px 0; /* Add spacing above and below line */
+        }
+    </style>
+</head>
+<body>
+    <div class="container"><div>
+      
+        <h1 class="invoice-heading">Invoice</h1></div>
+        <div class="divs"></div>
+        <div class="header">
+            <div class="address-block">
+                <h3>Billing Information</h3>
+                <p>Company<br>
+                   Address<br>
+                   Phone Number<br>
+                   Email</p>
+            </div>
+            <hr> <div class="address-block">
+                <h3>Shipping Information</h3>
+                <p><b>Name:</b>MARLUX</p>
+                <p><b>Address:</b>Marlux pvt.Ltd.Lim</p>
+                <p><b>Phone Number:</b>6282584483</p> 
+            </div>
+        </div>
+        <div class="divs"></div>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Product/Service 1</td>
+                        <td>2</td>
+                        <td>$100</td>
+                        <td>$200</td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: right;">Grand Total:</td>
+                        <td>$8967</td> 
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

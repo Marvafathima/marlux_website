@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'order_mamngmnt',
     'coupons',
     'rarazorpayment',
+    'weasyprint',
     
 ]
 CRISPY_TEMPLATE_PACK='bootstrap5'

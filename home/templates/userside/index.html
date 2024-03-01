@@ -1,6 +1,7 @@
 
 {% extends 'main.html' %}
 {% block navbar %} 
+
 <div class="col-lg-3 d-none d-lg-block">
 <a class="btn shadow-none d-flex align-items-center justify-content-between bg-primary text-white w-100" data-toggle="collapse" href="#navbar-vertical" style="height: 65px; margin-top: -1px; padding: 0 30px;">
     <h6 class="m-0">Categories</h6>
@@ -8,25 +9,30 @@
 </a>
 <nav class="collapse show navbar navbar-vertical navbar-light align-items-start p-0 border border-top-0 border-bottom-0" id="navbar-vertical">
     <div class="navbar-nav w-100 overflow-hidden" style="height: 410px">
+        {% for category in categories%}
         <div class="nav-item dropdown">
-            <a href="#" class="nav-link" data-toggle="dropdown">Dresses <i class="fa fa-angle-down float-right mt-1"></i></a>
+            <a href="" class="nav-link" data-toggle="dropdown">{{category.name}}<i class="fa fa-angle-down float-right mt-1"></i></a>
             <div class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0">
-                <a href="" class="dropdown-item">Men's Dresses</a>
-                <a href="" class="dropdown-item">Women's Dresses</a>
-                <a href="" class="dropdown-item">Baby's Dresses</a>
+                <a href="{% url 'catpro' category.id %}" class="dropdown-item">All</a> 
+                {% for subcat in category.subcat.all%}
+                <a href="{% url 'subcategory_page' category.id subcat.id %}" class="dropdown-item">{{subcat.sub_name}}</a>
+               {%endfor%}
             </div>
         </div>
-        <a href="" class="nav-item nav-link">Shirts</a>
-        <a href="" class="nav-item nav-link">Jeans</a>
-        <a href="" class="nav-item nav-link">Swimwear</a>
-        <a href="" class="nav-item nav-link">Sleepwear</a>
-        <a href="" class="nav-item nav-link">Sportswear</a>
-        <a href="" class="nav-item nav-link">Jumpsuits</a>
-        <a href="" class="nav-item nav-link">Blazers</a>
-        <a href="" class="nav-item nav-link">Jackets</a>
-        <a href="" class="nav-item nav-link">Shoes</a>
+        {%endfor%}
     </div>
 </nav></div>
+<div class="col-lg-9">
+    <nav class="navbar navbar-expand-lg bg-light navbar-light py-3 py-lg-0 px-0">
+        <a href="" class="text-decoration-none d-block d-lg-none">
+            <h1 class="m-0 display-5 font-weight-semi-bold"><span
+                    class="text-primary font-weight-bold border px-3 mr-1">E</span>Shopper</h1>
+        </a>
+        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+    </nav>
 {% endblock navbar %} 
 
 {% block corousel%}
@@ -40,7 +46,14 @@
 </style>
 
 <!-- userside/index.html -->
-
+{% if messages %}
+<div class="alert {% if message.tags == 'error' %}alert-danger alert-dismissible fade show{% elif message.tags == 'success' %}alert-success alert-dismissible fade show {% endif %}" role="alert">
+    {% for message in messages%}
+    <strong>{{ message.tags }}</strong> {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  {% endfor %}
+</div>
+{% endif %}
 <div id="header-carousel" class="carousel slide" data-ride="carousel">
     <div class="carousel-inner">
         {% for category in categories %}
@@ -71,7 +84,7 @@
 
 {% endblock corousel %} 
 
-
+</div>
 
 {%block content %}
     <!-- Featured Start -->
