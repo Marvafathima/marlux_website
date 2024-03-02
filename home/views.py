@@ -404,13 +404,57 @@ def filter_data(request):
     brands=request.GET.getlist('brand[]')
     sizes=request.GET.getlist('size[]')
     allproducts=Products.objects.all()
-    if len(colors)>0:
+    #one variant checking
+    if len(colors)>0 and len(brands)==0 and len(sizes)==0:
         allproducts=Products.objects.prefetch_related('product_varient').filter(
             product_varient__color__id__in=colors
         ).distinct()
-        for p in allproducts:
-            print(p)
-    t=render_to_string('product-list.html',{'products': allproducts})
+        print("color only")
+        t=render_to_string('product-list.html',{'products': allproducts})
+    
+    elif len(brands)>0 and len(colors)==0 and len(sizes)==0:
+        allproducts=Products.objects.filter(
+            brand_id__in=brands).distinct() 
+        print("brand only")
+        t=render_to_string('product-list.html',{'products': allproducts})
+    elif len(sizes)>0 and len(colors)==0 and len(brands)==0:
+        allproducts=Products.objects.prefetch_related('product_varient').filter(
+            product_varient__size__id__in=sizes
+        ).distinct() 
+        print("size only")
+        t=render_to_string('product-list.html',{'products': allproducts})
+
+#two variants checking
+    elif len(colors)>0 and len(brands)>0 and len(sizes)==0:
+        products=Products.objects.prefetch_related('product_varient').filter(
+            product_varient__color__id__in=colors).distinct()
+        allproducts=products.filter(brand_id__in=brands).distinct()
+        
+        print("size not")
+        t=render_to_string('product-list.html',{'products': allproducts})
+    
+    elif len(brands)==0 and len(colors)>0 and len(sizes)>0:
+        products=Products.objects.prefetch_related('product_varient').filter(
+            product_varient__color__id__in=colors).distinct()
+        allproducts=products.product_varient__size__id__in=sizes.distinct()
+        print("brand not")
+        t=render_to_string('product-list.html',{'products': allproducts})
+    elif len(sizes)>0 and len(colors)==0 and len(brands)>0:
+        products=Products.objects.prefetch_related('product_varient').filter(
+            product_varient__size__id__in=sizes).distinct()
+        allproducts= products.brand_id__in=brands.distinct()
+        print("color not")
+        t=render_to_string('product-list.html',{'products': allproducts})   
+    
+    #three variants checking
+    elif len(colors)>0 and len(brands)>0 and len(sizes)>0:
+        products1=Products.objects.prefetch_related('product_varient').filter(
+           product_varient__color__id__in=colors).distinct()
+        products2=products1.brand_id__in=brands.distinct()
+
+        allproducts=products2.product_varient__size__id__in=sizes.distinct()
+        print("all3")
+        t=render_to_string('product-list.html',{'products': allproducts})
 
 
     return JsonResponse({'products':t})
