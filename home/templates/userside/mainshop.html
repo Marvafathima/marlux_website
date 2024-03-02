@@ -271,7 +271,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" id="filteredProducts">
+
                     {% for p in products %}
                     <div class="col-lg-4 col-md-6 col-sm-12 pb-1">
                         <div class="card product-item border-0 mb-4" style="width: 100%;">
@@ -307,6 +308,7 @@
     <script>
         $(document).ready(function(){
             // Event handler for checkbox clicks
+          
             $(".filter-checkbox").on('click', function(){
                 var filterObj = {};
                 $(".filter-checkbox").each(function(index, ele){
@@ -319,7 +321,20 @@
 
                     
                 });
-                console.log(filterObj);
+               $.ajax({
+                url:'/filter_data',
+                data:filterObj,
+                dataType:'json',
+                beforeSend:function(){
+                    console.log("loading.....");
+                   
+                },
+                success:function(res){
+                    console.log(res);
+                    $("#filteredProducts").html(res.products);
+                  
+                }
+               });
             });
         });
         

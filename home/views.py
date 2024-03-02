@@ -14,6 +14,7 @@ from category.models import Products,ProductImage,ProductVar,Category,Subcategor
 from django.db.models import Min
 from django.db.models import F, Sum
 from django.views.decorators.csrf import csrf_protect
+from django.template.loader import render_to_string
 
 def index(request):
    
@@ -398,10 +399,23 @@ def price_filter(request):
     else:
         # Handle non-ajax requests or other methods
         return JsonResponse({'error': 'Invalid request'})
-def size_filter(request):
-    pass
-def color_filter(request):
-    pass
+def filter_data(request):
+    colors=request.GET.getlist('color[]')
+    brands=request.GET.getlist('brand[]')
+    sizes=request.GET.getlist('size[]')
+    allproducts=Products.objects.all()
+    if len(colors)>0:
+        allproducts=Products.objects.prefetch_related('product_varient').filter(
+            product_varient__color__id__in=colors
+        ).distinct()
+        for p in allproducts:
+            print(p)
+    t=render_to_string('product-list.html',{'products': allproducts})
+
+
+    return JsonResponse({'products':t})
+  
+
 
 
 
