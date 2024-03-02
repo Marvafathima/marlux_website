@@ -40,11 +40,21 @@ class Color(models.Model):
     color=models.CharField(max_length=200)
     def __str__(self):
         return self.color
+    def save(self, *args, **kwargs):
+        # Convert the color to lowercase before saving
+        self.color = self.color.lower()
+        super().save(*args, **kwargs)
+
 
 class Size(models.Model):
     size=models.CharField(max_length=200)
     def __str__(self):
         return self.size
+    def save(self, *args, **kwargs):
+        # Convert the size to lowercase before saving
+        self.size = self.size.upper()
+        super().save(*args, **kwargs)
+
 class ProductVar(models.Model):
     prod_id=models.ForeignKey(Products,on_delete=models.CASCADE,related_name='product_varient')  
     color=models.ForeignKey(Color,on_delete=models.CASCADE,related_name='product_color')  

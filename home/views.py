@@ -10,7 +10,7 @@ from django.views.decorators.http import require_POST
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.core.mail import send_mail
-from category.models import Products,ProductImage,ProductVar,Category,Subcategory,Color,Size
+from category.models import Products,ProductImage,ProductVar,Category,Subcategory,Color,Size,Brand
 from django.db.models import Min
 from django.db.models import F, Sum
 from django.views.decorators.csrf import csrf_protect
@@ -62,6 +62,7 @@ def get_price(request):
         return JsonResponse({'price': price})
     except ProductVar.DoesNotExist:
         return JsonResponse({'price': None}) 
+    
 @login_required(login_url='login')
 def add_to_cart(request):
 
@@ -341,7 +342,23 @@ def user_logout(request):
 def shop(request):
     products=Products.objects.all()
     category=Category.objects.prefetch_related('subcat').all()
-    return render (request,'mainshop.html',{'products': products,'categories':category})
+    colors=Color.objects.distinct()
+    size_order = {
+    'XXL': 1,
+    'XL': 2,
+    'L': 3,
+    'M': 4,
+    'S': 5,
+    'SM': 6
+}
+    sizes=Size.objects.distinct()
+    sorted_sizes = sorted(sizes, key=lambda x: size_order.get(x.size, float('inf')))
+    for size in sorted_sizes:
+        print(size)
+    for c in colors:
+        print(c.color)
+    brands=Brand.objects.all()
+    return render (request,'mainshop.html',{'products': products,'categories':category,'colors':colors,'sizes':sorted_sizes,'brands':brands})
 
 
 def subcategory_page(request,cat_id,subcat_id,):
@@ -368,7 +385,19 @@ def search(request):
                 return redirect('home')
             
 def price_filter(request):
-    pass
+    if request.method == 'POST' and request.is_ajax():
+        selected_ranges = request.POST.getlist('selected_ranges[]')
+        # Process selected_ranges and fetch products from the database
+        # Replace this with your actual logic to fetch products based on price ranges
+        products=Products.objects.prefetch_related('product_variant').filter(
+        product_variant__price__gte=min,
+        product_variant__price__lte=max)
+        
+        product_list = [{'name': product.pr_name, 'price': product.product_varient__price,} for product in products]
+        return JsonResponse({'products': product_list})
+    else:
+        # Handle non-ajax requests or other methods
+        return JsonResponse({'error': 'Invalid request'})
 def size_filter(request):
     pass
 def color_filter(request):

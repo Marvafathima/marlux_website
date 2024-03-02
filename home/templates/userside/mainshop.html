@@ -8,7 +8,7 @@
         <i class="fa fa-angle-down text-dark"></i>
     </a>
     <nav class="collapse show navbar navbar-vertical navbar-light align-items-start p-0 border border-top-0 border-bottom-0" id="navbar-vertical">
-        <div class="navbar-nav w-100 overflow-hidden" style="height: 410px">
+        <div class="navbar-nav w-100 overflow-hidden" style="margin-bottom:20%">
             {% for category in categories%}
             <div class="nav-item dropdown">
                 <a href="" class="nav-link" data-toggle="dropdown">{{category.name}}<i class="fa fa-angle-down float-right mt-1"></i></a>
@@ -26,7 +26,7 @@
     <!-- category dropdown ends -->
 <!-- <div class="col-lg-3 col-md-12"> -->
     <!-- Price Start -->
-    <div class="border-bottom mb-4 pb-4">
+    <!-- <div class="border-bottom mb-4 pb-4">
         <h5 class="font-weight-semi-bold mb-4">Filter by price</h5>
         <form>
             <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
@@ -36,8 +36,8 @@
             <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
                 <input type="checkbox" class="custom-control-input" id="price-1" data-min="0" data-max="500">
                 <label class="custom-control-label" for="price-1">₹0-₹500</label>
-                <!-- <span class="badge border font-weight-normal">150</span> -->
-            </div>
+                 <span class="badge border font-weight-normal">150</span> -->
+            <!-- </div>
             <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
                 <input type="checkbox" class="custom-control-input" id="price-2" data-min="500" data-max="1000">
                 <label class="custom-control-label" for="price-2">₹500-₹1000</label>
@@ -59,84 +59,53 @@
                
             </div>
         </form>
-    </div>
+    </div>  -->
     <!-- Price End -->
     
     <!-- Color Start -->
     <div class="border-bottom mb-4 pb-4">
         <h5 class="font-weight-semi-bold mb-4">Filter by color</h5>
-        <form>
+        
+            {% for color in colors %}
             <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                <input type="checkbox" class="custom-control-input" checked id="color-all">
-                <label class="custom-control-label" for="price-all">All Color</label>
-                <span class="badge border font-weight-normal">1000</span>
+               
+                <label  for="color-{{color.id}}">{{color.color|upper}}</label>
+                <input type="checkbox" class="filter-checkbox" data-filter="color" value="{{color.id}}"  >
             </div>
-            <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                <input type="checkbox" class="custom-control-input" id="color-1">
-                <label class="custom-control-label" for="color-1">Black</label>
-                <span class="badge border font-weight-normal">150</span>
-            </div>
-            <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                <input type="checkbox" class="custom-control-input" id="color-2">
-                <label class="custom-control-label" for="color-2">White</label>
-                <span class="badge border font-weight-normal">295</span>
-            </div>
-            <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                <input type="checkbox" class="custom-control-input" id="color-3">
-                <label class="custom-control-label" for="color-3">Red</label>
-                <span class="badge border font-weight-normal">246</span>
-            </div>
-            <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                <input type="checkbox" class="custom-control-input" id="color-4">
-                <label class="custom-control-label" for="color-4">Blue</label>
-                <span class="badge border font-weight-normal">145</span>
-            </div>
-            <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                <input type="checkbox" class="custom-control-input" id="color-5">
-                <label class="custom-control-label" for="color-5">Green</label>
-                <span class="badge border font-weight-normal">168</span>
-            </div>
-        </form>
+            {% endfor %}
     </div>
     <!-- Color End -->
 
     <!-- Size Start -->
     <div class="mb-5">
         <h5 class="font-weight-semi-bold mb-4">Filter by size</h5>
-        <form>
+        {% for size in sizes %}
             <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                <input type="checkbox" class="custom-control-input" checked id="size-all">
-                <label class="custom-control-label" for="size-all">All Size</label>
-                <span class="badge border font-weight-normal">1000</span>
+
+                <label for="size-all">{{size.size}}</label>
+                <input type="checkbox" class=" filter-checkbox"data-filter="size" value="{{size.id}}"  id="size-{{size.id}}">
             </div>
-            <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                <input type="checkbox" class="custom-control-input" id="size-1">
-                <label class="custom-control-label" for="size-1">XS</label>
-                <span class="badge border font-weight-normal">150</span>
-            </div>
-            <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                <input type="checkbox" class="custom-control-input" id="size-2">
-                <label class="custom-control-label" for="size-2">S</label>
-                <span class="badge border font-weight-normal">295</span>
-            </div>
-            <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                <input type="checkbox" class="custom-control-input" id="size-3">
-                <label class="custom-control-label" for="size-3">M</label>
-                <span class="badge border font-weight-normal">246</span>
-            </div>
-            <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
-                <input type="checkbox" class="custom-control-input" id="size-4">
-                <label class="custom-control-label" for="size-4">L</label>
-                <span class="badge border font-weight-normal">145</span>
-            </div>
-            <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between">
-                <input type="checkbox" class="custom-control-input" id="size-5">
-                <label class="custom-control-label" for="size-5">XL</label>
-                <span class="badge border font-weight-normal">168</span>
-            </div>
-        </form>
+            {% endfor %}
+          
     </div>
     <!-- Size End -->
+    <div class="mb-5">
+        <h5 class="font-weight-semi-bold mb-4">Filter by Brand</h5>
+        {% for brand in brands %}
+            <div class="custom-control custom-checkbox d-flex align-items-center justify-content-between mb-3">
+
+                <label for="brand-all">{{brand.br_name}}</label>
+                <input type="checkbox" class=" filter-checkbox"data-filter="brand" value="{{brand.id}}"  id="brand-{{brand.id}}">
+            </div>
+            {% endfor %}
+          
+    </div>
+
+
+
+
+
+
 </div>
 <!-- Shop Sidebar End -->
 <div class="col-lg-9">
@@ -333,31 +302,28 @@
         </div> </div>
     <!-- </div> </div> </div> -->
     <!-- Shop End -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
     <script>
         $(document).ready(function(){
             // Event handler for checkbox clicks
-            $('input[type=checkbox]').change(function(){
-                var selectedRanges = [];
-                $('input[type=checkbox]:checked').each(function(){
-                    var minPrice = $(this).data('min');
-                    var maxPrice = $(this).data('max');
-                    selectedRanges.push({'min': minPrice, 'max': maxPrice});
+            $(".filter-checkbox").on('click', function(){
+                var filterObj = {};
+                $(".filter-checkbox").each(function(index, ele){
+                    var filterVal = $(this).val();
+                    var filterKey = $(this).data('filter');
+                    console.log(filterKey, filterVal);
+                    filterObj[filterKey]=Array.from(document.querySelectorAll('input[data-filter='+filterKey+']:checked')).map(function(element){
+                        return element.value;
+                    });
+
+                    
                 });
-                // AJAX call to send selected ranges to server
-                $.ajax({
-                    type: 'POST',
-                    url: '/price_filter/',
-                    data: {'selected_ranges': selectedRanges},
-                    success: function(response){
-                        // Handle successful response (e.g., update UI with products)
-                    },
-                    error: function(xhr, errmsg, err){
-                        // Handle error
-                    }
-                });
+                console.log(filterObj);
             });
         });
         
+    
     </script>
 
     {% endblock corousel %} </div>
