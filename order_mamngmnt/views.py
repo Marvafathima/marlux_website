@@ -28,9 +28,11 @@ from django.views.generic import TemplateView
 # Create your views here.
 @login_required
 def cart_to_order(request,cart_id):
-    # try:
-    cart=Cart.objects.get(id=cart_id)
-    cart_items=CartItem.objects.filter(cart=cart)
+    try:
+        cart=Cart.objects.get(id=cart_id)
+        cart_items=CartItem.objects.filter(cart=cart)
+    except:
+        return redirect('home')
     us=request.user
     user=CustomUser.objects.get(id=us.id)
     try:
@@ -65,28 +67,6 @@ def cart_to_order(request,cart_id):
     return render (request,'checkout.html',{'context':context})
 
 
-def razorpaycheck(request):
-    print("razoraja calleddd")
-    cart=Cart.objects.get(user=request.user)
-    cart_total=0
-    if cart.applied_coupon:
-        cart_total=cart.coupon_cart_total
-    else:
-        cart_total=cart.cart_total
-    
-    user=CustomUser.objects.get(id=request.user.id)
-    address=Address.objects.get(user=request.user,is_default=True)
-    user_detail=UserAddress.objects.get(user=request.user)
-    user_name=user_detail.user_name
-    email=user.email
-    phone_number=user_detail.phone_number
-    return JsonResponse({
-        'total_price':cart_total,
-        'user_name':user_name,
-        'email':email,
-        'phone_number': phone_number
-
-    })
 
 
 
@@ -271,164 +251,7 @@ def get_order_products(request,order_id):
     return render (request, 'order_iem_detail.html',{'order_products': order_product_data,'orders':orders,'customer':customer,'customer_detail':customer_detail})
 
     
-import random
-@login_required
-def place_order(request):
-    if request.method=="POST":
-        name=request.POST.get('user_name')
-        email=request.POST.get('email')
-        phone_number=request.POST.get('phone_number')
-        house_name=request.POST.get('house_name')
-        street=request.POST.get('street')
-        city=request.POST.get('city')
-        district=request.POST.get(' district')
-        state=request.POST.get(' state')
-        pin_code=request.POST.get(' pin_code')
-        country= request.POST.get('country')
-        cartid=request.POST.get('cartid')
-        amount=request.POST.get('amount')
-        payment_mode=request.POST.get('payment_mode')
-        
-        print(cartid,"this is the cart id")
-        if payment_mode=='cod' and float(amount)>1000:
-            messages.error(request,"Sorry,No COD available for purchase above 1000")
-            return redirect('checkout',cartid)
-        elif payment_mode =='cod' and float(amount)<=1000:
-            user=request.user
-            cart=Cart.objects.get(user=user.id)
-            items=CartItem.objects.filter(cart=cart)
-            cart_user=CustomUser.objects.get(id=user.id)
-            address=Address.objects.get(user=user,is_default=True)
-            cust_detail=UserAddress.objects.get(user=user)
-            order_address=OrderAddress.objects.create(
-                user=user,
-                house_name=address.house_name,
-                street=address.street,
-                city=address.city,
-                district=address.district,
-                landmark=address.landmark,
-                state=address.state,
-                postal_code=address.postal_code,
-                country = address.country
-            
-            )
-            payment_status='cod'
-            stat='Confirmed'
-            if stat in dict(Order.STATUS):
-                st=stat
-            if payment_status in dict(Order.PAYMENT_STATUS_CHOICES):
-                pay_status=payment_status
-            track_no='marlux'+str(random.randint(11111111,99999999))
-            order=Order.objects.create(user=user,
-                                       address=order_address,
-                                       order_total=cart.cart_total,
-                                       total_qnty=cart.total_qnty,
-                                       payment_mode=payment_mode,
-                                       tracking_number=track_no,
-                                       payment_status=pay_status,
-                                       status=st
-                                       )
-            try:
-                coupon=Coupon.objects.get(id=cart.applied_coupon.id)
-                order.discount_total=cart.coupon_price
-                order.discount_grand_total=cart.coupon_cart_total
-                order.is_ordered=True
-                order.applied_coupon=coupon.id
-                order.save()
-            except:
-                print("no coupon applied")
-            
-            for item in items:
-                ox=OrderProduct.objects.create(
-                            order=order,
-                            product_variant=item.product_variant,
-                            quantity=item.quantity,
-                            price=item.product_variant.price,
-                            
-                        )
-                print(ox.item_total_price,"this is the total price of the vaariant")
-                
-                # ox.item_total_price=ox.quantity* ox.price
 
-
-            od_items=OrderProduct.objects.filter(order=order)
-            
-            cart.delete()
-            items.delete()
-            if cart is None:
-                print("order placed successfully")
-                return HttpResponse("order succesful")
-            return HttpResponse("order succesful")
-        elif payment_mode=='razorpay':
-            payment_id=request.POST.get("payment_id")
-            user=request.user
-            cart=Cart.objects.get(user=user.id)
-            items=CartItem.objects.filter(cart=cart)
-            cart_user=CustomUser.objects.get(id=user.id)
-            address=Address.objects.get(user=user,is_default=True)
-            cust_detail=UserAddress.objects.get(user=user)
-            order_address=OrderAddress.objects.create(
-                user=user,
-                house_name=address.house_name,
-                street=address.street,
-                city=address.city,
-                district=address.district,
-                landmark=address.landmark,
-                state=address.state,
-                postal_code=address.postal_code,
-                country = address.country
-            
-            )
-            payment_status='successful'
-            stat='Confirmed'
-            if stat in dict(Order.STATUS):
-                st=stat
-            if payment_status in dict(Order.PAYMENT_STATUS_CHOICES):
-                pay_status=payment_status
-            track_no='marlux'+str(random.randint(11111111,99999999))
-            order=Order.objects.create(user=user,
-                                       address=order_address,
-                                       order_total=cart.cart_total,
-                                       total_qnty=cart.total_qnty,
-                                       payment_mode=payment_mode,
-                                       tracking_number=track_no,
-                                       payment_status=pay_status,
-                                       status=st,
-                                       razorpay_payment_id=payment_id
-                                       )
-            print(order.tracking_number)
-            print(order.payment_mode)
-            print(order.payment_status)
-            try:
-                coupon=Coupon.objects.get(id=cart.applied_coupon.id)
-                order.discount_total=cart.coupon_price
-                order.discount_grand_total=cart.coupon_cart_total
-                order.is_ordered=True
-                order.applied_coupon=coupon.id
-                order.save()
-            except:
-                print("no coupon applied")
-            
-            for item in items:
-                ox=OrderProduct.objects.create(
-                            order=order,
-                            product_variant=item.product_variant,
-                            quantity=item.quantity,
-                            price=item.product_variant.price,
-                            
-                        )
-                print(ox.item_total_price,"this is the total price of the vaariant")
-                
-                # ox.item_total_price=ox.quantity* ox.price
-
-
-            od_items=OrderProduct.objects.filter(order=order)
-            
-            cart.delete()
-            items.delete()
-            return JsonResponse({'status':"Your order has been placed succesfully"})
-    else:
-        return redirect('home')
 @login_required
 def my_orders(request):
     return HttpResponse("MY ORDERRS PAGE")
