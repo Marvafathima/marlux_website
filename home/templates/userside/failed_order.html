@@ -1,0 +1,50 @@
+{% extends 'main.html'%}
+{% block corousel %}
+
+                   
+                    <div class="table-responsive">
+                        <table id="data-table-basic" class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <!-- <th>Order ID</th>  -->
+                                     
+                                    <th>Quantity</th>
+                                   <th>Order Price</th>
+                                   <th>Tax/GST</th>
+                                   <th>Grand Total</th>
+                                   <!-- <th>Status</th> -->
+                                   <th>Payment Mode</th> 
+                                   <th>Payment Status</th>
+                                   <th>Date of Ordering</th>
+                                  <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for data in order_data%}
+                                <tr>
+                                    <!-- <td>{{data.order.id}}</td> -->
+                                    <td>{{data.total_qnty}}</td>   
+                                    <td >₹{{data.order_total}}</td>
+                                    <td>₹{{data.tax|floatformat:2}}</td>
+                                    <td>₹{{data.grand_total}}</td>
+                                    <!--  <td>{{data.order.status}}</td> -->
+                              
+                                    <td>{{data.payment_mode}}</td> 
+                                    <td>{{data.payment_status}}</td>
+                                    <td>{{data.created_at}}</td>
+                                    <th><a>view</a></th>
+                                    
+                </tr>           
+
+                   {% endfor %}
+
+
+
+
+                             
+                            </tbody>
+                           
+                        </table>
+                    </div>
+          <div class="row" style="height:600px;"></div>
+{% endblock corousel %}

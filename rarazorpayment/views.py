@@ -208,6 +208,71 @@ def place_order(request):
             return JsonResponse({'status':"Your order has been placed succesfully"})
     else:
         return redirect('home')
+def failure_order(request):
+    print("failure called in view")
+    if request.method=="POST":
+        user=request.user
+        cart=Cart.objects.get(user=user.id)
+        items=CartItem.objects.filter(cart=cart)
+        cart_user=CustomUser.objects.get(id=user.id)
+        address=Address.objects.get(user=user,is_default=True)
+        cust_detail=UserAddress.objects.get(user=user)
+        order_address=OrderAddress.objects.create(
+                user=user,
+                house_name=address.house_name,
+                street=address.street,
+                city=address.city,
+                district=address.district,
+                landmark=address.landmark,
+                state=address.state,
+                postal_code=address.postal_code,
+                country = address.country
+            
+            )
+        payment_status='failed'
+
+        if payment_status in dict(Order.PAYMENT_STATUS_CHOICES):
+            pay_status=payment_status
+        
+        order=Order.objects.create(user=user,
+                                    address=order_address,
+                                    order_total=cart.cart_total,
+                                    total_qnty=cart.total_qnty,
+                                    payment_status=pay_status,
+                                    )
+        print(order.tracking_number)
+        print(order.payment_mode)
+        print(order.payment_status)
+        try:
+            coupon=Coupon.objects.get(id=cart.applied_coupon.id)
+            order.discount_total=cart.coupon_price
+            order.discount_grand_total=cart.coupon_cart_total
+            order.is_ordered=False
+            order.applied_coupon=coupon.id
+            order.save()
+        except:
+            print("no coupon applied")
+        
+        for item in items:
+            ox=OrderProduct.objects.create(
+                        order=order,
+                        product_variant=item.product_variant,
+                        quantity=item.quantity,
+                        price=item.product_variant.price,
+                        
+                    )
+            print(ox.item_total_price,"this is the total price of the vaariant")
+            
+            # ox.item_total_price=ox.quantity* ox.price
+
+
+        od_items=OrderProduct.objects.filter(order=order)
+        
+        return JsonResponse({'status':"Error Placing Order"})
+    else:
+        return redirect('home')
+        
+        
 
 
 

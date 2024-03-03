@@ -189,6 +189,15 @@ def order_history(request):
             'order_data':order_data,
             'addresses':addresses
         })
+def failed_order_history(request):
+    user=request.user
+    order=Order.objects.filter(Q(payment_status="failed") & Q(user=user))
+    for o in order:
+        print(o.payment_mode)
+        print(o.payment_status)
+        print(o.order_total)
+
+    return render (request,'failed_order.html',{'order_data':order})
   
 def admin_orderlist(request):
     order_data=Order.objects.select_related('user','address').prefetch_related('orderproduct__product_variant','user__useraddress').all()

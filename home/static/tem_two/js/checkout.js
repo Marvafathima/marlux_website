@@ -41,6 +41,7 @@ $(document).ready(function () {
                 // "order_id": "{{ order_id }}",
                 "handler": function(responseb) {
                     alert(responseb.razorpay_payment_id);
+                   
                     data={
 
                         "name":name ,
@@ -71,7 +72,6 @@ $(document).ready(function () {
                     });
                     // alert(response.razorpay_order_id);
                     // alert(response.razorpay_signature);
-                    
                 },
                 
                 "prefill": {
@@ -87,15 +87,16 @@ $(document).ready(function () {
             };
             var rzp1 = new Razorpay(options);
             
-            // rzp1.on('payment.failed', function (response){
-            //         alert(response.error.code);
-            //         alert(response.error.description);
-            //         alert(response.error.source);
-            //         alert(response.error.step);
-            //         alert(response.error.reason);
-            //         alert(response.error.metadata.order_id);
-            //         alert(response.error.metadata.payment_id);
-            // });
+            rzp1.on('payment.failed', function (responsed){
+                    alert(responsed.error.code);
+                    alert(responsed.error.description);
+                    alert(responsed.error.source);
+                    alert(responsed.error.step);
+                    alert(responsed.error.reason);
+                    alert(responsed.error.metadata.order_id);
+                    alert(responsed.error.metadata.payment_id);
+                    handlePaymentFailure(email, phone_number, street, city, state, amount, cartid, payment_mode, token); 
+            });
             rzp1.open();
             }
         });
@@ -104,5 +105,32 @@ $(document).ready(function () {
         
         
     });
+    function handlePaymentFailure(email, phone_number, street, city, state, amount, cartid, payment_mode, token) {
+        console.log("failure called")
+        var data = {
+            "email": email,
+            "phone_number": phone_number,
+            "street": street,
+            "city": city,
+            "state": state,
+            "amount": amount,
+            "cartid": cartid,
+            "payment_mode": payment_mode,
+            csrfmiddlewaretoken: token
+        };
+        console.log(data.email,data.cartid)
+        console.log("the values are hereeeee")
+        $.ajax({
+            method: "POST",
+            url: "/failure_order",
+            data: data,
+            success: function(responsef) {
+                swal("Error", responsef.status, "error").then((value) => {
+                    window.location.href = '/failed_order_history';
+                });
+            }
+        });
+    }
+    
+    
 });
-
