@@ -2,72 +2,137 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Razorpay Payment</title>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Details</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: #f2f2f2;
+        }
+
+        .header a {
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
+        }
+
+        .main-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .order-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .order-details h2,
+        .order-details p {
+            margin: 0;
+        }
+
+        .order-details p {
+            font-weight: lighter;
+            color: gray;
+        }
+
+        .order-items {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .order-items th,
+        .order-items td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .order-items tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .payment-details,
+        .delivery-details {
+            margin: 1rem 0;
+        }
+
+        .payment-details h3,
+        .delivery-details h3 {
+            margin-bottom: 0.5rem;
+        }
+    </style>
 </head>
 <body>
-    <h1>Razorpay Payment Form</h1>
-    <form id="payment-form">
-        {% csrf_token %}
-        <label for="amount">Enter Amount (in INR):</label>
-        <input type="number" id="amount" name="amount" required>
-        <button type="button" id="pay-button">Pay Now</button>
-    </form>
+    <header class="header">
+        <a href="#">Home</a>
+        <a href="#">Orders</a>
+        <p>Order ID: 334902461</p>
+        <div>
+            <a href="#">Invoice</a>
+            <a href="#">Track order</a>
+        </div>
+    </header>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $("#pay-button").click(function(e) {
-                e.preventDefault(); // Prevent the default form submission
-                
-                // Get the amount entered by the user
-                const amount = $("#amount").val();
+    <main class="main-container">
+        <section class="order-details">
+            <h2>Order details</h2>
+            <p>Order date: Feb 16, 2022</p>
+            <p>Estimated delivery: May 14, 2022</p>
+        </section>
 
-                // Make an AJAX request to initiate the payment
-                $.ajax({
-                    type: "POST",
-                    url: "/payment/initiate-payment/",
-                    data: { amount: amount },
-                    dataType: "json",
-                    beforeSend: function(xhr) {
-                        xhr.setRequestHeader("X-CSRFToken", $("[name=csrfmiddlewaretoken]").val());
-                    },
-                    success: function(data) {
-                        // Initialize Razorpay Checkout with the received values
-                        const options = {
-                            key: data.key,
-                            amount: data.amount,
-                            currency: data.currency,
-                            order_id: data.id,
-                            name: data.name,
-                            description: data.description,
-                            image: data.image,
-                            handler: function(response) {
-                                // Handle the payment success or failure and redirect accordingly
-                                if (response.razorpay_payment_id) {
-                                    // Payment successful, redirect to the success URL
-                                    window.location.href = "/payment/payment-success/";
-                                } else {
-                                    // Payment failed or canceled, redirect to the failure URL
-                                    window.location.href = "/payment/payment-failed/";
-                                }
-                            },
-                            prefill: {
-                                name: "Customer Name",
-                                email: "customer@example.com",
-                                contact: "customer_contact",
-                            },
-                        };
+        <table class="order-items">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>MacBook Pro 14", Space Gray, 3208, 1TB</td>
+                    <td>$2599.00</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>iPad Pro 12.9", Space Gray 2TB Cellular</td>
+                    <td>$2399.00</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>AirPods Max, Space Gray</td>
+                    <td>$549.00</td>
+                    <td>2</td>
+                </tr>
+            </tbody>
+        </table>
 
-                        const rzp = new Razorpay(options);
-                        rzp.open();
-                    },
-                    error: function(error) {
-                        console.error("Error initiating payment:", error);
-                    }
-                });
-            });
-        });
-    </script>
+        <section class="payment-details">
+            <h3>Payment</h3>
+            <p>Visa ending in ****5678</p>
+        </section>
+
+        <section class="delivery-details">
+            <h3>Delivery</h3>
+            <p>
+                847 Jewess Bridge Apt. 174 <br>
+                London, UK <br>
+                474-769-3919
+            </p>
+        </section>
+    </main>
 </body>
 </html>

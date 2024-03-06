@@ -1,6 +1,7 @@
 {% extends 'main.html' %}
 
 {% block navbar %}
+
  <!-- category dropdown ends -->
 <div class="col-lg-3 d-none d-lg-block">
     <a class="btn shadow-none d-flex align-items-center justify-content-between bg-primary text-white w-100" data-toggle="collapse" href="#navbar-vertical" style="height: 65px; margin-top: -1px; padding: 0 30px;">
@@ -150,7 +151,22 @@
     border-radius: 5px;
     z-index: 2; /* Ensure the text is above the overlay */
 }
+#heart-icon {
+    position: absolute;
+    top: 10px; /* Adjust as needed */
+    right: 10px; /* Adjust as needed */
+    z-index: 2; /* Ensure the heart icon is above the image */
+    /* You can use an icon font or an image for the heart icon */
+    /* Example using FontAwesome */
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    content: "\f004"; /* Unicode for the heart icon */
+   /* Color of the heart icon */
+    font-size: 24px; /* Size of the heart icon */
+}
    </style>
+   
+
 
 
     <!-- Shop Start -->
@@ -239,6 +255,37 @@
         <!-- </div>
     </div> -->
     <!-- Shop End -->
+    {% if messages%}
+{% for message in messages %}
+{% if message.tags is "success" %}
+
+<div class="alert alert-success d-flex align-items-center" role="alert">
+    <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+    <div>
+     {{messages}}
+    </div>   </div>
+
+  {% elif message.tags is "error" %}
+  
+<div class="alert alert-danger d-flex align-items-center" role="alert">
+  <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+  <div>
+    {{message}}
+  </div>
+</div>
+{% else %}
+
+<div class="alert alert-primary d-flex align-items-center" role="alert">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
+      <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+    </svg>
+    <div>
+     {{message}}
+    </div>
+  </div>
+    {% endif %}
+    {% endfor%}
+    {% endif %}
     <div class="container-fluid pt-5">
         <div class="row px-xl-5">
             <!-- Shop Sidebar Start -->
@@ -277,8 +324,8 @@
                     <div class="col-lg-4 col-md-6 col-sm-12 pb-1">
                         <div class="card product-item border-0 mb-4" style="width: 100%;">
                             <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                            
-                                <img class="img-fluid w-100" src="{{ p.product_image.first.image.url }}" alt="" style="height: 275px;">
+                               <a href="{% url 'wishlist' p.id%}"> <i class="fas fa-heart text-primary" id="heart-icon"></i></a>
+                                <img class="img-fluid w-100" src="{{ p.product_image.first.image.url }}" alt="" style="height: 450px;width:min-content;overflow:hidden">
                             </div>
                             <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
                                 <h6 class="text-truncate mb-3">{{p.pr_name}}</h6>

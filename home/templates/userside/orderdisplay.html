@@ -3,12 +3,237 @@
  {% block profilehead %} <h3>My Orders </h3> {% endblock profilehead %}
              
                 {% block form %}
+
+                <style>
+                  .custom-card {
+                
+                    background-color: #fcfcfc;
+                    border-radius: 20px;
+                    padding: 20px;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                    margin: 20px auto;
+                  }
+                  .header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                  }
+                  .order-id {
+                    font-weight: bold;
+                    font-size: 24px;
+                  }
+                  .table {
+                    margin-top: 20px;
+                  }
+                  table {
+                    width: 100%;
+                    border-collapse: collapse;
+                  }
+                  th, td {
+                    border: 1px solid #dddddd;
+                    text-align: left;
+                    padding: 8px;
+                  }
+                  .status {
+                    margin-top: 20px;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                  }
+                  .status-item {
+                    text-align: center;
+                    flex: 1;
+                  }
+                  .path {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    margin-top: 10px;
+                  }
+                  .checkpoint {
+                    margin-top: 20px;
+                    flex: 1;
+                    text-align: center;
+                    border-radius: 20px;
+                    padding: 5px;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                    height:100px;
+                  }
+                  .checkpoint:not(:last-child) {
+                    margin-right: 20px;
+                  }
+                </style>
+                
+                
+                <div class="card custom-card">
+                  <div class="header">
+                    <div>
+                      <div class="card-title order-id">Order ID:{{order.tracking_number}}</div>
+                      <div>Order Date: {{order.created_at|date:"d/m/Y"}}</div>
+                    </div>
+                    <div>
+                      <div>Delivery Date: 2024-03-10</div>
+                    </div>
+                  </div>
+                  <div class="table table table-secondary table-striped">
+                    <table>
+                      <tr>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                      </tr>
+                      {% for items in order_items %}
+                      <tr>
+                        {% with product_variant=items.product_variant %}
+                        {% with product=product_variant.prod_id %}
+                            {% with product_img=product.product_image.first %}
+                        <td><img src="{{product_img.image.url}}" alt="" style="width: 50px;"><br>
+                        <p><b>{{items.product_variant.prod_id.pr_name|upper}}</b></p>
+                    Size:{{items.product_variant.size}}<br>
+                          Color:{{items.product_variant.color}}<br>
+                        
+                        </td>
+                        {% endwith %}
+                        {% endwith %}
+                    {% endwith %}
+                        <td>{{items.quantity}}</td>
+                        <td>{{items.price}}</td>
+                        <td>{{items.item_total_price}}</td>
+                      </tr>
+                    {% endfor %}
+                    </table>
+                  </div>
+                  <div class="status">
+                    <div>
+                      <div>Order Status:</div>
+                      <div><h4>{{order.status}}</h4></div>
+                    </div>
+                    <div>
+                      <div><h5>Delivery Address:</h5></div>
+                      <div>{{order.address.house_name}}<br>
+                        {{order.address.street}}, {{order.address.city}}<br>
+                        {{order.address.postal_code}},  {{order.address.district}}<br>
+                        {{order.address.state}}, {{order.address.country}}<br>
+                      
+                      </div>
+                    </div>
+                  </div>
+                  <div class="path">
+                    {% if confirm%}
+
+                    <!-- <div class="checkpoint pending bg-success text-white font-weight-bold"><div>Pending</div>
+                    <div><span class="material-symbols-outlined mt-2" style="font-size: 50px;">
+                      done
+                      </span></div>
+                    </div> -->
+
+                    <div class="checkpoint confirmed bg-success text-white font-weight-bold">Confirmed
+                      <div><span class="material-symbols-outlined mt-2" style="font-size: 50px;">
+                        done
+                        </span></div> 
+                    </div>
+
+                    <div class="checkpoint shipped bg-danger text-white font-weight-bold">Shipped
+                      <div><span class="material-symbols-outlined mt-2" style="font-size: 50px;">
+                        close
+                        </span></div>
+                    </div>
+
+                    <div class="checkpoint delivered  bg-danger text-white font-weight-bold">Delivered
+                      <div><span class="material-symbols-outlined mt-2" style="font-size: 50px;">
+                        close
+                        </span></div>
+                    </div>
+
+                   {% elif pending%}
+                   <div class="checkpoint pending bg-success text-white font-weight-bold">Pending
+                    <div><span class="material-symbols-outlined mt-2" style="font-size: 50px;">
+                      done
+                      </span></div>
+                   </div>
+
+                    <div class="checkpoint confirmed bg-danger text-white font-weight-bold">Confirmed
+                      <div><span class="material-symbols-outlined mt-2" style="font-size: 50px;">
+                        close
+                        </span></div>
+                    </div>
+
+                    <div class="checkpoint shipped bg-danger text-white font-weight-bold">Shipped
+                      <div><span class="material-symbols-outlined mt-2" style="font-size: 50px;">
+                        close
+                        </span></div>
+                    </div>
+
+
+                    <div class="checkpoint delivered bg-danger text-white font-weight-bold">Delivered
+                      <div><span class="material-symbols-outlined mt-2" style="font-size: 50px;">
+                        close
+                        </span></div>
+                    </div>
+                  
+                    {% elif shipped%}
+                   <!-- <div class="checkpoint pending bg-success text-white font-weight-bold">Pending
+                    <div><span class="material-symbols-outlined mt-2" style="font-size: 50px;">
+                      done
+                      </span></div> 
+                   </div> -->
+                    <div class="checkpoint confirmed bg-success text-white font-weight-bold">Confirmed
+                      <div><span class="material-symbols-outlined mt-2" style="font-size: 50px;">
+                        done
+                        </span></div> 
+
+                    </div>
+                    <div class="checkpoint shipped bg-success text-white font-weight-bold ">Shipped
+
+                      <div><span class="material-symbols-outlined mt-2" style="font-size: 50px;">
+                        done
+                        </span></div> 
+                    </div>
+                    <div class="checkpoint delivered  bg-danger text-white font-weight-bold">Delivered
+
+                      <div><span class="material-symbols-outlined mt-2" style="font-size: 50px;">
+                        close
+                        </span></div>
+                    </div>
+                    {% elif delivered%}
+
+                    <!-- <div class="checkpoint pendingnbg-success text-white font-weight-bold">Pending
+                      <div><span class="material-symbols-outlined mt-2" style="font-size: 50px;">
+                        done
+                        </span></div>  -->
+
+                    </div>
+                    <div class="checkpoint confirmed bg-success text-white font-weight-bold">Confirmed
+                      <div><span class="material-symbols-outlined mt-2" style="font-size: 50px;">
+                        done
+                        </span></div> 
+
+                    </div>
+                    <div class="checkpoint shipped bg-success text-white font-weight-bold">Shipped
+                      <div><span class="material-symbols-outlined mt-2" style="font-size: 50px;">
+                        done
+                        </span></div> 
+
+                    </div>
+                    <div class="checkpoint delivered bg-success text-white font-weight-bold">Delivered
+                      <div><span class="material-symbols-outlined mt-2" style="font-size: 50px;">
+                        done
+                        </span></div> 
+
+                    </div>
+                  
+                    {%endif%}
+                  
+                  </div>
+                  
+                </div>
                
-                <table id="orderTable">
+                <!-- <table id="orderTable">
                   <thead>
                     <tr>
                       <th>Order ID</th>
-                      <!-- <th>Order Item</th> -->
+                    
                       <th>Quantity</th>
                       <th>Order Price</th>
                       <th>Tax/GST</th>
@@ -17,20 +242,20 @@
                       <th>Date of Ordering</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody> -->
                     <!-- Rows of order data will be dynamically added here -->
                    
-                    <tr data-order-id="{{ oder.id }}" class="orderRow">
-                      <td>{{oder.id}}</td>
-                      <td>{{oder.total_qnty}}</td>   
-                      <td>{{oder.order_total}}</td>
-                      <td>{{oder.tax}}</td>
-                      <td>{{oder.grand_total}}</td>
-                      <td>{{oder.status}}</td>
-                      <td>{{oder.created_at}}</td>
-                    </tr>
+                    <!-- <tr data-order-id="{{ order.id }}" class="orderRow">
+                      <td>{{order.id}}</td>
+                      <td>{{order.total_qnty}}</td>   
+                      <td>{{order.order_total}}</td>
+                      <td>{{order.tax}}</td>
+                      <td>{{order.grand_total}}</td>
+                      <td>{{order.status}}</td>
+                      <td>{{order.created_at}}</td>
+                    </tr> -->
                     <!-- Add more rows as needed -->
-                  </tbody>
+                  <!-- </tbody>
                 </table>
                 
                 <div id="orderDetails">
@@ -64,16 +289,16 @@
                         <td>{{item.product_variant.size}}</td>
                         <td>{{item.product_variant.color}}</td>
                       </tr>
-                      {% endfor %} 
+                      {% endfor %}  -->
                      
                       <!-- Product details will be dynamically added here -->
-                    </tbody>
+                    <!-- </tbody>
                   </table>
                   <button id="returnButton">Return</button>
                   <button id="cancelButton">Cancel</button>
                 </div>
                
-              
+               -->
                 {% endblock form %}
           
     {% block right %}

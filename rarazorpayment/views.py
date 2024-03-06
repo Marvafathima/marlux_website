@@ -21,6 +21,7 @@ from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
 import razorpay
 from django.conf import settings
+from django.urls import reverse
 # Create your views here.
 
 
@@ -130,14 +131,18 @@ def place_order(request):
                 # ox.item_total_price=ox.quantity* ox.price
 
 
-            od_items=OrderProduct.objects.filter(order=order)
+            order_items=OrderProduct.objects.filter(order=order)
             
             cart.delete()
             items.delete()
             if cart is None:
                 print("order placed successfully")
-                return HttpResponse("order succesful")
-            return HttpResponse("order succesful")
+                messages.success(request,"order placed succesfully.")
+                return redirect(reverse('my_orders', args=[order.id]))
+            
+            return redirect(reverse('my_orders', args=[order.id]))
+        
+        
         elif payment_mode=='razorpay':
             payment_id=request.POST.get("payment_id")
             user=request.user
@@ -205,7 +210,7 @@ def place_order(request):
             
             cart.delete()
             items.delete()
-            return JsonResponse({'status':"Your order has been placed succesfully"})
+            return JsonResponse({'status':"Your order has been placed succesfully",'order':order.id})
     else:
         return redirect('home')
 def failure_order(request):
@@ -268,7 +273,7 @@ def failure_order(request):
 
         od_items=OrderProduct.objects.filter(order=order)
         
-        return JsonResponse({'status':"Error Placing Order"})
+        return JsonResponse({'status':"Error Placing Order",'order':order.id})
     else:
         return redirect('home')
         

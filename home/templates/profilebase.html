@@ -16,34 +16,31 @@
     }
 </style>
 
-    <div class="container" style="margin-left: auto; margin-right: auto;">
-        <div class="row mt-5 ">
-
-
-        </div>
-        <div class="row justify-content-between">
+   <div class="row" style="height: 300px;" style="background-color: bisque;"></div>
+        
             <!-- Left Side - Buttons -->
-            <div class="col-lg-4 ">
-                <div class="left-buttons p-3">
+            <div class="col-lg-3 p-5" style="background-color: rgb(243, 222, 218);">
+                <div class="left-buttons ">
                     <a id="profileBtn" href="{% url 'user_profile' %}"class="btn btn-primary btn-block mb-3">My Profile</a>
                     <a id="addressBtn" href="{% url 'addressdisplay' %}" class="btn btn-primary btn-block mb-3">My Address</a>
                     <a id="passwordBtn" href="{% url 'user_password' %}" class="btn btn-primary btn-block mb-3">My Password</a>
-                    <a id="ordersBtn" href="{% url 'order_history' %}"  class="btn btn-primary btn-block mb-3">My Orders</a>
-                   
+                    <a id="ordersBtn" href="{% url 'order_history' %}"  class="btn btn-primary btn-block mb-3"> Order History</a>
+                    
                     <a id="walletBtn" class="btn btn-primary btn-block mb-3">My Wallet</a>
                    
                 </div>
             </div>
             <!-- Right Side - Form -->
-            <div class="col-lg-7 ml-4 ">
+            <div class="col-lg-1"></div>
+            <div class="col-lg-6">
                 <div class="col text-center">
                     {% block profilehead %}  {% endblock profilehead %}
                 </div>
                 <div>
                     {% block form%}  {% endblock form%}
             </div></div>
-        </div>
-    </div>
+     
+    
 
 <script>
     // Get the current URL pathname
@@ -61,6 +58,7 @@
         document.getElementById("ordersBtn").classList.add("active");
     } else if (path.includes("user_wallet/")) {
         document.getElementById("walletBtn").classList.add("active");
+
     }
 </script>
 <!-- Add jQuery CDN in your template -->

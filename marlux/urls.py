@@ -27,6 +27,9 @@ urlpatterns = [
     path('',include('order_mamngmnt.urls')),
     path('',include('coupons.urls')),
     path('',include('rarazorpayment.urls')),
+    path('',include('wallet.urls')),
+    path('',include('wishlist.urls')),
+
     # path('', include('django.contrib.auth.urls')),
 
 

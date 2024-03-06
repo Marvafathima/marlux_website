@@ -70,87 +70,87 @@ def cart_to_order(request,cart_id):
 
 
 
-def order_display(request):
+# def order_display(request):
     
-    user=request.user
-    cart=Cart.objects.get(user=user.id)
-    items=CartItem.objects.filter(cart=cart)
-    cart_user=CustomUser.objects.get(id=user.id)
-    address=Address.objects.get(user=user,is_default=True)
-    cust_detail=UserAddress.objects.get(user=user)
-    order_address=OrderAddress.objects.create(
-        user=user,
-        house_name=address.house_name,
-        street=address.street,
-        city=address.city,
-        district=address.district,
-        landmark=address.landmark,
-        state=address.state,
-        postal_code=address.postal_code,
-        country = address.country
+#     user=request.user
+#     cart=Cart.objects.get(user=user.id)
+#     items=CartItem.objects.filter(cart=cart)
+#     cart_user=CustomUser.objects.get(id=user.id)
+#     address=Address.objects.get(user=user,is_default=True)
+#     cust_detail=UserAddress.objects.get(user=user)
+#     order_address=OrderAddress.objects.create(
+#         user=user,
+#         house_name=address.house_name,
+#         street=address.street,
+#         city=address.city,
+#         district=address.district,
+#         landmark=address.landmark,
+#         state=address.state,
+#         postal_code=address.postal_code,
+#         country = address.country
     
-    )
+#     )
     
 
-    order=Order.objects.create(user=user,address=order_address,order_total=cart.cart_total,total_qnty=cart.total_qnty)
-    if cart.coupon_cart_total:
-        coupon=Coupon.objects.get(id=cart.applied_coupon.id)
-        order.discount_total=cart.coupon_price
-        order.discount_grand_total=cart.coupon_cart_total
-        order.is_ordered=True
-        order.applied_coupon=coupon.id
-        order.save()
+#     order=Order.objects.create(user=user,address=order_address,order_total=cart.cart_total,total_qnty=cart.total_qnty)
+#     if cart.coupon_cart_total:
+#         coupon=Coupon.objects.get(id=cart.applied_coupon.id)
+#         order.discount_total=cart.coupon_price
+#         order.discount_grand_total=cart.coupon_cart_total
+#         order.is_ordered=True
+#         order.applied_coupon=coupon.id
+#         order.save()
     
-    for item in items:
-        ox=OrderProduct.objects.create(
-                    order=order,
-                    product_variant=item.product_variant,
-                    quantity=item.quantity,
-                    price=item.product_variant.price,
+#     for item in items:
+#         ox=OrderProduct.objects.create(
+#                     order=order,
+#                     product_variant=item.product_variant,
+#                     quantity=item.quantity,
+#                     price=item.product_variant.price,
                     
-                )
-        print(ox.item_total_price,"this is the total price of the vaariant")
+#                 )
+#         print(ox.item_total_price,"this is the total price of the vaariant")
         
         # ox.item_total_price=ox.quantity* ox.price
 
 
-    od_items=OrderProduct.objects.filter(order=order)
+    # od_items=OrderProduct.objects.filter(order=order)
     
-    cart.delete()
-    items.delete()
-    if cart is None:
-        print("order placed successfully")
-    return render (request,'orderdisplay.html',{
-        'order':order,
-        'order_items':od_items,
-        'address':order_address,
-        'user':cart_user,
-        'user_detail':cust_detail
+    # cart.delete()
+    # items.delete()
+    # if cart is None:
+    #     print("order placed successfully")
+    # return render (request,'orderdisplay.html',{
+    #     'order':order,
+    #     'order_items':od_items,
+    #     'address':order_address,
+    #     'user':cart_user,
+    #     'user_detail':cust_detail
 
-    })
+    # })
     # except:
     #     return HttpResponse("Error placing Order")
       
         # except:
         #     return render(request,'nohistory.html')
 
-def order_item_display(request,order_id):
-    order_items=OrderProduct.objects.filter(order=order_id)
-    order_details = []
-    for product in order_items:
-        img=ProductImage.objects.get(img_id=product.product_variant.prod_id).first()
-        order_details.append({
-            'productImage': img,
-            'productName': product.product_variant.prod_id.pr_name,
-            'quantity': product.quantity,
-            'individualPrice': product.product_variant.price,
-            'totalPrice': product.item_total_price,
-            'size': product.product_variant.size,
-            'color': product.product_variant.color,
-        })
-        print(product.item_total_price,"checking the value being fetdched")
+# def order_item_display(request,order_id):
+#     order_items=OrderProduct.objects.filter(order=order_id)
+#     order_details = []
+#     for product in order_items:
+#         img=ProductImage.objects.get(img_id=product.product_variant.prod_id).first()
+#         order_details.append({
+#             'productImage': img,
+#             'productName': product.product_variant.prod_id.pr_name,
+#             'quantity': product.quantity,
+#             'individualPrice': product.product_variant.price,
+#             'totalPrice': product.item_total_price,
+#             'size': product.product_variant.size,
+#             'color': product.product_variant.color,
+#         })
+#         print(product.item_total_price,"checking the value being fetdched")
     
-    return JsonResponse(order_details, safe=False)
+#     return JsonResponse(order_details, safe=False)
 def order_history(request):
     user = request.user
     
@@ -163,7 +163,7 @@ def order_history(request):
         for order in orders:
             order_items=OrderProduct.objects.filter(order=order)
             order_details = []
-            print(order.payment_mode,order.tracking_number)
+            
         
             for product in order_items:
                 img=ProductImage.objects.filter(img_id=product.product_variant.prod_id).first()
@@ -192,26 +192,16 @@ def order_history(request):
 def failed_order_history(request):
     user=request.user
     order=Order.objects.filter(Q(payment_status="failed") & Q(user=user))
-    for o in order:
-        print(o.payment_mode)
-        print(o.payment_status)
-        print(o.order_total)
+    
 
     return render (request,'failed_order.html',{'order_data':order})
   
 def admin_orderlist(request):
     order_data=Order.objects.select_related('user','address').prefetch_related('orderproduct__product_variant','user__useraddress').all()
     
-    for order in order_data:
     
-        print(order.user.email,"useremail")
+    
         
-        for pr in order.orderproduct.all():
-            print(pr.product_variant.prod_id.pr_name)
-            print(pr.product_variant.price,"unit price")
-            print(pr.item_total_price)
-        for us in order.user.useraddress.all():
-            print(us.user_name) 
     return render (request,'orderlist.html',{'orders':order_data,'status_choices': Order.STATUS})
 
 
@@ -237,7 +227,7 @@ def get_order_products(request,order_id):
     user=orders.user
     customer=CustomUser.objects.get(id=user.id)
     customer_detail=UserAddress.objects.get(user=user.id)
-    print(customer.email)
+   
     order_products = OrderProduct.objects.filter(order=order_id)
     # Construct a list of dictionaries containing order product data
     order_product_data = []
@@ -256,11 +246,29 @@ def get_order_products(request,order_id):
             # Add more fields as needed
         })
 
-        print(order_product.price)
+       
     return render (request, 'order_iem_detail.html',{'order_products': order_product_data,'orders':orders,'customer':customer,'customer_detail':customer_detail})
 
     
 
 @login_required
-def my_orders(request):
-    return HttpResponse("MY ORDERRS PAGE")
+def my_orders(request,order_id):
+    user=request.user
+    orders=Order.objects.get(id=order_id)
+    print(orders.tracking_number)
+    order_items=OrderProduct.objects.filter(order=orders.id)
+    if orders.status=="Confirmed":
+        confirm=orders.status
+        return render(request,'orderdisplay.html',{'order':orders,'order_items':order_items,'confirm':confirm})
+    elif orders.status=="Pending":
+        pending=orders.status
+        return render(request,'orderdisplay.html',{'order':orders,'order_items':order_items,'pending':pending})
+    elif orders.status=="Shipped":
+        shipped=orders.status
+        return render(request,'orderdisplay.html',{'order':orders,'order_items':order_items,'shipped':shipped})
+    elif orders.status=="Delivered":
+        delivered=orders.status
+        return render(request,'orderdisplay.html',{'order':orders,'order_items':order_items,'delivered':delivered})
+    print(orders.status)
+    
+    return render(request,'orderdisplay.html',{'order':orders,'order_items':order_items})

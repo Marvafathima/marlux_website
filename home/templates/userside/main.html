@@ -36,6 +36,19 @@
           'GRAD' 0,
           'opsz' 24
         }
+        #heart-icon {
+            position: absolute;
+            top: 10px; /* Adjust as needed */
+            right: 10px; /* Adjust as needed */
+            z-index: 2; /* Ensure the heart icon is above the image */
+            /* You can use an icon font or an image for the heart icon */
+            /* Example using FontAwesome */
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            content: "\f004"; /* Unicode for the heart icon */
+           /* Color of the heart icon */
+            font-size: 24px; /* Size of the heart icon */
+        }
         </style>
 
 </head>
@@ -100,7 +113,7 @@
                     <span class="material-symbols-outlined text-primary">
                         account_circle
                         </span> </a>
-                <a href="" class="btn border">
+                <a href="{% url 'view_wishlist' %}" class="btn border">
                     <i class="fas fa-heart text-primary"></i>
                     <span class="badge">0</span>
                 </a>
