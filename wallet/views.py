@@ -19,6 +19,9 @@ from coupons .models import Coupon
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
+from order_mamngmnt .models import Order,OrderProduct,OrderAddress
 # Create your views here.
 
+def view_wallet(request):
+    return render(request,)
 
