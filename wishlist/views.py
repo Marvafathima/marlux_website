@@ -27,6 +27,7 @@ def add_to_wishlist(request,id):
     user=request.user
     product=Products.objects.get(id=id)
     wishlist=Wishlist.objects.create(user=user,product=product)
+    update_wishlist_count_in_session(request)
     messages.success(request,"Product added to wishlist")
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
@@ -36,13 +37,21 @@ def add_to_wishlist(request,id):
 def view_wishlist(request):
     user=request.user  
     wishlists=Wishlist.objects.filter(user=user)
-    return render (request,'wishlist.html',{'wishlists':wishlists})
+    if not wishlists:
+        return render(request,'empty_wishlist.html')
+        
+    else:
+        return render (request,'wishlist.html',{'wishlists':wishlists})
 def remove_wishlist(request,id):
     wishlist=Wishlist.objects.get(id=id)
     wishlist.delete()
+    update_wishlist_count_in_session(request)
     messages.error(request,"product removed from wishlist succesfully")
     return redirect('view_wishlist')
 
 
-
+def update_wishlist_count_in_session(request):
+    user = request.user
+    wishlist_count = Wishlist.objects.filter(user=user).count()
+    request.session['wishlist_count'] = wishlist_count
 
