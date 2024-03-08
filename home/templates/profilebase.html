@@ -27,7 +27,7 @@
                     <a id="ordersBtn" href="{% url 'order_history' %}"  class="btn btn-primary btn-block mb-3"> Order History</a>
                     <a id="failedBtn" href="{% url 'failed_order_history' %}"  class="btn btn-primary btn-block mb-3"> Pending Payments</a>
                     
-                    <a id="walletBtn" class="btn btn-primary btn-block mb-3">My Wallet</a>
+                    <a id="walletBtn" href="{% url 'view_wallet' %}" class="btn btn-primary btn-block mb-3">My Wallet</a>
                    
                 </div>
             </div>
@@ -57,13 +57,12 @@
         document.getElementById("passwordBtn").classList.add("active");
     } else if (path.includes("user_orders/")) {
         document.getElementById("ordersBtn").classList.add("active");
-    } else if (path.includes("user_wallet/")) {
+    } else if (path.includes("view_wallet/")) {
         document.getElementById("walletBtn").classList.add("active");
 
     }
     else if (path.includes("failed_order_history/")) {
         document.getElementById("failedBtn").classList.add("active");
-
     }
 </script>
 <!-- Add jQuery CDN in your template -->

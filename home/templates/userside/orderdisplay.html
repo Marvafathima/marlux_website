@@ -148,7 +148,7 @@
                     </div>
                   
                                
-  <button class=" d-block btn-lg btn-warning">Cancel Order</button>
+  <a href="{% url 'cancel_order' order.id %}" class=" d-block btn-lg btn-warning" type="submit" onclick=cancelOrder()>Cancel Order</a>
 
                    {% elif pending%}
                    <div class="checkpoint pending bg-success text-white font-weight-bold">Pending
@@ -175,7 +175,7 @@
                         close
                         </span></div>
                     </div>
-                    <button class=" d-block btn-lg btn-warning">Cancel Order</button>
+                    <a  href="{% url 'cancel_order' order.id %}" class=" d-block btn-lg btn-warning" type="submit" onclick=cancelOrder()>Cancel Order</a>
                     {% elif shipped%}
                    <!-- <div class="checkpoint pending bg-success text-white font-weight-bold">Pending
                     <div><span class="material-symbols-outlined mt-2" style="font-size: 50px;">
@@ -201,7 +201,7 @@
                         </span></div>
                     </div>
                   
-                      <button class=" d-block btn-lg btn-warning">Cancel Order</button>
+                      <a   href="{% url 'cancel_order' order.id %}" class=" d-block btn-lg btn-warning" type="submit" onclick=cancelOrder()>Cancel Order</a>
                     {% elif delivered%}
 
                     <!-- <div class="checkpoint pendingnbg-success text-white font-weight-bold">Pending
@@ -228,86 +228,59 @@
                         </span></div> 
 
                     </div>
-                    <button class=" d-block btn-lg btn-warning">Return Order</button>
-                    {%endif%}
+                    <a   href="{% url 'return_order' order.id %}" class=" d-block btn-lg btn-warning" type="submit" onclick=returnOrder()>Return Order</a>
+                   
+                   
+                    {% elif return%}
+
+                    <!-- <div class="checkpoint pendingnbg-success text-white font-weight-bold">Pending
+                      <div><span class="material-symbols-outlined mt-2" style="font-size: 50px;">
+                        done
+                        </span></div>  -->
+
+                    
+                    <div class="checkpoint confirmed bg-danger text-white font-weight-bold">Returned
+                      <div><span class="material-symbols-outlined mt-2" style="font-size: 50px;">
+                        done
+                        </span></div> 
+
+                    </div>
+                    {% endif %}
                   
                   </div>
                   
                 </div>
                {% if delivered %}
                <p class="text-danger">**Once the order is returned you will get refund within 2-3 days after  package recieved to our warehouse</p>
-               {%endif%}
-             
-               <!-- <table id="orderTable">
-                  <thead>
-                    <tr>
-                      <th>Order ID</th>
-                    
-                      <th>Quantity</th>
-                      <th>Order Price</th>
-                      <th>Tax/GST</th>
-                      <th>Grand Total</th>
-                      <th>Status</th>
-                      <th>Date of Ordering</th>
-                    </tr>
-                  </thead>
-                  <tbody> -->
-                    <!-- Rows of order data will be dynamically added here -->
-                   
-                    <!-- <tr data-order-id="{{ order.id }}" class="orderRow">
-                      <td>{{order.id}}</td>
-                      <td>{{order.total_qnty}}</td>   
-                      <td>{{order.order_total}}</td>
-                      <td>{{order.tax}}</td>
-                      <td>{{order.grand_total}}</td>
-                      <td>{{order.status}}</td>
-                      <td>{{order.created_at}}</td>
-                    </tr> -->
-                    <!-- Add more rows as needed -->
-                  <!-- </tbody>
-                </table>
-                
-                <div id="orderDetails">
-                  <h2>Order Details</h2>
-                  <table id="orderDetailsTable">
-                    <thead>
-                      <tr>
-                        <th>Product Image</th>
-                        <th>Product Name</th>
-                        <th>Quantity</th>
-                        <th>Individual Price</th>
-                        <th>Total Price</th>
-                        <th>Size</th>
-                        <th>Color</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for item in order_items %}
-                      <tr>
-                        {% with product_variant=item.product_variant %}
-                            {% with product=product_variant.prod_id %}
-                                {% with product_img=product.product_image.first %}
-                        <td class="align-middle"><img src="{{product_img.image.url}}" alt="" style="width: 50px;"> {{cart_item.product_variant.prod_id.pr_name}}</td>
-                                {% endwith %}
-                            {% endwith %}
-                        {% endwith %}
-                        <td>{{item.product_variant.prod_id.pr_name}}</td>   
-                        <td>{{item.quantity}}</td>
-                        <td>{{item.product_variant.price}}</td>
-                        <td>{{item.item_total_price}}</td>
-                        <td>{{item.product_variant.size}}</td>
-                        <td>{{item.product_variant.color}}</td>
-                      </tr>
-                      {% endfor %}  -->
-                     
-                      <!-- Product details will be dynamically added here -->
-                    <!-- </tbody>
-                  </table>
-                  <button id="returnButton">Return</button>
-                  <button id="cancelButton">Cancel</button>
-                </div>
+               {% elif return %}
+
+               <p class="text-danger">**Once the order is returned you will get the refund within 2-3 days after  package recieved to our warehouse</p>
                
-               -->
+               {%endif%}
+               <script>
+                function cancelOrder(){
+                    var confirmation=confirm("Are you sure you want to cancel order?");
+                    if (confirmation){
+                        alert("Order Cancelled!");
+                    }
+                    else{
+                        event.preventDefault();
+                        alert("Order cancellation blocked") ;
+                    }
+                }
+                function returnOrder(){
+                  var confirmation=confirm("Are you sure you want to return order?");
+                  if (confirmation){
+                      alert("Order return request successfull!");
+                  }
+                  else{
+                      event.preventDefault();
+                      alert("Order return request blocked") ;
+                  }
+              }
+        
+        
+            </script>
                 {% endblock form %}
           
     {% block right %}

@@ -1,0 +1,41 @@
+{% extends 'main.html' %}
+{% block corousel %}
+
+{% if transaction %}
+<div class="col-lg-10">
+    <div class="card border-secondary mb-5">
+        <div class="card-header bg-secondary border-0 d-flex justify-content-between">
+            <h4 class="font-weight-semi-bold m-0">Transaction ID</h4>
+             <h4 class="font-weight-semi-bold m-0">Type</h4>
+            <h4 class="font-weight-semi-bold m-0">Date</h4>
+            <h4 class="font-weight-semi-bold m-0">Amount</h4>
+        </div>
+
+      
+        <div class="card-body">
+          {% for transact in transaction %}
+            <div class="d-flex justify-content-between">
+                <p>{{transact.id}}</p>
+                <p>{{transact.transaction_type}}</p>
+                <p class="">{{transact.timestamp}}</p>
+                <p>{{transact.amount}}</p>
+            </div>
+            {% endfor %}
+            <hr class="mt-0">
+          
+        </div>
+        <div class="card-footer border-secondary bg-transparent">
+            <div class="d-flex justify-content-between mt-2">
+                <h5 class="font-weight-bold">Total</h5>
+                <h5 class="font-weight-bold">{{wishlist.amount}}</h5>
+            </div>
+        </div>
+    </div>
+    
+</div>
+{% else %}   
+<div class="col " style="height:500px;"><h1 class="text-center mt-5 pt-5">NO WALLET FOR YOU</h1></div>
+
+{% endif %}
+
+{% endblock corousel %}

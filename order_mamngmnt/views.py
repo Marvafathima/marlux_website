@@ -19,6 +19,8 @@ from coupons .models import Coupon
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
+from django.urls import reverse
+from wallet .models import Wallet,Transaction
 # from django.template.loader import render_to_string
 # # from weasyprint.html import HTML
 # @method_decorator(never_cache, name='dispatch')
@@ -104,7 +106,7 @@ def retry_payment_checkout(request,id):
 def order_history(request):
     user = request.user
     
-    orders = Order.objects.filter(Q(payment_status="cod")| Q(payment_status="successful"),user=user).order_by('created_at') 
+    orders = Order.objects.filter(Q(payment_status="cod")| Q(payment_status="successful") | Q(payment_status="refunded") ,user=user).order_by('created_at') 
     if not orders.exists():
         return render(request,'nohistory.html')
     else:
@@ -143,11 +145,13 @@ def order_history(request):
 
 def failed_order_history(request):
     user=request.user
-    order=Order.objects.filter(Q(payment_status="failed") & Q(user=user))
+    order=Order.objects.filter(Q(payment_status="failed") & Q(user=user)).exclude(status="Cancelled")
     for orders in order:
         print(orders.id,orders.tracking_number)
-        
-    return render (request,'failed_order.html',{'order_data':order})
+    if order:   
+        return render (request,'failed_order.html',{'order_data':order})
+    else:
+        return render (request,'empty_failed_order_history.html')
 
 
 
@@ -220,6 +224,72 @@ def my_orders(request,order_id):
     elif orders.status=="Delivered":
         delivered=orders.status
         return render(request,'orderdisplay.html',{'order':orders,'order_items':order_items,'delivered':delivered})
-    print(orders.status)
+    elif orders.status=="Cancelled":
+        cancelled=orders.status
+        return render(request,'orderdisplay.html',{'order':orders,'order_items':order_items,'cancelled':cancelled})
+    elif orders.status=="Return":
+        returned=orders.status
+        return render(request,'orderdisplay.html',{'order':orders,'order_items':order_items,'return':returned})
     
     return render(request,'orderdisplay.html',{'order':orders,'order_items':order_items})
+def cancel_order(request,order_id):
+    order=Order.objects.get(id=order_id)
+    status="Cancelled"
+    if status in dict(Order.STATUS):
+        order.status=status
+        order.save()
+    if order.payment_status=="successfull":
+        wallet,created=Wallet.objects.get_or_create(user=request.user)
+        if created:
+            print("wallet created")
+        else:
+            print("no wallet created") 
+        if order.applied_coupon:
+            wallet.balance +=order.discount_grand_total
+            transaction=Transaction.objects.create(wallet=wallet,amount=order.discount_grand_total,transaction_type="Refund")
+       
+        else:
+            wallet.balance += order.grand_total
+            transaction=Transaction.objects.create(wallet=wallet,amount=order.grand_total,transaction_type="Refund")
+        
+        print(wallet.balance,transaction.amount,"this is your wallet balance")
+        print(order.status)
+        tracking_num=order.tracking_number
+    order.payment_status="refunded"
+    order.save()
+    counts=Order.objects.filter(user=request.user).count()
+    if counts:
+
+        messages.success(request,f"Your order {order.tracking_number} has been cancelled successfully!")
+
+        return redirect('order_history')
+    else:
+        messages.success(request,f"Your order {order.tracking_number} has been cancelled successfully!")
+
+        return render(request,'order_history.html')
+def return_order(request,order_id):
+    order=Order.objects.get(id=order_id)
+    status="Return"
+    if status in dict(Order.STATUS):
+        order.status=status
+        order.save()
+        if order.payment_status=="successfull":
+            wallet,created=Wallet.objects.get_or_create(user=request.user)
+            
+            if order.applied_coupon:
+                wallet.balance +=order.discount_grand_total
+                transaction=Transaction.objects.create(wallet=wallet,amount=order.discount_grand_total,transaction_type="Refund")
+        
+            else:
+                wallet.balance += order.grand_total
+                transaction=Transaction.objects.create(wallet=wallet,amount=order.grand_total,transaction_type="Refund")
+        
+        print(wallet.balance,transaction.amount,"this is your wallet balance")
+        print(order.status)
+        
+    order.payment_status="refunded"
+    order.save()
+
+    print(order.status)
+    messages.success(request,f"Return request succesfull! Our team will come to collect the order {order.tracking_number} soon!")
+    return redirect(reverse('my_orders', args=[order.id]))

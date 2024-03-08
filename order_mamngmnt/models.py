@@ -41,6 +41,7 @@ class Order(models.Model):
         ('pending', 'Pending'),
         ('successful', 'Successful'),
         ('failed', 'Failed'),
+        ('refunded','Refunded')
     )
     user=models.ForeignKey(CustomUser, on_delete=models. CASCADE,related_name="user_order")
     address=models.ForeignKey(OrderAddress, on_delete=models.CASCADE,null=True,related_name="address_order")

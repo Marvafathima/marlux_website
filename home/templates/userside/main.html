@@ -167,34 +167,35 @@
 
 
     <!-- Navbar Start -->
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.tags == "success" %}
+    
+    <div class="alert alert-success" role="alert">
+        {{message}}
+      </div>
+      {% elif message.tags == "error" %}
+    
+    <div class="alert alert-danger" role="alert">
+        {{message}}
+      </div>
+    
+      {% elif message.tags == "info" %}
+    
+      <div class="alert alert-info" role="alert">
+          {{message}}
+        </div>
+    
+    {% endif %}
+    
+    
+    
+    {% endfor%}{% endif %}
     <div class="container-fluid mb-5">
         <div class="row border-top px-xl-5">
             {% block navbar %} {% endblock navbar %}
            
-            {% if messages %}
-            {% for message in messages %}
-            {% if message.tags == "success" %}
-            
-            <div class="alert alert-success" role="alert">
-                {{message}}
-              </div>
-              {% elif message.tags == "error" %}
-            
-            <div class="alert alert-danger" role="alert">
-                {{message}}
-              </div>
-            
-              {% elif message.tags == "info" %}
-            
-              <div class="alert alert-info" role="alert">
-                  {{message}}
-                </div>
-            
-            {% endif %}
-            
-            
-            
-            {% endfor%}{% endif %}
+           
 
                 {% block corousel%}
                

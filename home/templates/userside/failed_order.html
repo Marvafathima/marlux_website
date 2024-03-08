@@ -41,7 +41,7 @@
                                     <td>{{data.payment_mode}}</td> 
                                     <td>{{data.payment_status}}</td>
                                     <td>{{data.created_at}}</td>
-                                    <th><a class="btn btn-outline-danger"><b>Cancel Order</b></a></th>
+                                    <th><a class="btn btn-outline-danger" href="{% url 'cancel_order' data.id %} " type="submit" onclick=cancelOrder()><b>Cancel Order</b></a></th>
                                     <th><a class="btn btn-outline-primary" href="{% url 'retry_payment_checkout' data.id %}"><b>Retry Payment</b></a></th>
                                     
                 </tr>           
@@ -57,4 +57,20 @@
                         </table>
                     </div>
           <div class="row" style="height:600px;"></div>
+          <script>
+            function cancelOrder(){
+                var confirmation=confirm("Are you sure you want to cancel order?");
+                if (confirmation){
+                    alert("Order Cancelled!");
+                }
+                else{
+                    event.preventDefault();
+                    alert("Order cancellation blocked") ;
+                }
+            }
+           
+    
+    
+        </script>      
+        
 {% endblock corousel %}

@@ -1,0 +1,40 @@
+{% extends 'main.html'%}
+{% load static%}
+{% block corousel %}
+
+<style>
+.comment {
+    height:300px;
+    position: absolute;
+    top: 20%; /* Position the button 50% from the top of the container */
+    left: 33%; /* Position the button 50% from the left of the container */
+    transform: translate(-50%, -50%); /* Center the button within the container */
+    border-radius: 20px;
+    z-index: 5;
+}
+.button{
+    position: absolute;
+    top: 17%; /* Position the button 50% from the top of the container */
+    left: 33%; /* Position the button 50% from the left of the container */
+    transform: translate(-50%, -50%); /* Center the button within the container */
+    border-radius: 20px;
+    z-index: 10;
+    background-color: antiquewhite;
+    font-weight: 700;
+}
+
+
+</style>
+<div class="col-lg-12 col-md-12 d-flex justify-content-center align-items-center" style="height:500px;">
+<div> <img src="{% static 'tem_two/img/money.png' %}" class=""style="height:400px;">
+<!-- <img class="comment"src="{% static 'tem_two/img/customer-service.png' %}"> -->
+<a class="button btn btn-sm" href="{% url 'shop' %}">NO MORE PENDING PAYMENTS</a>
+</div></div>
+
+
+
+
+
+
+
+{% endblock corousel %}

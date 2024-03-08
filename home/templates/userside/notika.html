@@ -89,7 +89,7 @@
                                       
                                        <th>Grand Total</th>
                                        <th>Status</th>
-                                      
+                                       <th>Payment Status</th>
                                        <th>Date of Ordering</th>
                                       <th></th>
                                     </tr>
@@ -97,16 +97,29 @@
                                 <tbody>
                                     {% for data in order_data%}
                                     <tr>
+                                      {% if data.order.status == "Cancelled" or data.order.status == "Return" %}
                                         <!-- <td>{{data.order.id}}</td> -->
+                                        <td  class="text-danger">{{data.order.payment_status}}</td>  
+                                          <td  class="text-danger"><s>{{data.order.tracking_number}}</s></td> 
+                                        <td class="text-danger"><s>{{data.order.total_qnty}}</s></td>   
+                                        
+                                        <td class="text-danger"><s>₹{{data.order.grand_total}}</s></td>
+                                        {%else%} 
+                                        <td >{{data.order.payment_status}}</td>
                                         <td>{{data.order.tracking_number}}</td> 
                                         <td>{{data.order.total_qnty}}</td>   
                                         
                                       
                                         <td>₹{{data.order.grand_total}}</td>
+                                        {% endif%}
                                         <!--  <td>{{data.order.status}}</td> -->
-                                  
-                                        <td>{{data.order.status}}</td> 
-                                       
+                                  {% if data.order.status == "Cancelled" %}
+                                        <td class="text-danger">{{data.order.status}}</td> 
+                                        {%elif data.order.status == "Return" %}
+                                        <td class="text-warning">{{data.order.status}}</td>
+                                        {% else%}
+                                        <td class="text-success">{{data.order.status}}</td> 
+                                        {% endif %}
                                         <td>{{data.order.created_at}}</td>
                                         <th><a href="{% url 'my_orders' data.order.id %}">view</a></th>
                                         
