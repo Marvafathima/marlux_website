@@ -62,6 +62,7 @@
                   .checkpoint:not(:last-child) {
                     margin-right: 20px;
                   }
+                 
                 </style>
                 
                 
@@ -145,6 +146,9 @@
                         close
                         </span></div>
                     </div>
+                  
+                               
+  <button class=" d-block btn-lg btn-warning">Cancel Order</button>
 
                    {% elif pending%}
                    <div class="checkpoint pending bg-success text-white font-weight-bold">Pending
@@ -171,13 +175,13 @@
                         close
                         </span></div>
                     </div>
-                  
+                    <button class=" d-block btn-lg btn-warning">Cancel Order</button>
                     {% elif shipped%}
                    <!-- <div class="checkpoint pending bg-success text-white font-weight-bold">Pending
                     <div><span class="material-symbols-outlined mt-2" style="font-size: 50px;">
                       done
                       </span></div> 
-                   </div> -->
+                   </div> --> 
                     <div class="checkpoint confirmed bg-success text-white font-weight-bold">Confirmed
                       <div><span class="material-symbols-outlined mt-2" style="font-size: 50px;">
                         done
@@ -196,6 +200,8 @@
                         close
                         </span></div>
                     </div>
+                  
+                      <button class=" d-block btn-lg btn-warning">Cancel Order</button>
                     {% elif delivered%}
 
                     <!-- <div class="checkpoint pendingnbg-success text-white font-weight-bold">Pending
@@ -203,7 +209,7 @@
                         done
                         </span></div>  -->
 
-                    </div>
+                    
                     <div class="checkpoint confirmed bg-success text-white font-weight-bold">Confirmed
                       <div><span class="material-symbols-outlined mt-2" style="font-size: 50px;">
                         done
@@ -222,14 +228,17 @@
                         </span></div> 
 
                     </div>
-                  
+                    <button class=" d-block btn-lg btn-warning">Return Order</button>
                     {%endif%}
                   
                   </div>
                   
                 </div>
-               
-                <!-- <table id="orderTable">
+               {% if delivered %}
+               <p class="text-danger">**Once the order is returned you will get refund within 2-3 days after  package recieved to our warehouse</p>
+               {%endif%}
+             
+               <!-- <table id="orderTable">
                   <thead>
                     <tr>
                       <th>Order ID</th>

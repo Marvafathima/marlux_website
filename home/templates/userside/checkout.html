@@ -93,6 +93,7 @@
                                 </tr>
                             </thead>
                             <tbody class="align-middle">
+                            
                                 {% for items in context.cart_items %}   
                                 <tr>
                                     <td class="text-start" >{{items.product_variant.prod_id.pr_name}}</td>
@@ -105,6 +106,7 @@
 
                         </table>
                         <hr class="mt-0">
+                    {% if context.cart%}
                         <div class="d-flex justify-content-between mb-3 pt-1">
                             <h6 class="font-weight-medium">Subtotal</h6>
                             <h6 class="font-weight-medium">₹{{context.cart.total_price}}</h6>
@@ -141,6 +143,47 @@
                         </div>
                     </div>{% endif %}
                 </div> </div>
+
+
+
+                {% else %}
+                <div class="d-flex justify-content-between mb-3 pt-1">
+                    <h6 class="font-weight-medium">Subtotal</h6>
+                    <h6 class="font-weight-medium">₹{{context.order.order_total}}</h6>
+                </div>
+                <div class="d-flex justify-content-between mb-3 pt-1">
+                    <h6 class="font-weight-medium">Tax</h6>
+                    <h6 class="font-weight-medium">₹{{context.order.tax|floatformat:2}}</h6>
+                </div>
+                {% if context.order.applied_coupon %}
+                <div class="d-flex justify-content-between">
+                    <h6 class="font-weight-medium">Discount</h6>
+                    {% if context.order.applied_coupon.discount_amount %}
+                    <h6 class="font-weight-medium text-danger">- ₹{{context.cart.applied_coupon.discount_amount}}</h6>
+                {% else %} 
+                <h6 class="font-weight-medium text-danger">- {{context.cart.applied_coupon.discount_percentage}}%</h6>
+                {% endif %}
+            
+            </div>
+            <div class="card-footer border-secondary bg-transparent">
+                <div class="d-flex justify-content-between mt-2">
+                    <h5 class="font-weight-bold">Total</h5>
+                    <h6 class="font-weight-medium"><s>{{context.order.order_total}}</s></h6>
+                    <h5 class="font-weight-bold text-danger">{{context.order.discount_grand_total}}</h5>
+                </div>
+            </div>{% else %}
+            <div class="card-footer border-secondary bg-transparent">
+                <div class="d-flex justify-content-between mt-2">
+                    <h5 class="font-weight-bold">Total:</h5>
+                    <h5 class="font-weight-bold">{{context.order.grand_total}}</h5>
+                </div>
+            </div>{% endif %}
+        </div> </div>
+                {% endif %}
+
+
+
+
 
                   <!-- order detail table ends here -->
                 
@@ -197,6 +240,7 @@
                 <!-- Hidden input field -->
                 <input type="hidden" id="paymentMode" name="payment_mode">
                 <div class="card-body">
+                   
                     <div class="form-group">
                         <div class="custom-control custom-radio">
                             <input type="radio" class="custom-control-input" name="payment" id="directcheck">
@@ -208,12 +252,20 @@
                             <label class="custom-control-label" for="banktransfer">Pay with razorpay</label>
                         </div>
                     </div>
+                    {% if context.cart %}
                     {% if context.cart.applied_coupon %}
                 
                     <input type="hidden" class="custom-control-input" name="amount" value="{{context.cart.coupon_cart_total}}" >
                     {% else %}
                     <input type="hidden" class="custom-control-input" name="amount" value="{{context.cart.cart_total}}" >
                {% endif %}
+               {% else %}
+               {% if context.order.applied_coupon %}
+                
+                    <input type="hidden" class="custom-control-input" name="amount" value="{{context.order.discount_grand_total}}" >
+                    {% else %}
+                    <input type="hidden" class="custom-control-input" name="amount" value="{{context.order.gran_total}}" >
+                    {% endif %} {% endif %}
                
                 </div>
                 <div class="card-footer border-secondary bg-transparent">

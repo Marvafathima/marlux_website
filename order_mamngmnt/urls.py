@@ -9,7 +9,7 @@ urlpatterns=[
     path('admin_orderlist/',views.admin_orderlist,name='admin_orderlist'),
     path('orderlist/<int:order_id>/',views.update_status,name='update_status'),
     path('get_order_products/<int:order_id>/',views.get_order_products,name='get_order_products'),
-    
+    path('retry_payment_checkout/<int:id>/',views.retry_payment_checkout,name="retry_payment_checkout"),
     path('my_orders/<int:order_id>/',views.my_orders,name="my_orders"),
 
 ]

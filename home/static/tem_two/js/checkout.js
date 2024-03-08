@@ -63,7 +63,10 @@ $(document).ready(function () {
                         data: data,
                         success: function (responsec) {
                             // alert("payment succesful");
-                            var order_id=responsec.order_id
+                            console.log("order was succesfull")
+                            var order_id=responsec.order
+                            console.log(order_id)
+                            console.log("this is my order id")
                             var redirectUrl = '/my_orders/' + order_id + '/';
                             swal("Congrats",responsec.status,"success").then((value) => {
                                 
