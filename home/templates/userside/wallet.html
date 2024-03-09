@@ -37,6 +37,9 @@
             </div>
             {% endif %}
             {% endfor %}
+            {% if transaction.has_next %}
+   <div class="col d-flex justify-content-center"><a class="btn btn-sm btn-outline-info m-4 font-weight-bold"href="?page={{ transaction.next_page_number }}">Load More</a></div> 
+{% endif %}
             <hr class="mt-0">
           
         </div>

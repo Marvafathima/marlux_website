@@ -21,6 +21,7 @@ from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
 from order_mamngmnt .models import Order,OrderProduct,OrderAddress
 from .models import Wallet,Transaction
+from django.core.paginator import Paginator
 # Create your views here.
 
 def view_wallet(request):
@@ -29,6 +30,11 @@ def view_wallet(request):
         wallet=Wallet.objects.get(user=user)
         print(wallet.balance)
         transaction=Transaction.objects.filter(wallet=wallet)
-        return render(request,"wallet.html",{'wallet':wallet,'transaction':transaction})
+
+        paginator = Paginator(transaction, 5)
+        page_number = request.GET.get('page')
+        transactions = paginator.get_page(page_number)
+
+        return render(request,"wallet.html",{'wallet':wallet,'transaction':transactions})
     except:
         return render(request,"wallet.html")
