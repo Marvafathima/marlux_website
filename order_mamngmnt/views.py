@@ -107,7 +107,7 @@ def retry_payment_checkout(request,id):
 def order_history(request):
     user = request.user
     
-    orders = Order.objects.filter(Q(payment_status="cod")| Q(payment_status="successful") | Q(payment_status="refunded") ,user=user).order_by('created_at') 
+    orders = Order.objects.filter(Q(payment_status="cod")| Q(payment_status="successful") | Q(payment_status="refunded")| Q(payment_status="wallet") ,user=user).order_by('created_at') 
     if not orders.exists():
         return render(request,'nohistory.html')
     else:

@@ -22,6 +22,8 @@ from django.views.generic import TemplateView
 import razorpay
 from django.conf import settings
 from django.urls import reverse
+from wallet .models import Wallet,Transaction
+from decimal import Decimal
 # Create your views here.
 
 
@@ -168,7 +170,86 @@ def place_order(request):
             
             return redirect(reverse('my_orders', args=[order.id]))
         
+        elif payment_mode=='wallet':
+            user_wallet,created=Wallet.objects.get_or_create(user=request.user)
+            if float(amount)>=user_wallet.balance:
+                messages.error(request,f"you dont have enough wallet balance.Your current Balace is {user_wallet.balance} ")
+                return redirect('checkout',cartid)
+            else:
+                user=request.user
+                cart=Cart.objects.get(user=user.id)
+                items=CartItem.objects.filter(cart=cart)
+                cart_user=CustomUser.objects.get(id=user.id)
+                address=Address.objects.get(user=user,is_default=True)
+                cust_detail=UserAddress.objects.get(user=user)
+                order_address=OrderAddress.objects.create(
+                    user=user,
+                    house_name=address.house_name,
+                    street=address.street,
+                    city=address.city,
+                    district=address.district,
+                    landmark=address.landmark,
+                    state=address.state,
+                    postal_code=address.postal_code,
+                    country = address.country
+                
+                )
+                payment_status='wallet'
+                transaction=Transaction.objects.create(wallet=user_wallet,amount=Decimal(amount),transaction_type='Purchase')
+                user_wallet.balance -= transaction.amount
+                user_wallet.save()
+                stat='Confirmed'
+                if stat in dict(Order.STATUS):
+                    st=stat
+                if payment_status in dict(Order.PAYMENT_STATUS_CHOICES):
+                    pay_status=payment_status
+                track_no='marlux'+str(random.randint(11111111,99999999))
+                order=Order.objects.create(user=user,
+                                        address=order_address,
+                                        order_total=cart.cart_total,
+                                        total_qnty=cart.total_qnty,
+                                        payment_mode=payment_mode,
+                                        tracking_number=track_no,
+                                        payment_status=pay_status,
+                                        status=st
+                                        )
+                try:
+                    coupon=Coupon.objects.get(id=cart.applied_coupon.id)
+                    order.discount_total=cart.coupon_price
+                    order.discount_grand_total=cart.coupon_cart_total
+                    order.is_ordered=True
+                    order.applied_coupon=coupon.id
+                    order.save()
+                except:
+                    print("no coupon applied")
+                
+                for item in items:
+                    ox=OrderProduct.objects.create(
+                                order=order,
+                                product_variant=item.product_variant,
+                                quantity=item.quantity,
+                                price=item.product_variant.price,
+                                
+                            )
+                    print(ox.item_total_price,"this is the total price of the vaariant")
+                    
+                    # ox.item_total_price=ox.quantity* ox.price
 
+
+                order_items=OrderProduct.objects.filter(order=order)
+                
+                cart.delete()
+                items.delete()
+                if cart is None:
+                    print("order placed successfully")
+                    messages.success(request,"order placed succesfully using your wallet balance.")
+                    return redirect(reverse('my_orders', args=[order.id]))
+                
+                return redirect(reverse('my_orders', args=[order.id]))
+
+
+
+        
         elif payment_mode=='razorpay':
             payment_id=request.POST.get("payment_id")
             user=request.user

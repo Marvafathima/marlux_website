@@ -1,6 +1,9 @@
 {% extends 'profilebase.html'%}
 
- {% block profilehead %} <h3>My Orders </h3> {% endblock profilehead %}
+ {% block profilehead %} <h3>My Orders </h3> 
+ 
+ 
+ {% endblock profilehead %}
              
                 {% block form %}
 
@@ -65,7 +68,26 @@
                  
                 </style>
                 
+                {% if messages %}
+                {% for message in messages %}
+                {% if message.tags == "success" %}
                 
+                <div class="alert alert-success" role="alert">
+                    {{message}}
+                  </div>
+                  {% elif message.tags == "error" %}
+                
+                <div class="alert alert-danger" role="alert">
+                    {{message}}
+                  </div>
+                
+                  {% elif message.tags == "info" %}
+                
+                  <div class="alert alert-info" role="alert">
+                      {{message}}
+                    </div>
+                
+                {% endif %}{% endfor %}{% endif %}   
                 <div class="card custom-card">
                   <div class="header">
                     <div>

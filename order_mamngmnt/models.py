@@ -38,6 +38,7 @@ class Order(models.Model):
     )
     PAYMENT_STATUS_CHOICES = (
         ('cod', 'COD'),
+        ('wallet',"Wallet"),
         ('pending', 'Pending'),
         ('successful', 'Successful'),
         ('failed', 'Failed'),

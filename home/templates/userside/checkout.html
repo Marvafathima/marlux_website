@@ -246,6 +246,13 @@
                             <input type="radio" class="custom-control-input" name="payment" id="directcheck">
                             <label class="custom-control-label" for="directcheck">COD</label>
                         </div>  </div>
+
+                        <div class="form-group">
+                            <div class="custom-control custom-radio">
+                                <input type="radio" class="custom-control-input" name="payment" id="paypal">
+                                <label class="custom-control-label" for="paypal">Wallet</label>
+                            </div>  </div>
+
                         <div class="form-group">
                         <div class="custom-control custom-radio">
                             <input type="radio" class="custom-control-input" name="payment" id="banktransfer">
@@ -271,6 +278,7 @@
                 <div class="card-footer border-secondary bg-transparent">
                     <button type="submit" id="place-order-btn" href="{% url 'place_order'%}" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3" style="display: none;">Place Order</button>
                 </div>
+               
                 <div class="card-footer border-secondary bg-transparent">
                 <button type="button" id="pay-btn" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3 payWithRazorpay" style="display: none;">Pay Now</button>
             </div></form></div>
@@ -284,6 +292,7 @@
         document.addEventListener("DOMContentLoaded", function() {
             var codRadio = document.getElementById('directcheck');
             var razorpayRadio = document.getElementById('banktransfer');
+            var walletpayRadio = document.getElementById('paypal');
             var placeOrderButton = document.getElementById('place-order-btn');
             var payNowButton = document.getElementById('pay-btn');
             var paymentmode=document.getElementById('paymentMode')
@@ -304,11 +313,19 @@
                     paymentmode.value = "razorpay";
                     console.log(paymentmode.value,"this is the value")
                 }
-            }
+                else if (walletpayRadio.checked) {
+                    // If Razorpay is selected, show Pay Now button and hide Place Order button
+                    console.log("radio button clicked")
+                    placeOrderButton.style.display = 'block';
+                    payNowButton.style.display = 'none';
+                    paymentmode.value = "wallet";
+                    console.log(paymentmode.value,"this is the value") 
+            }}
     
             // Listen for changes in the radio buttons
             codRadio.addEventListener('change', handlePaymentMethodChange);
             razorpayRadio.addEventListener('change', handlePaymentMethodChange);
+            walletpayRadio.addEventListener('change', handlePaymentMethodChange);
     
             // Initially hide the buttons based on the default selection
             handlePaymentMethodChange();
