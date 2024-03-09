@@ -11,8 +11,9 @@ from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
 from home.models import UserAddress ,CustomUser,Address
-
-
+from order_mamngmnt .models import Order,OrderProduct
+from datetime import datetime, timedelta
+from django.db.models import Sum
 # Create your views here.
 @ensure_csrf_cookie
 def custom_admin(request):
@@ -56,7 +57,45 @@ def user_block(request,user_id):
     us.is_active=False
     us.save()
     return redirect('adminapp:userlist')
+def sales(request):
+    if request.method=="POST":
+        start_date=request.POST.get("start_date")
+        end_date=request.POST.get("end_date")
+        day=request.POST.get("day")
+        print(day)
+        formatted_start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+        formatted_end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
+        orders=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date])
+        total_orders=orders.count()
+        total_days=0
+        if day=="day":
+            total_days=1
+        elif day=="week":
+            total_days=7
+        elif day=="month":
+            total_days=30
+        avg_order=total_orders/total_days
+        total_sale=Order.objects.aggregate(total_sale=Sum('grand_total'))
+        return render (request,"salesview.html",)
 
+    else:
+
+    
+        start_date_month=datetime.now()-timedelta(days=30)
+        start_date_week=datetime.now()-timedelta(days=7)
+        print(start_date_month,"one month before")
+        print(start_date_week,"one year before")
+        end_date = datetime.now()
+        print(end_date.strftime("%Y-%m-%d"),"todays date")
+        return render(request,'sales.html',{
+            'start_date_week':start_date_week.strftime("%Y-%m-%d"),
+            'start_date_month':start_date_month.strftime("%Y-%m-%d"),
+            'end_date':end_date.strftime("%Y-%m-%d")
+        })
+    
+        
+        # 
+    return render(request,'sales.html',)
 
 
 

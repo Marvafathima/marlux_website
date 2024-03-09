@@ -22,5 +22,5 @@ urlpatterns=[
     path('dashboard/products/delete_product/<int:id>',category_views.delete_product,name='delete_product'),
     path('dashboard/products/update_product/<int:id>',category_views.update_product,name='update_product'),
     path('dashboard/products/product_list',category_views.list_product,name='list_product'),
-   
+    path('dashboard/sales',admin_views.sales,name='sales'),
     ]

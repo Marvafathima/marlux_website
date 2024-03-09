@@ -269,6 +269,10 @@ def cancel_order(request,order_id):
         messages.success(request,f"Your order {order.tracking_number} has been cancelled successfully!Your Wallet Credited with {transaction.amount}")
 
         return redirect('view_wallet')
+    else:
+        messages.success(request,f"Your order {order.tracking_number} has been cancelled successfully")
+
+        return redirect(reverse('my_orders',args=[order.id]))
 
 def return_order(request,order_id):
     order=Order.objects.get(id=order_id)

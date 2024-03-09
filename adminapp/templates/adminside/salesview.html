@@ -1,0 +1,267 @@
+{% extends 'dashboard.html' %}
+{% load static %}
+{% block extra_link %}
+
+<!-- Data Table JS
+		============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/jquery.dataTables.min.css' %}">
+
+<!-- responsive CSS
+		============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/responsive.css' %}">
+        
+        <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+        <!-- Google Fonts
+            ============================================ -->
+        <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700,900" rel="stylesheet">
+        <!-- Bootstrap CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/bootstrap.min.css' %}">
+        <!-- font awesome CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/font-awesome.min.css' %}">
+        <!-- owl.carousel CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">
+        <link rel="stylesheet" href="{% static 'csss/owl.theme.css' %}">
+        <link rel="stylesheet" href="{% static 'csss/owl.transitions.css' %}">
+        <!-- meanmenu CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/meanmenu/meanmenu.min.css' %}">
+        <!-- animate CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/animate.css' %}">
+        <!-- normalize CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/normalize.css' %}">
+        <!-- wave CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/wave/waves.min.css' %}">
+        <link rel="stylesheet" href="{% static 'csss/wave/button.css' %}">
+        <!-- mCustomScrollbar CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/scrollbar/jquery.mCustomScrollbar.min.css' %}">
+        <!-- Notika icon CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/notika-custom-icon.css' %}">
+        <!-- Data Table JS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/jquery.dataTables.min.css' %}">
+        <!-- main CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/main.css' %}">
+        <!-- style CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/style.css' %}">
+        <!-- responsive CSS
+            ============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/responsive.css' %}">
+         <!-- Range Slider CSS
+		============================================ -->
+    <link rel="stylesheet" href="{% static 'csss/themesaller-forms.css' %}">
+     <!-- bootstrap select CSS
+		============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/bootstrap-select/bootstrap-select.css' %}">
+         <!-- datapicker CSS
+		============================================ -->
+    <link rel="stylesheet" href="{% static 'csss/datapicker/datepicker3.css' %}">
+      <!-- Color Picker CSS
+		============================================ -->
+        <link rel="stylesheet" href="{% static 'csss/color-picker/farbtastic.css' %}">
+        <!-- modernizr JS
+            ============================================ -->
+        <script src="{% static 'js/vendor/modernizr-2.8.3.min.js' %}"></script>
+{% endblock extra_link %}
+{% block userlist %}
+       <!-- Start Status area -->
+       <div class="invoice-area">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="invoice-wrap">
+                        <div class="invoice-img">
+                            <h1 style="color: white;">MARLUX</h1>
+                        </div>
+                        
+                        <div class="row d-flex justify-content-evenly">
+                            <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
+                                <div class="invoice-hs">
+                                    <span>Total Orders</span>
+                                    <h2>{{orders.id}}</h2>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
+                                <div class="invoice-hs date-inv sm-res-mg-t-30 tb-res-mg-t-30 tb-res-mg-t-0">
+                                    <span>Total items</span>
+                                    <h2>{{orders.created_at}}</h2>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
+                                <div class="invoice-hs date-inv sm-res-mg-t-30 tb-res-mg-t-30 tb-res-mg-t-0">
+                                    <span>Order Amount</span>
+                                    <h2>{{orders.created_at}}</h2>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
+                                <div class="invoice-hs wt-inv sm-res-mg-t-30 tb-res-mg-t-30 tb-res-mg-t-0">
+                                    <span>Total Discount</span>
+                                    <h2>{{orders.total_qnty}}</h2>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
+                                <div class="invoice-hs gdt-inv sm-res-mg-t-30 tb-res-mg-t-30 tb-res-mg-t-0">
+                                    <span>Grand Total</span>
+                                    <h2>{{orders.grand_total}}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="invoice-sp">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Item Name</th>
+                                                <th>Size</th>
+                                                <th>Color</th> 
+                                                <th>Unit Price</th>
+                                                <th>Quantity</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for product in order_products%}
+                                        
+                                            <tr>
+                                                <td><img src="{{product.image_url}}" style="height: 100px;"></td>
+                                                <td>{{product.product_name}}</td>
+                                                <td>{{product.size}}</td>
+                                                <td>{{product.color}}</td>
+                                                <td>{{product.individual_price}}</td>
+                                                <td>{{product.quantity}}</td>
+                                                <td>{{product.total_price}}</td>
+                                            </tr>
+                                            {% endfor %}
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- <div class="row">
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="invoice-ds-int">
+                                    <h2>Remarks</h2>
+                                    <p>Ornare non tortor. Nam quis ipsum vitae dolor porttitor interdum. Curabitur faucibus erat vel ante fermentum lacinia. Integer porttitor laoreet suscipit. Sed cursus cursus massa ut pellentesque. Phasellus vehicula dictum arcu, eu interdum massa bibendum. Ornare non tortor. Nam quis ipsum vitae dolor porttitor interdum. Curabitur faucibus erat vel ante fermentum lacinia. Integer porttitor laoreet suscipit. Sed cursus cursus massa ut pellentesque. Phasellus vehicula dictum arcu, eu interdum massa bibendum. </p>
+                                </div>
+                                <div class="invoice-ds-int invoice-last">
+                                    <h2>Notika For Your Business</h2>
+                                    <p class="tab-mg-b-0">Ornare non tortor. Nam quis ipsum vitae dolor porttitor interdum. Curabitur faucibus erat vel ante fermentum lacinia. Integer porttitor laoreet suscipit. Sed cursus cursus massa ut pellentesque. Phasellus vehicula dictum arcu, eu interdum massa bibendum. Ornare non tortor. Nam quis ipsum vitae dolor porttitor interdum. Curabitur faucibus erat vel ante fermentum lacinia. Integer porttitor laoreet suscipit. Sed cursus cursus massa ut pellentesque. Phasellus vehicula dictum arcu, eu interdum massa bibendum. </p>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+     <script>
+        document.getElementById('custombtn').addEventListener('click', function() {
+        var customSaleForm = document.querySelector('.custom-sale-form');
+        if (customSaleForm.style.display === 'none') {
+            customSaleForm.style.display = 'block';
+        } else {
+            customSaleForm.style.display = 'none';
+        }
+    });
+
+   
+
+</script>     
+ <!-- jquery
+		============================================ -->
+        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+        <script src="{% static 'jss/vendor/jquery-1.12.4.min.js' %}"></script>
+<!-- Data Table area End-->
+<script src="{% static 'jss/data-table/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'jss/data-table/data-table-act.js' %}"></script>
+ 
+         <!--  animation JS
+		============================================ -->
+    <script src="{% static 'jss/animation/animation-active.js' %}"></script>
+        <!-- bootstrap JS
+            ============================================ -->
+        <script src="{% static 'jss/bootstrap.min.js' %}"></script>
+        <!-- wow JS
+            ============================================ -->
+        <script src="{% static 'jss/wow.min.js' %}"></script>
+        <!-- price-slider JS
+            ============================================ -->
+        <script src="{% static 'jss/jquery-price-slider.js' %}"></script>
+        <!-- owl.carousel JS
+            ============================================ -->
+        <script src="{% static 'jss/owl.carousel.min.js' %}"></script>
+        <!-- scrollUp JS
+            ============================================ -->
+        <script src="{% static 'jss/jquery.scrollUp.min.js' %}"></script>
+        <!-- meanmenu JS
+            ============================================ -->
+        <script src="{% static 'jss/meanmenu/jquery.meanmenu.js' %}"></script>
+        <!-- counterup JS
+            ============================================ -->
+        <script src="{% static 'jss/counterup/jquery.counterup.min.js' %}"></script>
+        <script src="jss/counterup/waypoints.min.js' %}"></script>
+        <script src="{% static 'jss/counterup/counterup-active.js' %}"></script>
+        <!-- mCustomScrollbar JS
+            ============================================ -->
+        <script src="{% static 'jss/scrollbar/jquery.mCustomScrollbar.concat.min.js' %}"></script>
+        <!-- sparkline JS
+            ============================================ -->
+        <script src="{% static 'jss/sparkline/jquery.sparkline.min.js' %}"></script>
+        <script src="{% static 'jss/sparkline/sparkline-active.js' %}"></script>
+        <!-- flot JS
+            ============================================ -->
+        <script src="{% static 'jss/flot/jquery.flot.js' %}"></script>
+        <script src="{% static 'jss/flot/jquery.flot.resize.js' %}"></script>
+        <script src="{% static 'jss/flot/flot-active.js' %}"></script>
+        <!-- knob JS
+            ============================================ -->
+        <script src="{% static 'jss/knob/jquery.knob.js' %}"></script>
+        <script src="{% static 'jss/knob/jquery.appear.js' %}"></script>
+        <script src="{% static 'jss/knob/knob-active.js' %}"></script>
+        <!--  Chat JS
+            ============================================ -->
+        <script src="{% static 'jss/chat/jquery.chat.js' %}"></script>
+        <!--  todo JS
+            ============================================ -->
+        <script src="{% static 'jss/todo/jquery.todo.js' %}"></script>
+        <!--  wave JS
+            ============================================ -->
+        <script src="{% static 'jss/wave/waves.min.js' %}"></script>
+        <script src="{% static 'jss/wave/wave-active.js' %}"></script>
+        <!-- plugins JS
+            ============================================ -->
+        <script src="{% static 'jss/plugins.js' %}"></script>
+        <!-- Data Table JS
+            ============================================ -->
+        <script src="{% static 'jss/data-table/jquery.dataTables.min.js' %}"></script>
+        <script src="{% static 'jss/data-table/data-table-act.js' %}"></script>
+        <!-- main JS
+            ============================================ -->
+        <script src="{% static 'jss/main.js' %}"></script>
+         <!-- datapicker JS
+		============================================ -->
+    <script src="{% static 'jss/datapicker/bootstrap-datepicker.js' %}"></script>
+    <script src="{% static 'jss/datapicker/datepicker-active.js' %}"></script>
+    <!-- bootstrap select JS
+		============================================ -->
+    <script src="{% static 'jss/bootstrap-select/bootstrap-select.js' %}"></script>
+    <!--  color-picker JS
+		============================================ -->
+    <script src="{% static 'jss/color-picker/farbtastic.min.js' %}"></script>
+    <script src="{% static 'jss/color-picker/color-picker.js' %}"></script>
+        
+{% endblock userlist %}
+
+
