@@ -27,6 +27,7 @@ def view_wallet(request):
     user=request.user
     try:
         wallet=Wallet.objects.get(user=user)
+        print(wallet.balance)
         transaction=Transaction.objects.filter(wallet=wallet)
         return render(request,"wallet.html",{'wallet':wallet,'transaction':transaction})
     except:

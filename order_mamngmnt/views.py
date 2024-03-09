@@ -21,6 +21,7 @@ from django.views.decorators.cache import never_cache
 from django.views.generic import TemplateView
 from django.urls import reverse
 from wallet .models import Wallet,Transaction
+from decimal import Decimal
 # from django.template.loader import render_to_string
 # # from weasyprint.html import HTML
 # @method_decorator(never_cache, name='dispatch')
@@ -238,58 +239,70 @@ def cancel_order(request,order_id):
     if status in dict(Order.STATUS):
         order.status=status
         order.save()
-    if order.payment_status=="successfull":
+        print(order.payment_status)
+        amount=0
+    if order.payment_status=="successful":
         wallet,created=Wallet.objects.get_or_create(user=request.user)
         if created:
             print("wallet created")
         else:
             print("no wallet created") 
         if order.applied_coupon:
-            wallet.balance +=order.discount_grand_total
+            wallet.balance += order.discount_grand_total
+            wallet.save()
+            amount=order.discount_grand_total
             transaction=Transaction.objects.create(wallet=wallet,amount=order.discount_grand_total,transaction_type="Refund")
        
         else:
-            wallet.balance += order.grand_total
-            transaction=Transaction.objects.create(wallet=wallet,amount=order.grand_total,transaction_type="Refund")
-        
+            wallet.balance += Decimal(order.grand_total)
+            wallet.save()
+            amount=order.grand_total
+        transaction=Transaction.objects.create(wallet=wallet,amount=amount,transaction_type="Refund")
+    
         print(wallet.balance,transaction.amount,"this is your wallet balance")
         print(order.status)
         tracking_num=order.tracking_number
-    order.payment_status="refunded"
-    order.save()
-    counts=Order.objects.filter(user=request.user).count()
-    if counts:
+        order.payment_status="refunded"
+        order.save()
+        
 
-        messages.success(request,f"Your order {order.tracking_number} has been cancelled successfully!")
+        messages.success(request,f"Your order {order.tracking_number} has been cancelled successfully!Your Wallet Credited with {transaction.amount}")
 
-        return redirect('order_history')
-    else:
-        messages.success(request,f"Your order {order.tracking_number} has been cancelled successfully!")
+        return redirect('view_wallet')
 
-        return render(request,'order_history.html')
 def return_order(request,order_id):
     order=Order.objects.get(id=order_id)
     status="Return"
     if status in dict(Order.STATUS):
         order.status=status
         order.save()
-        if order.payment_status=="successfull":
+        amount=0
+        if order.payment_status=="successful":
             wallet,created=Wallet.objects.get_or_create(user=request.user)
             
             if order.applied_coupon:
                 wallet.balance +=order.discount_grand_total
-                transaction=Transaction.objects.create(wallet=wallet,amount=order.discount_grand_total,transaction_type="Refund")
+                wallet.save()
+                amount=order.discount_grand_total
+                
         
             else:
                 wallet.balance += order.grand_total
-                transaction=Transaction.objects.create(wallet=wallet,amount=order.grand_total,transaction_type="Refund")
+                wallet.save()
+                amount=order.grand_total
+            transaction=Transaction.objects.create(wallet=wallet,amount=amount,transaction_type="Refund")
         
         print(wallet.balance,transaction.amount,"this is your wallet balance")
         print(order.status)
         
-    order.payment_status="refunded"
-    order.save()
+        order.payment_status="refunded"
+        order.save()
 
-    print(order.status)
-    messages.success(request,f"Return request succesfull! Our team will come to collect the order {order.tracking_number} soon!")
-    return redirect(reverse('my_orders', args=[order.id]))
+        print(order.status)
+        messages.success(request,f"Return request succesfull! Our team will come to collect the order {order.tracking_number} soon!")
+        return redirect('view_wallet')
+    else:
+        messages.success(request,f"Return request succesfull! Our team will come to collect the order {order.tracking_number} soon!")
+        return redirect('order_history')
+   
+    # return redirect(reverse('my_orders', args=[order.id]))
