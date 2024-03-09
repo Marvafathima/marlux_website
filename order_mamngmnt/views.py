@@ -287,7 +287,7 @@ def return_order(request,order_id):
                 
         
             else:
-                wallet.balance += order.grand_total
+                wallet.balance += Decimal(order.grand_total)
                 wallet.save()
                 amount=order.grand_total
             transaction=Transaction.objects.create(wallet=wallet,amount=amount,transaction_type="Refund")
