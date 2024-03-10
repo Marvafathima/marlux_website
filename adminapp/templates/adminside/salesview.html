@@ -80,38 +80,44 @@
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="invoice-wrap">
                         <div class="invoice-img">
-                            <h1 style="color: white;">MARLUX</h1>
+                            {% if day == "day" %}
+                            <h1 style="color: white;">MARLUX-TODAY'S SALES REPORT</h1><br><h3 style="color: white;">({{start_date}})</h3>
+                    {% elif day == "month" %}
+                    <h1 style="color: white;">MARLUX-LAST MONTH'S SALES REPORT</h1><br><h3 style="color: white;">({{start_date}})-({{end_date}})</h3>
+                    {% elif day == "week" %}
+                    <h1 style="color: white;">MARLUX-LAST WEEK'S SALES REPORT</h1><br><h3 style="color: white;">({{start_date}})-({{end_date}})</h3>
+                   {% endif %}
                         </div>
                         
-                        <div class="row d-flex justify-content-evenly">
+                        <div class="row d-flex justify-content-evenly mt-5">
                             <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
                                 <div class="invoice-hs">
                                     <span>Total Orders</span>
-                                    <h2>{{orders.id}}</h2>
+                                    <h2>{{total_orders}}</h2>
                                 </div>
                             </div>
                             <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
                                 <div class="invoice-hs date-inv sm-res-mg-t-30 tb-res-mg-t-30 tb-res-mg-t-0">
                                     <span>Total items</span>
-                                    <h2>{{orders.created_at}}</h2>
+                                    <h2>{{total_items}}</h2>
                                 </div>
                             </div>
                             <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
                                 <div class="invoice-hs date-inv sm-res-mg-t-30 tb-res-mg-t-30 tb-res-mg-t-0">
                                     <span>Order Amount</span>
-                                    <h2>{{orders.created_at}}</h2>
+                                    <h2>{{grand_total|floatformat:2}}</h2>
                                 </div>
                             </div>
                             <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
                                 <div class="invoice-hs wt-inv sm-res-mg-t-30 tb-res-mg-t-30 tb-res-mg-t-0">
                                     <span>Total Discount</span>
-                                    <h2>{{orders.total_qnty}}</h2>
+                                    <h2>{{coupon_total|floatformat:2}}</h2>
                                 </div>
                             </div>
                             <div class="col-lg-2 col-md-3 col-sm-3 col-xs-12">
                                 <div class="invoice-hs gdt-inv sm-res-mg-t-30 tb-res-mg-t-30 tb-res-mg-t-0">
                                     <span>Grand Total</span>
-                                    <h2>{{orders.grand_total}}</h2>
+                                    <h2>{{discount_grand_total|floatformat:2}}</h2>
                                 </div>
                             </div>
                         </div>

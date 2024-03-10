@@ -14,6 +14,8 @@ from home.models import UserAddress ,CustomUser,Address
 from order_mamngmnt .models import Order,OrderProduct
 from datetime import datetime, timedelta
 from django.db.models import Sum
+from coupons .models import Coupon
+from decimal import Decimal
 # Create your views here.
 @ensure_csrf_cookie
 def custom_admin(request):
@@ -67,16 +69,51 @@ def sales(request):
         formatted_end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
         orders=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date])
         total_orders=orders.count()
-        total_days=0
-        if day=="day":
-            total_days=1
-        elif day=="week":
-            total_days=7
-        elif day=="month":
-            total_days=30
-        avg_order=total_orders/total_days
-        total_sale=Order.objects.aggregate(total_sale=Sum('grand_total'))
-        return render (request,"salesview.html",)
+        if total_orders !=0:
+            total_days=0
+            if day=="day":
+                total_days=1
+            elif day=="week":
+                total_days=7
+            elif day=="month":
+                total_days=30
+            avg_order=total_orders/total_days
+            no_discount_sale=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date],applied_coupon__isnull=True).aggregate(nondiscount_sale=Sum('grand_total'))
+            discount_sale=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date],applied_coupon__isnull=False).aggregate(discount_sale=Sum('discount_grand_total'))
+            actual_sale_price=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date],applied_coupon__isnull=False).aggregate(sale=Sum('grand_total'))
+            total_discount=Decimal(actual_sale_price['sale'])-discount_sale['discount_sale']
+            no_discount_grand_total=Decimal(actual_sale_price['sale'])+Decimal(no_discount_sale['nondiscount_sale'])
+            sales_grand_total=discount_sale['discount_sale']+ Decimal(no_discount_sale['nondiscount_sale'])
+            total_quantity=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date]).aggregate(total_quantity=Sum('total_qnty'))
+           
+            return render (request,"salesview.html",{
+             'total_orders':total_orders,
+             'total_items':total_quantity['total_quantity'],
+             'grand_total':no_discount_grand_total,
+             'coupon_total': total_discount,
+             'discount_grand_total':sales_grand_total,
+             'day':day,
+             'start_date':start_date,
+             'end_date':end_date  
+                       })
+        else:
+            print(total_orders)
+            total_orders=0
+            total_quantity=0
+            no_discount_grand_total=0.00
+            total_discount=0.00
+            sales_grand_total=0.00
+           
+            return render (request,"salesview.html",{
+                'total_orders':total_orders,
+                'total_items':total_quantity,
+                'grand_total':no_discount_grand_total,
+                'coupon_total': total_discount,
+                'discount_grand_total':sales_grand_total,
+                'day':day,
+                'start_date':start_date,
+                'end_date':end_date   
+                        })
 
     else:
 

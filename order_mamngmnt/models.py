@@ -2,7 +2,7 @@ from django.db import models
 from home .models import CustomUser,CartItem,Cart,Address,UserAddress
 from category .models import Products,ProductVar,ProductImage
 from decimal import Decimal
-
+from coupons .models import Coupon
 
 # Create your models here.
 # class Payment(models.Model):
@@ -49,7 +49,7 @@ class Order(models.Model):
     order_total=models.FloatField(null=True) 
     discount_total=models.DecimalField(default=0,decimal_places=2,max_digits=10,null=True)
     discount_grand_total=models.DecimalField(default=0,decimal_places=2,max_digits=10,null=True)
-    applied_coupon=models.IntegerField(null=True)
+    applied_coupon=models.ForeignKey(Coupon,on_delete=models.CASCADE,null=True,related_name="order_coupon")
     tax=models.FloatField(null=True)
     status=models.CharField(max_length=10, choices=STATUS, default='Pending')
     is_ordered=models.BooleanField(default=False)
