@@ -16,6 +16,13 @@ from datetime import datetime, timedelta
 from django.db.models import Sum
 from coupons .models import Coupon
 from decimal import Decimal
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import Table,TableStyle
+from reportlab.lib.units import inch
+from reportlab.lib import colors
+from django.http import FileResponse
+import io
 # Create your views here.
 @ensure_csrf_cookie
 def custom_admin(request):
@@ -181,6 +188,11 @@ def sales(request):
     
         start_date_month=datetime.now()-timedelta(days=30)
         start_date_week=datetime.now()-timedelta(days=7)
+        end_date=datetime.now()
+        orders=Order.objects.filter(created_at__range=[end_date,end_date]).exclude(Q(status="Return")| Q(status="Cancelled")|Q(status="Pending") )
+        print(orders.count())
+        
+       
         print(start_date_month,"one month before")
         print(start_date_week,"one year before")
         end_date = datetime.now()
@@ -192,9 +204,40 @@ def sales(request):
         })
     
         
-      
-
-
+def download_pdf(request):
+   
+    buf=io.BytesIO()
+    c=canvas.Canvas(buf,pagesize=letter,bottomup=0)
+    textob=c.beginText()
+    textob.setTextOrigin(inch,inch)
+    textob.setFont("Helvetica",14)
+    # lines= [
+    #     "this is line 1",
+    #     "this is line 2",
+    #     "this is line 3",
+    # ]
+    start_date_month=datetime.now()-timedelta(days=30)
+    start_date_week=datetime.now()-timedelta(days=7)
+    end_date=datetime.now()
+    orders=Order.objects.filter(created_at__range=[start_date_month,end_date]).exclude(Q(status="Return")| Q(status="Cancelled")|Q(status="Pending") )
+    print(orders.count())
+    lines=[]
+    for order in orders:
+        
+        lines.append(str(order.tracking_number))
+        lines.append(str(order.grand_total))
+        lines.append(str(order.status))
+        lines.append(str(order.user.email))
+        lines.append("")
+    for line in lines:
+        textob.textLine(line)
+    c.drawText(textob)
+    c.showPage()
+    c.save()
+    buf.seek(0)
+    return FileResponse(buf,as_attachment=True,filename='sales.pdf')
+   
+   
 
 
  

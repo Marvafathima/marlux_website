@@ -23,4 +23,5 @@ urlpatterns=[
     path('dashboard/products/update_product/<int:id>',category_views.update_product,name='update_product'),
     path('dashboard/products/product_list',category_views.list_product,name='list_product'),
     path('dashboard/sales',admin_views.sales,name='sales'),
+    path('download_pdf/',admin_views.download_pdf,name='download_pdf')
     ]
