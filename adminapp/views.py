@@ -67,7 +67,7 @@ def sales(request):
         print(day)
         formatted_start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
         formatted_end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
-        orders=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date])
+        orders=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date]).exclude(Q(status="Return")| Q(status="Cancelled")|Q(status="Pending") )
         total_orders=orders.count()
         if total_orders !=0:
             total_days=0
@@ -78,14 +78,20 @@ def sales(request):
             elif day=="month":
                 total_days=30
             avg_order=total_orders/total_days
-            no_discount_sale=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date],applied_coupon__isnull=True).aggregate(nondiscount_sale=Sum('grand_total'))
-            discount_sale=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date],applied_coupon__isnull=False).aggregate(discount_sale=Sum('discount_grand_total'))
-            actual_sale_price=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date],applied_coupon__isnull=False).aggregate(sale=Sum('grand_total'))
+            no_discount_sale=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date],applied_coupon__isnull=True).exclude(Q(status="Return")| Q(status="Cancelled")|Q(status="Pending")).aggregate(nondiscount_sale=Sum('grand_total'))
+            discount_sale=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date],applied_coupon__isnull=False).exclude(Q(status="Return")| Q(status="Cancelled")|Q(status="Pending")).aggregate(discount_sale=Sum('discount_grand_total'))
+            actual_sale_price=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date],applied_coupon__isnull=False).exclude(Q(status="Return")| Q(status="Cancelled")|Q(status="Pending")).aggregate(sale=Sum('grand_total'))
             total_discount=Decimal(actual_sale_price['sale'])-discount_sale['discount_sale']
             no_discount_grand_total=Decimal(actual_sale_price['sale'])+Decimal(no_discount_sale['nondiscount_sale'])
             sales_grand_total=discount_sale['discount_sale']+ Decimal(no_discount_sale['nondiscount_sale'])
             total_quantity=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date]).aggregate(total_quantity=Sum('total_qnty'))
+            print(total_orders,no_discount_sale,"refund return included")
+            no=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date],applied_coupon__isnull=True).aggregate(nondiscount_sale=Sum('grand_total'))
+            ord=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date])
+            total=ord.count()
+            print(total,no,"refund return excluded")
            
+            
             return render (request,"salesview.html",{
              'total_orders':total_orders,
              'total_items':total_quantity['total_quantity'],

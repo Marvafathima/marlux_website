@@ -81,12 +81,16 @@
                     <div class="invoice-wrap">
                         <div class="invoice-img">
                             {% if day == "day" %}
-                            <h1 style="color: white;">MARLUX-TODAY'S SALES REPORT</h1><br><h3 style="color: white;">({{start_date}})</h3>
+                            <h1 style="color: white;">DAILY SALES REPORT</h1><br><h3 style="color: white;">({{start_date}})</h3>
                     {% elif day == "month" %}
-                    <h1 style="color: white;">MARLUX-LAST MONTH'S SALES REPORT</h1><br><h3 style="color: white;">({{start_date}})-({{end_date}})</h3>
+                    <h1 style="color: white;">MONTHLY SALES REPORT</h1><br><h3 style="color: white;">({{start_date}})-({{end_date}})</h3>
                     {% elif day == "week" %}
-                    <h1 style="color: white;">MARLUX-LAST WEEK'S SALES REPORT</h1><br><h3 style="color: white;">({{start_date}})-({{end_date}})</h3>
-                   {% endif %}
+                    <h1 style="color: white;">WEEKLY SALES REPORT</h1><br><h3 style="color: white;">({{start_date}})-({{end_date}})</h3>
+                    {% elif day == "custom" %}
+                    <h1 style="color: white;">SALES REPORT</h1><br><h3 style="color: white;">({{start_date}})-({{end_date}})</h3>
+                  
+                  
+                    {% endif %}
                         </div>
                         
                         <div class="row d-flex justify-content-evenly mt-5">
