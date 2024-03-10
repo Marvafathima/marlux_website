@@ -229,9 +229,24 @@ def download_pdf(request):
         lines.append(str(order.status))
         lines.append(str(order.user.email))
         lines.append("")
+
+    max_lines_per_page = 40
+    current_line = 0
     for line in lines:
         textob.textLine(line)
-    c.drawText(textob)
+        current_line += 1
+        if current_line >= max_lines_per_page:
+            c.drawText(textob)
+            c.showPage()
+            
+            buf.seek(0)
+            textob = c.beginText()
+            textob.setTextOrigin(inch, inch)
+            textob.setFont("Helvetica", 14)
+            current_line = 0 
+    if current_line > 0:
+        c.drawText(textob)
+
     c.showPage()
     c.save()
     buf.seek(0)
