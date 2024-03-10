@@ -72,14 +72,7 @@ def sales(request):
             orders=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date]).exclude(Q(status="Return")| Q(status="Cancelled")|Q(status="Pending") )
             total_orders=orders.count()
             if total_orders !=0:
-                total_days=0
-                if day=="day":
-                    total_days=1
-                elif day=="week":
-                    total_days=7
-                elif day=="month":
-                    total_days=30
-                avg_order=total_orders/total_days
+                
                 no_discount_sale=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date],applied_coupon__isnull=True).exclude(Q(status="Return")| Q(status="Cancelled")|Q(status="Pending")).aggregate(nondiscount_sale=Sum('grand_total'))
                 discount_sale=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date],applied_coupon__isnull=False).exclude(Q(status="Return")| Q(status="Cancelled")|Q(status="Pending")).aggregate(discount_sale=Sum('discount_grand_total'))
                 actual_sale_price=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date],applied_coupon__isnull=False).exclude(Q(status="Return")| Q(status="Cancelled")|Q(status="Pending")).aggregate(sale=Sum('grand_total'))
@@ -87,14 +80,13 @@ def sales(request):
                 no_discount_grand_total=Decimal(actual_sale_price['sale'])+Decimal(no_discount_sale['nondiscount_sale'])
                 sales_grand_total=discount_sale['discount_sale']+ Decimal(no_discount_sale['nondiscount_sale'])
                 total_quantity=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date]).aggregate(total_quantity=Sum('total_qnty'))
-                print(total_orders,no_discount_sale,"refund return included")
-                no=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date],applied_coupon__isnull=True).aggregate(nondiscount_sale=Sum('grand_total'))
-                ord=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date])
-                total=ord.count()
-                print(total,no,"refund return excluded")
+               
+                
+                
             
                 
                 return render (request,"salesview.html",{
+                'orders':orders,
                 'total_orders':total_orders,
                 'total_items':total_quantity['total_quantity'],
                 'grand_total':no_discount_grand_total,
@@ -113,6 +105,7 @@ def sales(request):
                 sales_grand_total=0.00
             
                 return render (request,"salesview.html",{
+                    
                     'total_orders':total_orders,
                     'total_items':total_quantity,
                     'grand_total':no_discount_grand_total,
@@ -123,23 +116,13 @@ def sales(request):
                     'end_date':end_date   
                             })
         else:
-            # end_date=datetime.strptime(end_date,"%m/%d/%Y")
-            # start_date=datetime.strptime(start_date,"%m/%d/%Y")
-            
-            # formatted_end_date=datetime.strptime(end_date,"%Y/%m/%d")
-            # formatted_start_date=start_date.strftime("%Y/%m/%d")
-            # end_date=end_date.strftime("%Y/%m/%d")
-            # start_date=start_date.strftime("%Y/%m/%d")
-            # formatted_end_date = datetime.strptime(end_date, "%Y/%m/%d").date()
-            # formatted_start_date = datetime.strptime(start_date, "%Y/%m/%d").date()  
-            
-
+              
             end_date = datetime.strptime(end_date, "%m/%d/%Y") if isinstance(end_date, str) else end_date
             start_date = datetime.strptime(start_date, "%m/%d/%Y") if isinstance(start_date, str) else start_date
 
             formatted_start_date = datetime.strptime(start_date, "%Y/%m/%d").date() if isinstance(start_date, str) else start_date
 
-            # formatted_start_date = start_date.strftime("%Y/%m/%d")
+            
 
           
             formatted_end_date = datetime.strptime(end_date, "%Y/%m/%d").date() if isinstance(end_date, str) else end_date
@@ -165,6 +148,7 @@ def sales(request):
             
                 
                 return render (request,"salesview.html",{
+                    'orders':orders,
                 'total_orders':total_orders,
                 'total_items':total_quantity['total_quantity'],
                 'grand_total':no_discount_grand_total,
@@ -208,8 +192,7 @@ def sales(request):
         })
     
         
-        # 
-    return render(request,'sales.html',)
+      
 
 
 

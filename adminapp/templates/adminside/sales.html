@@ -91,16 +91,16 @@
                                         </div>
 
 
-                                        <div class="row mb-5  d-flex justify-content-around ">
+                                        <div class="row mb-5  d-flex justify-content-start ">
                                             <!-- todays sale form start here -->
                                             <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
                                                 <form action="{% url 'adminapp:sales' %}" method="post">
                                                     {% csrf_token %}
                                                    <div class="todayform mb-1" >
-                                                                <input type="date" class="form-control"  name="start_date" value={{end_date}} placeholder="yyyy/mm/dd">
+                                                                <input type="hidden" class="form-control"  name="start_date" value={{end_date}} placeholder="yyyy/mm/dd">
                                                             
                                                          <input type="hidden" name="day" value="day">
-                                                                <input type="date" class="form-control"  name="end_date" value={{end_date}}  placeholder="yyyy/mm/dd">
+                                                                <input type="hidden" class="form-control"  name="end_date" value={{end_date}}  placeholder="yyyy/mm/dd">
                                                            
                                                             </div>
                                                     <button type="submit"class="btn notika-btn-bluegray  btn-reco-mg btn-button-mg btn-lg text-white" id="todaybtn">Today's</button>
@@ -115,10 +115,10 @@
                                                 <form action="{% url 'adminapp:sales' %}" method="post">
                                                     {% csrf_token %}
                                                     <div class="weekform mb-1" >
-                                                                <input type="date" class="form-control" name="start_date" value={{start_date_week}}  placeholder="yyyy/mm/dd">
+                                                                <input type="hidden" class="form-control" name="start_date" value={{start_date_week}}  placeholder="yyyy/mm/dd">
                                                             
                                                                 <input type="hidden" name="day" value="week">
-                                                                <input type="date" class="form-control"  name="end_date"   value={{end_date}} placeholder="yyyy/mm/dd">
+                                                                <input type="hidden" class="form-control"  name="end_date"   value={{end_date}} placeholder="yyyy/mm/dd">
                                                             </div>      
                                                 <button type="submit"class="btn notika-btn-bluegray  btn-reco-mg btn-button-mg btn-lg text-white" id="weekbtn">This Week</button>
                                             </form>
@@ -130,10 +130,10 @@
                                             <form action="{% url 'adminapp:sales' %}" method="post">
                                                 {% csrf_token %}
                                                 <div class="monthform mb-1">
-                                                            <input type="date" class="form-control" name="start_date"  value={{start_date_month}} placeholder="yyyy/mm/dd" >
+                                                            <input type="hidden" class="form-control" name="start_date"  value={{start_date_month}} placeholder="yyyy/mm/dd" >
                                                             <input type="hidden" name="day" value="month">
                                                      
-                                                            <input type="date" class="form-control"  name="end_date"  placeholder="yyyy/mm/dd" value={{end_date}} placeholder="yyyy/mm/dd">
+                                                            <input type="hidden" class="form-control"  name="end_date"  placeholder="yyyy/mm/dd" value={{end_date}} placeholder="yyyy/mm/dd">
                                                         </div> 
                                             <button type="submit" class="btn notika-btn-bluegray  btn-reco-mg btn-button-mg btn-lg text-white" id="monthbtn">This Month</button>
                                         </form>
@@ -147,7 +147,7 @@
                                    
                                 </div> 
 
-                                        </div> <!-- custome sale form start here -->
+                            </div>  <!-- custome sale form start here -->
                                         <div class="row custom-sale-form" style="display:none">
                                         <form action="{% url 'adminapp:sales' %}" method="post">
                                             {% csrf_token %}
