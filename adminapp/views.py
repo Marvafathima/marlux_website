@@ -239,7 +239,7 @@ def sales(request):
             'start_date_month':start_date_month.strftime("%Y-%m-%d"),
             'end_date':end_date.strftime("%Y-%m-%d")
         })
-
+from reportlab.platypus import Paragraph
 def download_pdf(request):
     buf=io.BytesIO()
     total_orders = request.session.get('total_orders','')
@@ -270,7 +270,20 @@ def download_pdf(request):
     doc = SimpleDocTemplate(buf, pagesize=letter)
     styles = getSampleStyleSheet()
     elements = []
+    # Create heading with styling
+    heading = "SALES REPORT"
+    heading=Paragraph(heading,styles['Heading1'])
+    elements.append(heading)
+    
+    # elements.append(Paragraph(heading,styles['Heading1']))  # Use pre-defined style for heading
 
+    # Formatted date range string
+    date_range = f"Start Date: {start_date.strftime('%Y-%m-%d')} - End Date: {end_date.strftime('%Y-%m-%d')}"
+    elements.append(Paragraph(date_range, styles['Normal']))  # Use a normal style
+
+    # Add horizontal line
+   # Create a line object with spacing and thickness
+  
     # Upper part of the PDF with statistics
     upper_part = [
         ["Total Orders:", total_orders],
