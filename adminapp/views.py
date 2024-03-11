@@ -246,7 +246,13 @@ def download_pdf(request):
     total_quantity= request.session.get('total_quantity','')  
     start_date=request.session.get('start_date')
     end_date=request.session.get('end_date')
-    print(end_date,start_date)
+    print(end_date,start_date,type(end_date),type(start_date),"thsi is the date type")
+
+    date_format="%Y-%m-%d"
+    start_date=datetime.strptime(start_date,date_format)
+    end_date=datetime.strptime(end_date,date_format)
+    print(end_date,start_date,type(end_date),type(start_date),"thsi is the date type")
+
     orders=Order.objects.filter(created_at__range=[start_date,end_date]).exclude(Q(status="Return")| Q(status="Cancelled")|Q(status="Pending"))
     print(orders.count(),"this is order set count")
    

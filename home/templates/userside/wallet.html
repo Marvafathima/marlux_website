@@ -2,11 +2,7 @@
 {% load static %}
 {% block profilehead%}<h3>My Wallet</h3>{% endblock profilehead%}
 {% block form %}
-<style>
-    p{
-        font-weight: 700;
-    }
-</style>
+
 <div class="col-lg-12 d-flex justify-content-center mt-5 mb-5"> <div><img src="{% static 'tem_two/img/wallet.png' %}" class=""style="height:200px;">  </div>  </div>
 {% if transaction %}
 <div class="col-lg-12">
@@ -22,18 +18,18 @@
         <div class="card-body">
           {% for transact in transaction %}
           {% if transact.transaction_type == 'Refund' %}
-            <div class="d-flex justify-content-between text-success">
+            <div class="d-flex justify-content-between ">
                 <p>{{transact.id}}</p>
                 <p class="pl-5 ml-2">{{transact.transaction_type}}</p>
                 <p class="">{{transact.timestamp}}</p>
-                <p>+{{transact.amount}}</p>
+                <p class="text-success">+{{transact.amount}}</p>
             </div>
             {% else%}
-            <div class="d-flex justify-content-between text-danger">
+            <div class="d-flex justify-content-between">
                 <p>{{transact.id}}</p>
                 <p class="pl-5 ml-2">{{transact.transaction_type}}</p>
                 <p class="">{{transact.timestamp}}</p>
-                <p>-{{transact.amount}}</p>
+                <p class=" text-danger">-{{transact.amount}}</p>
             </div>
             {% endif %}
             {% endfor %}
