@@ -100,6 +100,7 @@ def sales(request):
                 request.session['total_quantity'] = str( total_quantity['total_quantity']) 
                 request.session['start_date']=str(formatted_start_date)
                 request.session['end_date']=str(formatted_end_date)
+                request.session['day']=day
                 print(request.session['no_discount_grand_total'],"this is the grand total without discount+++++++++++")
                 
             
@@ -130,6 +131,7 @@ def sales(request):
                 request.session['total_quantity'] = str(total_quantity)
                 request.session['start_date']=str(formatted_start_date)
                 request.session['end_date']=str(formatted_end_date)
+                request.session['day']=day
                 return render (request,"salesview.html",{
                     
                     'total_orders':total_orders,
@@ -177,7 +179,7 @@ def sales(request):
                 request.session['no_discount_grand_total'] =str( no_discount_grand_total)
                 request.session['sales_grand_total'] = str(sales_grand_total)
                 request.session['total_quantity'] = str(total_quantity['total_quantity'])
-                
+                request.session['day']=day
                 request.session['start_date']=str(formatted_start_date)
                 request.session['end_date']=str(formatted_end_date)
                 return render (request,"salesview.html",{
@@ -206,6 +208,7 @@ def sales(request):
                 request.session['total_quantity'] = str(total_quantity)
                 request.session['start_date']=str(formatted_start_date)
                 request.session['end_date']=str(formatted_end_date)
+                request.session['day']=day
                 return render (request,"salesview.html",{
                     'total_orders':total_orders,
                     'total_items':total_quantity,
@@ -246,21 +249,23 @@ def download_pdf(request):
     total_quantity= request.session.get('total_quantity','')  
     start_date=request.session.get('start_date')
     end_date=request.session.get('end_date')
-    print(end_date,start_date,type(end_date),type(start_date),"thsi is the date type")
-
-    date_format="%Y-%m-%d"
-    start_date=datetime.strptime(start_date,date_format)
-    end_date=datetime.strptime(end_date,date_format)
-    print(end_date,start_date,type(end_date),type(start_date),"thsi is the date type")
+    day=request.session.get('day')
+    if day!="custom":
+        date_format="%Y-%m-%d"
+        start_date=datetime.strptime(start_date,date_format)
+        end_date=datetime.strptime(end_date,date_format)
+    else:
+        start_date=datetime.strptime(start_date,"%Y-%m-%d %H:%M:%S")
+        end_date=datetime.strptime(end_date,"%Y-%m-%d %H:%M:%S")
+        start_date.strftime("%Y-%m-%d")
+        end_date.strftime("%Y-%m-%d")
+        print(end_date,start_date,type(end_date),type(start_date),"this is the date type")
 
     orders=Order.objects.filter(created_at__range=[start_date,end_date]).exclude(Q(status="Return")| Q(status="Cancelled")|Q(status="Pending"))
     print(orders.count(),"this is order set count")
    
     
-    # orders = list(orders_str)  # Parse the string back to a list of dictionaries
-    # except json.JSONDecodeError:
-    # Handle the case where the JSON string is not properly formatted
-        # orders = []
+   
 
     doc = SimpleDocTemplate(buf, pagesize=letter)
     styles = getSampleStyleSheet()
@@ -277,7 +282,8 @@ def download_pdf(request):
     ]
 
     # Create table for upper part
-    upper_table = Table(upper_part)
+
+    upper_table = Table(upper_part,spaceBefore=4,spaceAfter=50)
     upper_table.setStyle(TableStyle([('BACKGROUND', (0, 0), (-1, 0), colors.grey),
                                      ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
                                      ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
@@ -289,15 +295,31 @@ def download_pdf(request):
     elements.append(upper_table)
 
     # Table part with orders
-    order_data = [["Tracking Number", "Grand Total", "Status", "User Email"]]
+    
+    order_data = [["Order Id","Total units",'Order Date' "Total Price", "Discount", "Grand Total"]]
     for order in orders:
         # order_data.append([order['tracking_number'],order['grand_total'], order['status'], order['user.email']])
+        if order.applied_coupon:
+            if order.applied_coupon.discount_amount:
+                order_data.append([order.tracking_number,order.total_qnty,order.created_at,order.grand_total,"₹"+ str(order.applied_coupon.discount_amount),order.discount_grand_total])
+            elif order.applied_coupon.discount_percentage:
+                order_data.append([order.tracking_number,order.total_qnty,order.created_at,order.grand_total,str(order.applied_coupon.discount_percentage)+"%",order.discount_grand_total])
+        else:
+            order_data.append([order.tracking_number,order.total_qnty,order.created_at,order.grand_total,"-",order.grand_total])
+       
     
-        order_data.append([order.tracking_number,order.grand_total,order.status,order.user.email])
+    
+    
     # Create table for order data
     order_table = Table(order_data)
     order_table.setStyle(TableStyle([('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                                     ('GRID', (0, 0), (-1, -1), 1, colors.black)]))
+                                     ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                                     ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                                     ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                                     ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                                     ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                                      ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                                     ]))
 
     elements.append(order_table)
 
