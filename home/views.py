@@ -36,6 +36,11 @@ def product_detail(request, id):
     varients = ProductVar.objects.filter(prod_id=products)
     colors = Color.objects.filter(product_color__prod_id=products).distinct()
     sizes = Size.objects.filter(product_size__prod_id=products).distinct()
+    if 'product_id' in request.session:
+        del request.session['product_id']
+    request.session['product_id']=products.id
+    iddd=request.session.get('product_id')
+    print(iddd,"this is the product id*******************")
     try:
         user=request.user
         user_detail=CustomUser.objects.get(id=user.id)
@@ -56,9 +61,11 @@ def get_sizes(request):
 def get_price(request):
     color_id = request.GET.get('color_id')
     size_id = request.GET.get('size_id')
-    
+    product_id=request.session.get('product_id')
+    product=Products.objects.get(pk=product_id)
+    print(type(product_id),product_id)
     try:
-        product_var = ProductVar.objects.get(color_id=color_id, size_id=size_id)
+        product_var = ProductVar.objects.get(prod_id=product_id,color_id=color_id, size_id=size_id)
         price = product_var.price
         return JsonResponse({'price': price})
     except ProductVar.DoesNotExist:
