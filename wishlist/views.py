@@ -26,10 +26,21 @@ from django.urls import reverse
 def add_to_wishlist(request,id):
     user=request.user
     product=Products.objects.get(id=id)
-    wishlist=Wishlist.objects.create(user=user,product=product)
-    update_wishlist_count_in_session(request)
-    messages.success(request,"Product added to wishlist")
-    return redirect(request.META.get('HTTP_REFERER', '/'))
+    print(product.id,"product adding to wushlist")
+    try:
+        cart=Cart.objects.get(user=user)
+        cart_items=CartItem.objects.filter(cart=cart)
+        for items in cart_items:
+            cart_product=items.product_variant.prod_id.id
+            print(cart_product,"product in cart")
+            if cart_product==product.id:
+                messages.info(request,"item already present in cart.")
+                return redirect(request.META.get('HTTP_REFERER', '/'))
+    except:
+        wishlist=Wishlist.objects.create(user=user,product=product)
+        update_wishlist_count_in_session(request)
+        messages.success(request,"Product added to wishlist")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
 
 
 
@@ -53,5 +64,7 @@ def remove_wishlist(request,id):
 def update_wishlist_count_in_session(request):
     user = request.user
     wishlist_count = Wishlist.objects.filter(user=user).count()
+    if not wishlist_count:
+        request.session['wishlist_count'] = "0"
     request.session['wishlist_count'] = wishlist_count
 
