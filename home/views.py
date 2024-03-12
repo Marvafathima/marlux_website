@@ -62,11 +62,15 @@ def get_price(request):
     color_id = request.GET.get('color_id')
     size_id = request.GET.get('size_id')
     product_id=request.session.get('product_id')
-    product=Products.objects.get(pk=product_id)
+    product=Products.objects.filter(pk=product_id)
     print(type(product_id),product_id)
+    for p in product:
+        print(p.pr_name)
+        print("*************************************")
     try:
         product_var = ProductVar.objects.get(prod_id=product_id,color_id=color_id, size_id=size_id)
         price = product_var.price
+        print(product_var.id)
         return JsonResponse({'price': price})
     except ProductVar.DoesNotExist:
         return JsonResponse({'price': None}) 
@@ -77,8 +81,9 @@ def add_to_cart(request):
     color_id = request.GET.get('color_id')
     size_id = request.GET.get('size_id')
     quantity = request.GET.get('quantity')
+    product_id=request.session.get('product_id')
     try:
-        product_var = ProductVar.objects.get(color_id=color_id, size_id=size_id)
+        product_var = ProductVar.objects.get(prod_id=product_id,color_id=color_id, size_id=size_id)
         stocks=product_var.stock
     except ProductVar.DoesNotExist:
         return JsonResponse({'error': 'Product unavailable'}, status=400)
