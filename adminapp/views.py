@@ -85,9 +85,16 @@ def sales(request):
                 no_discount_sale=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date],applied_coupon__isnull=True).exclude(Q(status="Return")| Q(status="Cancelled")|Q(status="Pending")).aggregate(nondiscount_sale=Sum('grand_total'))
                 discount_sale=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date],applied_coupon__isnull=False).exclude(Q(status="Return")| Q(status="Cancelled")|Q(status="Pending")).aggregate(discount_sale=Sum('discount_grand_total'))
                 actual_sale_price=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date],applied_coupon__isnull=False).exclude(Q(status="Return")| Q(status="Cancelled")|Q(status="Pending")).aggregate(sale=Sum('grand_total'))
-                total_discount=Decimal(actual_sale_price['sale'])-discount_sale['discount_sale']
-                no_discount_grand_total=Decimal(actual_sale_price['sale'])+Decimal(no_discount_sale['nondiscount_sale'])
-                sales_grand_total=discount_sale['discount_sale']+ Decimal(no_discount_sale['nondiscount_sale'])
+                print(actual_sale_price,"this is actual sale price+++++++++++")
+                try:
+                    total_discount=Decimal(actual_sale_price['sale'])-discount_sale['discount_sale']
+                    no_discount_grand_total=Decimal(actual_sale_price['sale'])+Decimal(no_discount_sale['nondiscount_sale'])
+                    sales_grand_total=discount_sale['discount_sale'] + Decimal(no_discount_sale['nondiscount_sale'])
+                except:
+                    actual_sale_price=0
+                    total_discount=0
+                    no_discount_grand_total=Decimal(no_discount_sale['nondiscount_sale'])
+                    sales_grand_total=no_discount_sale['nondiscount_sale']
                 total_quantity=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date]).aggregate(total_quantity=Sum('total_qnty'))
                 print(no_discount_grand_total,"this is the grand total without discount+++++++++++")
                 
@@ -309,7 +316,7 @@ def download_pdf(request):
 
     # Table part with orders
     
-    order_data = [["Order Id","Total units",'Order Date' "Total Price", "Discount", "Grand Total"]]
+    order_data = [["Order Id","Total units","Order Date", "Total Price", "Discount", "Grand Total"]]
     for order in orders:
         # order_data.append([order['tracking_number'],order['grand_total'], order['status'], order['user.email']])
         if order.applied_coupon:
