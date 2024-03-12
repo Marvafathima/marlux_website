@@ -15,7 +15,7 @@ from django.db.models import Min
 from django.db.models import F, Sum
 from django.views.decorators.csrf import csrf_protect
 from django.template.loader import render_to_string
-
+from wishlist .models import Wishlist
 def index(request):
    
     products=Products.objects.all()
@@ -84,6 +84,15 @@ def add_to_cart(request):
     cart_item, created = CartItem.objects.get_or_create(cart=cart, product_variant=product_var)
     cart_item.price=product_var.price
     cart_item.save()
+    try:
+        wishlist=Wishlist.objects.filter(user=user)
+        for wish in wishlist:
+            if wish.product.id==cart_item.product_variant.prod_id.id:
+                wish.delete()
+                update_wishlist_count_in_session(request)
+    except:
+        print("no wishlist")
+
     print(cart_item.price,"this is cart item price")
     if not created:
         # If the cart item already exists, update the quantity
@@ -105,7 +114,12 @@ def add_to_cart(request):
         cart.cart_total=cart.shipping+cart.total_price
         cart.save()
     return JsonResponse({'message': 'Product added to cart successfully.'})
-    
+def update_wishlist_count_in_session(request):
+    user = request.user
+    wishlist_count = Wishlist.objects.filter(user=user).count()
+    if not wishlist_count:
+        request.session['wishlist_count'] = "0"
+    request.session['wishlist_count'] = wishlist_count    
 def cart_login_redirect(request,id):
     messages.error(request,"you need to login first to add items to the cart!")
     return redirect('login')

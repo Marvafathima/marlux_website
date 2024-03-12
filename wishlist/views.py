@@ -37,11 +37,12 @@ def add_to_wishlist(request,id):
                 messages.info(request,"item already present in cart.")
                 return redirect(request.META.get('HTTP_REFERER', '/'))
     except:
-        wishlist=Wishlist.objects.create(user=user,product=product)
-        update_wishlist_count_in_session(request)
-        messages.success(request,"Product added to wishlist")
-        return redirect(request.META.get('HTTP_REFERER', '/'))
-
+        print("nothing on wishlist")
+    wishlist=Wishlist.objects.create(user=user,product=product)
+    update_wishlist_count_in_session(request)
+    messages.success(request,"Product added to wishlist")
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+    
 
 
 
