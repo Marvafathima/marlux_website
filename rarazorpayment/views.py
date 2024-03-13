@@ -154,6 +154,11 @@ def place_order(request):
                             price=item.product_variant.price,
                             
                         )
+                product_var=item.product_variant
+                print(product_var.stock," stock")
+                product_var.stock -=item.quantity
+                product_var.save()
+                print(product_var.stock,"decreased stock")
                 print(ox.item_total_price,"this is the total price of the vaariant")
                 
                 # ox.item_total_price=ox.quantity* ox.price
@@ -231,6 +236,11 @@ def place_order(request):
                                 price=item.product_variant.price,
                                 
                             )
+                    product_var=item.product_variant
+                    print(product_var.stock,"stock")
+                    product_var.stock -=item.quantity
+                    product_var.save()
+                    print(product_var.stock,"decreased stock")
                     print(ox.item_total_price,"this is the total price of the vaariant")
                     
                     # ox.item_total_price=ox.quantity* ox.price
@@ -309,8 +319,12 @@ def place_order(request):
                                 price=item.product_variant.price,
                                 
                             )
+                    product_var=item.product_variant
+                    print(product_var.stock,"actual stock")
+                    product_var.stock -=item.quantity
+                    product_var.save()
                     print(ox.item_total_price,"this is the total price of the vaariant")
-                    
+                    print(product_var.stock,"decreased stock")
                     # ox.item_total_price=ox.quantity* ox.price
 
 
@@ -404,6 +418,11 @@ def failure_order(request):
                         price=item.product_variant.price,
                         
                     )
+            product_var=item.product_variant
+            print(product_var.stock,"actual stock")
+            product_var.stock -=item.quantity  
+            product_var.save()
+            print(product_var.stock,"decreased stock")
             print(ox.item_total_price,"this is the total price of the vaariant")
         request.session['order_id'] = order.id
         cart.delete()
