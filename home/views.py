@@ -40,7 +40,7 @@ def product_detail(request, id):
         del request.session['product_id']
     request.session['product_id']=products.id
     iddd=request.session.get('product_id')
-    print(iddd,"this is the product id*******************")
+    
     try:
         user=request.user
         user_detail=CustomUser.objects.get(id=user.id)
@@ -68,6 +68,10 @@ def get_price(request):
         product_var = ProductVar.objects.get(prod_id=product_id,color_id=color_id, size_id=size_id)
         price = product_var.price
         print(product_var.id)
+        if product_var.stock==0:
+            print("out of stock called")
+            return JsonResponse({'price': price,'variant':product_var.stock})
+        
         return JsonResponse({'price': price})
     except ProductVar.DoesNotExist:
         return JsonResponse({'price': None}) 

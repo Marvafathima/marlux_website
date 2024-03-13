@@ -122,14 +122,17 @@
                                     </button>
                                 </div>
                             </div>
+                            <div class="shop-cart">
                             {% if user_detail %}
                             <button class="btn btn-primary px-3" id="addToCartBtn"><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</button>
                             {% else %}
                             <a href="{% url 'cart_login_redirect' product.id %}" class="btn btn-primary px-3" ><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</a>
                         {% endif%} 
-                       
+                    </div>
                         
-                    
+                    <div class="outofstock" style="display:none;">
+                        <button class="btn btn-danger px-3" ><i class="fa fa-shopping-cart mr-1"></i> Out Of Stock</button>
+                    </div>
                     
                     </div>
 
@@ -369,11 +372,28 @@
                         'size_id': sizeId
                     },
                     success: function(response) {
-                        if (response.price){
+                        if (response.variant ===0){
+                        $('.shop-cart').hide();
+                        $('.outofstock').show();
                         $('#priceDisplay').text("₹" + response.price);
-                    } else {
-                        $('#priceDisplay').text("Product Unavailable");
-                    } },
+                        } 
+                        
+                        else if (response.price!== null){
+
+                            $('.shop-cart').show();
+                            $('.outofstock').hide();
+                            $('#priceDisplay').text("₹" + response.price);
+                        }
+                        
+                        else{
+
+                            $('.shop-cart').show();
+                            $('.outofstock').hide();
+                            $('#priceDisplay').text("Product Unavailable");
+                            }
+      
+                      
+                },
                     error: function(xhr, errmsg, err) {
                         console.log(xhr.status + ": " + xhr.responseText);
                     }
