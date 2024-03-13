@@ -2,7 +2,7 @@
 {% block navbar%}{% endblock navbar%}
 
 {% block content%}
-<div id="alertContainer"></div>
+<div id="alertContainer" class="col-lg-8"></div>
 
 
     <!-- Shop Detail Start -->
@@ -359,6 +359,23 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
    
 <script>
+    function showAlert(message, alertType) {
+        // Clear previous alerts
+        $('#alertContainer').empty();
+        
+        // Create the alert element
+        var alert = $('<div class="alert alert-dismissible fade show" role="alert"></div>');
+        alert.addClass('alert-' + alertType);
+        alert.text(message);
+        
+        // Create the close button
+        var closeButton = $('<button type="button" class="close" data-dismiss="alert" aria-label="Close"></button>');
+        closeButton.html('<span aria-hidden="true">&times;</span>');
+        alert.append(closeButton);
+        
+        // Append the alert to the container
+        $('#alertContainer').append(alert);
+    }
     $(document).ready(function() {
         $('input[type="radio"]').change(function() {
             var colorId = $('input[name="color"]:checked').val();
@@ -422,6 +439,7 @@
                 'quantity': quantity
             },
             success: function(response) {
+                showAlert(response.message, 'success');
                 console.log(response);
                 var currentBadgeValue = parseInt($('.fa-shopping-cart').next('.badge').text())|| 0;
                var newBadgeValue = currentBadgeValue + 1;
@@ -431,13 +449,15 @@
                console.log(xhr.status + ": " + xhr.responseText);
               if (xhr.status === 400 ) {
                 if(xhr.responseJSON.error=="Product unavailable"){
-                  alert("Product is unavailable.");
+                  
+                  showAlert(xhr.responseJSON.error, 'danger');
 
                  }else if(xhr.responseJSON.error=="Product has limited stock."){
-                    alert("Product has limited stock.Reduce Quantity");
+                    showAlert(xhr.responseJSON.error, 'info');
+                    
   
                    }else if(xhr.responseJSON.error=="Invalid quantity."){
-                    alert("Add quantity");
+                    showAlert(xhr.responseJSON.error, 'warning');
   
                    }else {
                     alert("An error occurred.");
