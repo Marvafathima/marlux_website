@@ -405,9 +405,19 @@
             },
            error: function(xhr, errmsg, err) {
                console.log(xhr.status + ": " + xhr.responseText);
-              if (xhr.status === 400 && xhr.responseJSON.error === "Product unavailable") {
+              if (xhr.status === 400 ) {
+                if(xhr.responseJSON.error=="Product unavailable"){
                   alert("Product is unavailable.");
-              }
+
+                 }else if(xhr.responseJSON.error=="Product has limited stock."){
+                    alert("Product has limited stock.Reduce Quantity");
+  
+                   }else if(xhr.responseJSON.error=="Invalid quantity."){
+                    alert("Add quantity");
+  
+                   }else {
+                    alert("An error occurred.");
+                } }
           }
       });
   }

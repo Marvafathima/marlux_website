@@ -64,9 +64,6 @@ def get_price(request):
     product_id=request.session.get('product_id')
     product=Products.objects.filter(pk=product_id)
     print(type(product_id),product_id)
-    for p in product:
-        print(p.pr_name)
-        print("*************************************")
     try:
         product_var = ProductVar.objects.get(prod_id=product_id,color_id=color_id, size_id=size_id)
         price = product_var.price
@@ -80,52 +77,58 @@ def add_to_cart(request):
 
     color_id = request.GET.get('color_id')
     size_id = request.GET.get('size_id')
-    quantity = request.GET.get('quantity')
+    quantity = int(request.GET.get('quantity'))
     product_id=request.session.get('product_id')
     try:
         product_var = ProductVar.objects.get(prod_id=product_id,color_id=color_id, size_id=size_id)
         stocks=product_var.stock
+        if quantity==0:
+            return JsonResponse({'error': 'Invalid quantity.'}, status=400)
+        if quantity > stocks:
+            return JsonResponse({'error': 'Product has limited stock.'}, status=400)
+
+    
+        user = request.user
+        if not user.is_authenticated:
+            messages.info(request,"Login to add items to the cart")
+            return redirect('login')
+        
+        cart, created = Cart.objects.get_or_create(user=user)
+        cart_item, created = CartItem.objects.get_or_create(cart=cart, product_variant=product_var)
+        cart_item.price=product_var.price
+        cart_item.save()
+        try:
+            wishlist=Wishlist.objects.filter(user=user)
+            for wish in wishlist:
+                if wish.product.id==cart_item.product_variant.prod_id.id:
+                    wish.delete()
+                    update_wishlist_count_in_session(request)
+        except:
+            print("no wishlist")
+
+        print(cart_item.price,"this is cart item price")
+        if not created:
+            # If the cart item already exists, update the quantity
+            cart_item.quantity += int(quantity)
+            cart_item.save()
+        else:
+            # If the cart item is newly created, set its quantity
+            cart_item.quantity = int(quantity)
+            cart_item.save()
+        # cart.total_qnty = CartItem.objects.filter(cart=cart).aggregate(total_quantity=Sum('quantity'))['total_quantity']
+        cart.total_qnty = CartItem.objects.filter(cart=cart).count()
+        print(cart.total_qnty)
+        if cart.total_qnty >0:
+            cart.total_price = CartItem.objects.filter(cart=cart).aggregate(total_price=Sum('item_total_price'))['total_price']
+            cart.cart_total=cart.shipping+cart.total_price
+            cart.save()
+        else:
+            cart.total_price = 0.00
+            cart.cart_total=cart.shipping+cart.total_price
+            cart.save()
+        return JsonResponse({'message': 'Product added to cart successfully.'})
     except ProductVar.DoesNotExist:
         return JsonResponse({'error': 'Product unavailable'}, status=400)
-    user = request.user
-    if not user.is_authenticated:
-        messages.info(request,"Login to add items to the cart")
-        return redirect('login')
-    
-    cart, created = Cart.objects.get_or_create(user=user)
-    cart_item, created = CartItem.objects.get_or_create(cart=cart, product_variant=product_var)
-    cart_item.price=product_var.price
-    cart_item.save()
-    try:
-        wishlist=Wishlist.objects.filter(user=user)
-        for wish in wishlist:
-            if wish.product.id==cart_item.product_variant.prod_id.id:
-                wish.delete()
-                update_wishlist_count_in_session(request)
-    except:
-        print("no wishlist")
-
-    print(cart_item.price,"this is cart item price")
-    if not created:
-        # If the cart item already exists, update the quantity
-        cart_item.quantity += int(quantity)
-        cart_item.save()
-    else:
-        # If the cart item is newly created, set its quantity
-        cart_item.quantity = int(quantity)
-        cart_item.save()
-    # cart.total_qnty = CartItem.objects.filter(cart=cart).aggregate(total_quantity=Sum('quantity'))['total_quantity']
-    cart.total_qnty = CartItem.objects.filter(cart=cart).count()
-    print(cart.total_qnty)
-    if cart.total_qnty >0:
-        cart.total_price = CartItem.objects.filter(cart=cart).aggregate(total_price=Sum('item_total_price'))['total_price']
-        cart.cart_total=cart.shipping+cart.total_price
-        cart.save()
-    else:
-        cart.total_price = 0.00
-        cart.cart_total=cart.shipping+cart.total_price
-        cart.save()
-    return JsonResponse({'message': 'Product added to cart successfully.'})
 def update_wishlist_count_in_session(request):
     user = request.user
     wishlist_count = Wishlist.objects.filter(user=user).count()
