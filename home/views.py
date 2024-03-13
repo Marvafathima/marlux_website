@@ -63,7 +63,6 @@ def get_price(request):
     size_id = request.GET.get('size_id')
     product_id=request.session.get('product_id')
     product=Products.objects.filter(pk=product_id)
-    print(type(product_id),product_id)
     try:
         product_var = ProductVar.objects.get(prod_id=product_id,color_id=color_id, size_id=size_id)
         price = product_var.price
@@ -110,7 +109,7 @@ def add_to_cart(request):
         except:
             print("no wishlist")
 
-        print(cart_item.price,"this is cart item price")
+        
         if not created:
             # If the cart item already exists, update the quantity
             cart_item.quantity += int(quantity)
@@ -121,7 +120,7 @@ def add_to_cart(request):
             cart_item.save()
         # cart.total_qnty = CartItem.objects.filter(cart=cart).aggregate(total_quantity=Sum('quantity'))['total_quantity']
         cart.total_qnty = CartItem.objects.filter(cart=cart).count()
-        print(cart.total_qnty)
+        
         if cart.total_qnty >0:
             cart.total_price = CartItem.objects.filter(cart=cart).aggregate(total_price=Sum('item_total_price'))['total_price']
             cart.cart_total=cart.shipping+cart.total_price
