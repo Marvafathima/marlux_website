@@ -233,20 +233,19 @@ def my_orders(request,order_id):
         return render(request,'orderdisplay.html',{'order':orders,'order_items':order_items,'return':returned})
     
     return render(request,'orderdisplay.html',{'order':orders,'order_items':order_items})
+
+
 def cancel_order(request,order_id):
     order=Order.objects.get(id=order_id)
     status="Cancelled"
     if status in dict(Order.STATUS):
         order.status=status
         order.save()
-        print(order.payment_status)
+        
         amount=0
     if order.payment_status=="successful":
         wallet,created=Wallet.objects.get_or_create(user=request.user)
-        if created:
-            print("wallet created")
-        else:
-            print("no wallet created") 
+         
         if order.applied_coupon:
             wallet.balance += order.discount_grand_total
             wallet.save()
@@ -259,12 +258,20 @@ def cancel_order(request,order_id):
             amount=order.grand_total
         transaction=Transaction.objects.create(wallet=wallet,amount=amount,transaction_type="Refund")
     
-        print(wallet.balance,transaction.amount,"this is your wallet balance")
-        print(order.status)
+        
         tracking_num=order.tracking_number
         order.payment_status="refunded"
         order.save()
-        
+
+        # stock management for cancelled order
+
+        order_items=OrderProduct.objects.filter(order=order)
+        for items in order_items:
+            product_var=items.product_variant
+            print(product_var.stock,"stock before cancel")
+            product_var.stock += items.quantity
+            product_var.save()
+            print(product_var.stock,"stock after cancel")
 
         messages.success(request,f"Your order {order.tracking_number} has been cancelled successfully!Your Wallet Credited with {transaction.amount}")
 
@@ -273,6 +280,8 @@ def cancel_order(request,order_id):
         messages.success(request,f"Your order {order.tracking_number} has been cancelled successfully")
 
         return redirect(reverse('my_orders',args=[order.id]))
+    
+
 
 def return_order(request,order_id):
     order=Order.objects.get(id=order_id)
@@ -296,12 +305,21 @@ def return_order(request,order_id):
                 amount=order.grand_total
             transaction=Transaction.objects.create(wallet=wallet,amount=amount,transaction_type="Refund")
         
-        print(wallet.balance,transaction.amount,"this is your wallet balance")
-        print(order.status)
+            print(wallet.balance,transaction.amount,"this is your wallet balance")
+            print(order.status)
         
         order.payment_status="refunded"
         order.save()
 
+        # stock management for cancelled order
+
+        order_items=OrderProduct.objects.filter(order=order)
+        for items in order_items:
+            product_var=items.product_variant
+            print(product_var.stock,"stock before return")
+            product_var.stock += items.quantity
+            product_var.save()
+            print(product_var.stock,"stock after return")
         print(order.status)
         messages.success(request,f"Return request succesfull! Our team will come to collect the order {order.tracking_number} soon!")
         return redirect('view_wallet')
