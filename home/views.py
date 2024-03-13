@@ -168,6 +168,10 @@ def update_cart_item(request):
     print(request, "called update cart")
     try:
         cart_item = get_object_or_404(CartItem, id=item_id)
+        productvar=cart_item.product_variant
+        stock=productvar.stock
+        if int(quantity)>=stock:
+            return JsonResponse({'error': 'Product has limited stock.'}, status=400)
         cart_item.quantity = int(quantity)
         cart_item.save()
         

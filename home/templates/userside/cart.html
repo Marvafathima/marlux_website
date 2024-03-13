@@ -301,7 +301,12 @@ $(document).ready(function() {
         },
         error: function(xhr, errmsg, err) {
             console.log(xhr.status + ": " + xhr.responseText);
-            // Handle error if needed
+           if (xhr.status===400){
+            alert("product has limited stock")
+           }
+           else{
+            alert("Cart item not found")
+           }
         }
     });
 }
