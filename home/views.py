@@ -15,6 +15,7 @@ from django.db.models import Min
 from django.db.models import F, Sum
 from django.views.decorators.csrf import csrf_protect
 from django.template.loader import render_to_string
+from django.contrib.auth.hashers import check_password
 from wishlist .models import Wishlist
 def index(request):
    
@@ -283,18 +284,39 @@ def user_login(request):
         email=request.POST['email']
         password=request.POST['passw']
         print(email,password)
-        user=authenticate(request,email=email,password=password)
-        if user is not None :
-            login(request,user)
-            # messages.success(request,'Successfully loged in')
-            return redirect('home')
-        elif user is not None and not user.is_active:
-            messages.error(request, "Your account is not active. Please contact support.")
-            print("hellooo")
+        try:
+            us=CustomUser.objects.get(email=email)
+            if check_password(password,us.password) and us.is_active==True:
+                user=authenticate(request,email=email,password=password)
+                print(user.is_active)
+                login(request,user)
+                messages.success(request,'Successfully logged in')    
+                return redirect('home')
+            elif check_password(password,us.password) and us.is_active==False:
+                messages.error(request, "Your account is blocked.")
+                print("hellooo")
+                return redirect('login')
+            else:
+                messages.error(request,"invalid user name or password")
+                return redirect('login')
+        except:
+            messages.error(request, "No matching user found")
             return redirect('login')
-        else:
-            messages.error(request,"invalid user name or password")
-            return redirect('login')
+    #     print(user.is_active)
+    #     if user:
+    #         if  user.is_active ==False:
+    #             messages.error(request, "Your account is blocked.")
+    #             print("hellooo")
+    #             return redirect('login')
+                
+    #         else:
+    #             login(request,user)
+    #             messages.success(request,'Successfully logged in')    
+    #             return redirect('home')
+         
+    #     else:
+    #         messages.error(request,"invalid user name or password")
+    #         return redirect('login')
     return render(request,'userside/user_login.html')
 
 def user_signup(request):
