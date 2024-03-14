@@ -284,7 +284,7 @@ def user_login(request):
         password=request.POST['passw']
         print(email,password)
         user=authenticate(request,email=email,password=password)
-        if user is not None:
+        if user is not None :
             login(request,user)
             # messages.success(request,'Successfully loged in')
             return redirect('home')

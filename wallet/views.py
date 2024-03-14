@@ -29,7 +29,7 @@ def view_wallet(request):
     try:
         wallet=Wallet.objects.get(user=user)
         print(wallet.balance)
-        transaction=Transaction.objects.filter(wallet=wallet)
+        transaction=Transaction.objects.filter(wallet=wallet).order_by("-timestamp")
 
         paginator = Paginator(transaction, 5)
         page_number = request.GET.get('page')

@@ -22,6 +22,8 @@ from django.views.generic import TemplateView
 from django.urls import reverse
 from wallet .models import Wallet,Transaction
 from decimal import Decimal
+from django.contrib.admin.views.decorators import staff_member_required
+from django.http import HttpResponseForbidden
 # from django.template.loader import render_to_string
 # # from weasyprint.html import HTML
 # @method_decorator(never_cache, name='dispatch')
@@ -155,12 +157,15 @@ def failed_order_history(request):
         return render (request,'empty_failed_order_history.html')
 
 
-
+@staff_member_required 
 def admin_orderlist(request):
-    order_data=Order.objects.select_related('user','address').prefetch_related('orderproduct__product_variant','user__useraddress').all()    
+    order_data=Order.objects.select_related('user','address').prefetch_related('orderproduct__product_variant','user__useraddress').order_by('-created_at').all()
+    for o in order_data:
+        print(o.created_at
+              )
    
     status = list(Order.STATUS)  # Get the original status choices
-    print(status,"main choices")
+    
     delivered_status_choices = []
     shipped_status_choices = []
     confirm_status_choices = []
@@ -171,26 +176,26 @@ def admin_orderlist(request):
 
     # Modify status choices based on the current status
     for order in order_data:
-        print(order.status,"this is the status")
+        
         if order.status == 'Delivered':
             delivered_status_choices = [choice for choice in status if choice[0] == 'Delivered' or choice[0] == 'Return']
-            print(delivered_status_choices,"choice of delivery")
+           
         
         elif order.status == 'Shipped':
             shipped_status_choices = [choice for choice in status if choice[0] in ['Shipped', 'Delivered', 'Cancelled', 'Return']]
-            print(shipped_status_choices,"choice of shipped")
+            
         elif order.status == 'Confirmed':
             confirm_status_choices = [choice for choice in status if choice[0] not in ['Pending']]
-            print(confirm_status_choices,"choice of confirm")
+           
         elif order.status == 'Pending':
             pending_status_choices = [choice for choice in status ]
-            print(pending_status_choices,"choice of pending")  
+           
         elif order.status == 'Return':
             return_status_choices = [choice for choice in status if choice[0] == 'Return']
-            print(return_status_choices,"choice of return")
+           
         elif order.status == 'Cancelled':
             cancel_status_choices = [choice for choice in status if choice[0] == 'Cancelled']
-            print(cancel_status_choices,"choice of cancel")
+            
    
     return render (request,'orderlist.html',{'orders':order_data,
                                              'delivered_status_choices':delivered_status_choices,
@@ -210,14 +215,25 @@ def admin_orderlist(request):
 
 
 
-@require_POST   
+@require_POST  
+@staff_member_required 
 def update_status(request,order_id):
     order = get_object_or_404(Order, id=order_id)
     new_status = request.POST.get('status')
     if new_status in dict(Order.STATUS):
         order.status = new_status
         order.save()
+        if order.status=="Delivered":
+            
+            if order.payment_status=="cod":
+               
+                payment="successful"
+                if payment in dict(Order.PAYMENT_STATUS_CHOICES):
+                    order.payment_status=payment
+                    
+                    order.save()
     return redirect('admin_orderlist')
+
 
 def get_order_products(request,order_id):
     print("get_order_products called")
@@ -253,7 +269,7 @@ def get_order_products(request,order_id):
 def my_orders(request,order_id):
     user=request.user
     orders=Order.objects.get(id=order_id)
-    print(orders.tracking_number)
+    
     order_items=OrderProduct.objects.filter(order=orders.id)
     if orders.status=="Confirmed":
         confirm=orders.status
