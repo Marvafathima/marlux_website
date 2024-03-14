@@ -158,7 +158,49 @@ def failed_order_history(request):
 
 def admin_orderlist(request):
     order_data=Order.objects.select_related('user','address').prefetch_related('orderproduct__product_variant','user__useraddress').all()    
-    return render (request,'orderlist.html',{'orders':order_data,'status_choices': Order.STATUS})
+   
+    status = list(Order.STATUS)  # Get the original status choices
+    print(status,"main choices")
+    delivered_status_choices = []
+    shipped_status_choices = []
+    confirm_status_choices = []
+    pending_status_choices = []
+    return_status_choices = []
+    cancel_status_choices = []
+    
+
+    # Modify status choices based on the current status
+    for order in order_data:
+        print(order.status,"this is the status")
+        if order.status == 'Delivered':
+            delivered_status_choices = [choice for choice in status if choice[0] == 'Delivered' or choice[0] == 'Return']
+            print(delivered_status_choices,"choice of delivery")
+        
+        elif order.status == 'Shipped':
+            shipped_status_choices = [choice for choice in status if choice[0] in ['Shipped', 'Delivered', 'Cancelled', 'Return']]
+            print(shipped_status_choices,"choice of shipped")
+        elif order.status == 'Confirmed':
+            confirm_status_choices = [choice for choice in status if choice[0] not in ['Pending']]
+            print(confirm_status_choices,"choice of confirm")
+        elif order.status == 'Pending':
+            pending_status_choices = [choice for choice in status ]
+            print(pending_status_choices,"choice of pending")  
+        elif order.status == 'Return':
+            return_status_choices = [choice for choice in status if choice[0] == 'Return']
+            print(return_status_choices,"choice of return")
+        elif order.status == 'Cancelled':
+            cancel_status_choices = [choice for choice in status if choice[0] == 'Cancelled']
+            print(cancel_status_choices,"choice of cancel")
+   
+    return render (request,'orderlist.html',{'orders':order_data,
+                                             'delivered_status_choices':delivered_status_choices,
+                                              'shipped_status_choices':shipped_status_choices,
+                                               'confirm_status_choices':confirm_status_choices,
+                                               'pending_status_choices':pending_status_choices,
+                                               'return_status_choices':return_status_choices,
+                                               'cancel_status_choices':cancel_status_choices,
+                            
+                                              })
 
 
 
