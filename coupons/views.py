@@ -175,7 +175,7 @@ def apply_coupon(request):
                     cart.coupon_price=cart.total_price-coupon.discount_amount
                     cart.coupon_cart_total=cart.coupon_price+cart.tax+cart.shipping
                     # cart.total_price-=coupon.discount_amount
-                    print(cart.discount_amount,"added discount amount")
+                   
                     cart.save()
                 else:
                     grand_total=(coupon.discount_percentage * grand_total)/100
@@ -183,7 +183,7 @@ def apply_coupon(request):
                     cart.coupon_price=cart.total_price-grand_total
                     cart.coupon_cart_total=cart.coupon_price+cart.tax+cart.shipping
                     # cart.total_price-=grand_total
-                    print(cart.discount_amount,"discount percentage in amount")
+                    
                     cart.save()
                 cart.applied_coupon=coupon
                 

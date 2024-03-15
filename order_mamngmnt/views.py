@@ -323,16 +323,11 @@ def invoice_generator(request,id):
     os.environ["INVOICE_LANG"] ="en"
 
     order=Order.objects.get(id=id)
-    print(order.tracking_number)
     user=CustomUser.objects.get(id=request.user.id)
-    user_detail=UserAddress.objects.get(user=request.user)
-    print(user_detail.user_name)
+    user_detail=UserAddress.objects.get(user=request.user)  
     products=OrderProduct.objects.filter(order=order)
-    print(user.email)
-    print(order.discount_amount)
     email=user.email
     address=OrderAddress.objects.get(id=order.address.id)
-    print(address.house_name)
     client=Client(user_detail.user_name,address.house_name,address.street,address.city,address.postal_code,address.district,address.state,address.country)
     provider=Provider('Marlux',bank_account="64567-89078",bank_code='2021')
     creator=Creator('Marlux online fashion store')
@@ -342,12 +337,12 @@ def invoice_generator(request,id):
         invoice.add_item(Item(product.quantity, product.price, description=product.product_variant.prod_id.pr_name))
     invoice.add_item(Item(1,order.tax,description="Tax"))
     invoice.add_item(Item(1,50,description="Delivery Charge"))
-    
-    invoice.add_item(Item(1,order.discount_amount,description="Discount"))
+    discount=order.discount_amount * -1.00
+    invoice.add_item(Item(1,discount,description="Discount"))
 
     invoice.currency = "Rs."
     if order.payment_mode=="razorpay":
-        invoice.number = order.razorpay_payment_id
+        invoice.number = order.tracking_number
     else:
         invoice.number =order.payment_mode
 
