@@ -231,7 +231,30 @@ def update_status(request,order_id):
                 if payment in dict(Order.PAYMENT_STATUS_CHOICES):
                     order.payment_status=payment
                     
-                    order.save()
+                    order.save() 
+        if order.status=="Cancelled" and order.payment_status=="successful" or order.payment_status=="wallet":
+            print("this musch worked**********************************")
+            user=order.user.id
+            print(user)
+            print("this musch worked**********************************")
+            wallet,created=Wallet.objects.get_or_create(user=user)
+            print(wallet.id)
+            print("this musch worked**********************************")
+            
+            if order.applied_coupon:
+                wallet.balance += order.discount_grand_total
+                wallet.save()
+                amount=order.discount_grand_total
+                transaction=Transaction.objects.create(wallet=wallet,amount=order.discount_grand_total,transaction_type="Refund")
+                print(transaction.id)
+            else:
+                wallet.balance += Decimal(order.grand_total)
+                wallet.save()
+                amount=order.grand_total
+                transaction=Transaction.objects.create(wallet=wallet,amount=amount,transaction_type="Refund")
+                print(transaction.id)
+            order.payment_status="refunded"
+            order.save()
     return redirect('admin_orderlist')
 
 
