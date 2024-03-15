@@ -329,6 +329,7 @@ def invoice_generator(request,id):
     print(user_detail.user_name)
     products=OrderProduct.objects.filter(order=order)
     print(user.email)
+    print(order.discount_amount)
     email=user.email
     address=OrderAddress.objects.get(id=order.address.id)
     print(address.house_name)
@@ -339,7 +340,10 @@ def invoice_generator(request,id):
     invoice = Invoice(client, provider, creator)
     for product in products:
         invoice.add_item(Item(product.quantity, product.price, description=product.product_variant.prod_id.pr_name))
-
+    invoice.add_item(Item(1,order.tax,description="Tax"))
+    invoice.add_item(Item(1,50,description="Delivery Charge"))
+    
+    invoice.add_item(Item(1,order.discount_amount,description="Discount"))
 
     invoice.currency = "Rs."
     if order.payment_mode=="razorpay":

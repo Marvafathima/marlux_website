@@ -54,7 +54,7 @@ class Cart(models.Model):
     applied_coupon=models.ForeignKey(Coupon,null=True,on_delete=models.CASCADE,related_name="applied_coupon")
     coupon_price=models.DecimalField(default=0,decimal_places=2,max_digits=10,null=True)
     coupon_cart_total=models.DecimalField(default=0,decimal_places=2,max_digits=10,null=True)
-    
+    discount_amount=models.FloatField(default=0,null=True)
     razorpay_order_id = models.CharField(max_length=500,null=True,blank=True)
     razorpay_payment_id = models.CharField(max_length=500,null=True,blank=True)
     razorpay_signature = models.CharField(max_length=500,null=True,blank=True)

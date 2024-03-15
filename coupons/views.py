@@ -171,19 +171,22 @@ def apply_coupon(request):
             
             if float(grand_total)>= float(coupon.minimum_order_amount) and user_limit<=40 and order_count==coupon.purchase_count:
                 if coupon.discount_amount:
+                    cart.discount_amount=coupon.discount_amount
                     cart.coupon_price=cart.total_price-coupon.discount_amount
                     cart.coupon_cart_total=cart.coupon_price+cart.tax+cart.shipping
                     # cart.total_price-=coupon.discount_amount
-                    print(cart.coupon_cart_total,"this is the coupon total price")
+                    print(cart.discount_amount,"added discount amount")
                     cart.save()
                 else:
                     grand_total=(coupon.discount_percentage * grand_total)/100
+                    cart.discount_amount=grand_total
                     cart.coupon_price=cart.total_price-grand_total
                     cart.coupon_cart_total=cart.coupon_price+cart.tax+cart.shipping
                     # cart.total_price-=grand_total
-                    print(cart.coupon_cart_total,"this is the coupon total price")
+                    print(cart.discount_amount,"discount percentage in amount")
                     cart.save()
                 cart.applied_coupon=coupon
+                
                 cart.save()
                 print(cart.coupon_price,"this is the new total")
                 messages.success(request,"coupon applied successfully!")

@@ -48,6 +48,7 @@ class Order(models.Model):
     address=models.ForeignKey(OrderAddress, on_delete=models.CASCADE,null=True,related_name="address_order")
     order_total=models.FloatField(null=True) 
     discount_total=models.DecimalField(default=0,decimal_places=2,max_digits=10,null=True)
+    discount_amount=models.FloatField(default=0,null=True)
     discount_grand_total=models.DecimalField(default=0,decimal_places=2,max_digits=10,null=True)
     applied_coupon=models.ForeignKey(Coupon,on_delete=models.CASCADE,null=True,related_name="order_coupon")
     tax=models.FloatField(null=True)
@@ -64,7 +65,7 @@ class Order(models.Model):
     payment_mode=models.CharField(max_length=500,null=True,blank=True)
     tracking_number=models.CharField(max_length=500,null=True,blank=True)
     # coupen=models.ForeignKey(Coupon, on_delete=models.CASCADE, null=True, blank=True)
-
+#    the discount amount was added at last to add the coupons discount amount
     def save(self, *args, **kwargs):
         # Calculate tax as 5% of the order total
         if self.order_total is not None:

@@ -135,17 +135,20 @@ def place_order(request):
                                        tracking_number=track_no,
                                        payment_status=pay_status,
                                        status=st
+                                       
                                        )
+            
             try:
                 coupon=Coupon.objects.get(id=cart.applied_coupon.id)
                 order.discount_total=cart.coupon_price
                 order.discount_grand_total=cart.coupon_cart_total
                 order.is_ordered=True
-                order.applied_coupon=coupon.id
+                order.applied_coupon=coupon
+                order.discount_amount=cart.discount_amount
                 order.save()
             except:
                 print("no coupon applied")
-            
+            print(order.discount_amount,"this is the discount amount  in order")
             for item in items:
                 ox=OrderProduct.objects.create(
                             order=order,
@@ -220,10 +223,14 @@ def place_order(request):
                                         )
                 try:
                     coupon=Coupon.objects.get(id=cart.applied_coupon.id)
+                    print(coupon.id)
+                    print(cart.discount_amount,"cart coupon price")
                     order.discount_total=cart.coupon_price
                     order.discount_grand_total=cart.coupon_cart_total
                     order.is_ordered=True
-                    order.applied_coupon=coupon.id
+                    order.applied_coupon=coupon
+                    order.discount_amount=cart.discount_amount
+                    print(order.discount_amount)
                     order.save()
                 except:
                     print("no coupon applied")
@@ -303,14 +310,18 @@ def place_order(request):
                 print(order.payment_status)
                 try:
                     coupon=Coupon.objects.get(id=cart.applied_coupon.id)
+                    print(coupon.id,"coupon selected")
+                
+                    print(cart.discount_amount,"this is the cart dixoijt")
                     order.discount_total=cart.coupon_price
                     order.discount_grand_total=cart.coupon_cart_total
                     order.is_ordered=True
-                    order.applied_coupon=coupon.id
+                    order.applied_coupon=coupon
+                    order.discount_amount=cart.discount_amount
                     order.save()
                 except:
                     print("no coupon applied")
-                
+                print(order.discount_amount,"this is the dicount_amount n order")
                 for item in items:
                     ox=OrderProduct.objects.create(
                                 order=order,
@@ -405,11 +416,12 @@ def failure_order(request):
             order.discount_total=cart.coupon_price
             order.discount_grand_total=cart.coupon_cart_total
             order.is_ordered=False
-            order.applied_coupon=coupon.id
+            order.applied_coupon=coupon
+            order.discount_amount=cart.discount_amount
             order.save()
         except:
             print("no coupon applied")
-        
+        print(order.discount_amount,"this is the discount amount")
         for item in items:
             ox=OrderProduct.objects.create(
                         order=order,
