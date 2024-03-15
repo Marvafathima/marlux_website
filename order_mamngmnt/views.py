@@ -319,7 +319,9 @@ import os
 from InvoiceGenerator.api import Invoice,Item,Client,Provider,Creator
 from InvoiceGenerator.pdf import SimpleInvoice
 from django.http import FileResponse
+from decimal import Decimal
 def invoice_generator(request,id):
+   
     os.environ["INVOICE_LANG"] ="en"
 
     order=Order.objects.get(id=id)
@@ -328,13 +330,14 @@ def invoice_generator(request,id):
     products=OrderProduct.objects.filter(order=order)
     email=user.email
     address=OrderAddress.objects.get(id=order.address.id)
-    client=Client(user_detail.user_name,address.house_name,address.street,address.city,address.postal_code,address.district,address.state,address.country)
+    address_string = f"{address.house_name}, {address.street}, {address.city}, {address.postal_code}, {address.district}, {address.state}, {address.country}"
+    client = Client(user_detail.user_name, address_string)
     provider=Provider('Marlux',bank_account="64567-89078",bank_code='2021')
     creator=Creator('Marlux online fashion store')
     
     invoice = Invoice(client, provider, creator)
     for product in products:
-        invoice.add_item(Item(product.quantity, product.price, description=product.product_variant.prod_id.pr_name))
+        invoice.add_item(Item(product.quantity,product.price, description=product.product_variant.prod_id.pr_name))
     invoice.add_item(Item(1,order.tax,description="Tax"))
     invoice.add_item(Item(1,50,description="Delivery Charge"))
     discount=order.discount_amount * -1.00
