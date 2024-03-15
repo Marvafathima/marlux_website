@@ -12,6 +12,7 @@ urlpatterns=[
     path('retry_payment_checkout/<int:id>/',views.retry_payment_checkout,name="retry_payment_checkout"),
     path('my_orders/<int:order_id>/',views.my_orders,name="my_orders"),
     path('cancel_order/<int:order_id>/',views.cancel_order,name="cancel_order"),
-     path('return_order/<int:order_id>/',views.return_order,name="return_order"),
+    path('return_order/<int:order_id>/',views.return_order,name="return_order"),
+    path('invoice_generator/<int:id>',views.invoice_generator,name='invoice_generator'),
 
 ]

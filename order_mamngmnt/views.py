@@ -149,8 +149,7 @@ def order_history(request):
 def failed_order_history(request):
     user=request.user
     order=Order.objects.filter(Q(payment_status="failed") & Q(user=user)).exclude(status="Cancelled")
-    for orders in order:
-        print(orders.id,orders.tracking_number)
+   
     if order:   
         return render (request,'failed_order.html',{'order_data':order})
     else:
@@ -160,9 +159,7 @@ def failed_order_history(request):
 @staff_member_required 
 def admin_orderlist(request):
     order_data=Order.objects.select_related('user','address').prefetch_related('orderproduct__product_variant','user__useraddress').order_by('-created_at').all()
-    for o in order_data:
-        print(o.created_at
-              )
+   
    
     status = list(Order.STATUS)  # Get the original status choices
     
@@ -233,13 +230,10 @@ def update_status(request,order_id):
                     
                     order.save() 
         if order.status=="Cancelled" and order.payment_status=="successful" or order.payment_status=="wallet":
-            print("this musch worked**********************************")
+           
             user=order.user.id
-            print(user)
-            print("this musch worked**********************************")
+           
             wallet,created=Wallet.objects.get_or_create(user=user)
-            print(wallet.id)
-            print("this musch worked**********************************")
             
             if order.applied_coupon:
                 wallet.balance += order.discount_grand_total
@@ -259,7 +253,7 @@ def update_status(request,order_id):
 
 
 def get_order_products(request,order_id):
-    print("get_order_products called")
+    
     orders=Order.objects.get(pk=order_id)
     user=orders.user
     customer=CustomUser.objects.get(id=user.id)
@@ -314,6 +308,58 @@ def my_orders(request,order_id):
         return render(request,'orderdisplay.html',{'order':orders,'order_items':order_items,'return':returned})
     
     return render(request,'orderdisplay.html',{'order':orders,'order_items':order_items})
+
+
+
+from reportlab.platypus import SimpleDocTemplate,Table,TableStyle,Paragraph
+from reportlab.lib import colors
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet
+import os
+from InvoiceGenerator.api import Invoice,Item,Client,Provider,Creator
+from InvoiceGenerator.pdf import SimpleInvoice
+from django.http import FileResponse
+def invoice_generator(request,id):
+    os.environ["INVOICE_LANG"] ="en"
+
+    order=Order.objects.get(id=id)
+    print(order.tracking_number)
+    user=CustomUser.objects.get(id=request.user.id)
+    user_detail=UserAddress.objects.get(user=request.user)
+    print(user_detail.user_name)
+    products=OrderProduct.objects.filter(order=order)
+    print(user.email)
+    email=user.email
+    address=OrderAddress.objects.get(id=order.address.id)
+    print(address.house_name)
+    client=Client(user_detail.user_name,address.house_name,address.street,address.city,address.postal_code,address.district,address.state,address.country)
+    provider=Provider('Marlux',bank_account="64567-89078",bank_code='2021')
+    creator=Creator('Marlux online fashion store')
+    
+    invoice = Invoice(client, provider, creator)
+    for product in products:
+        invoice.add_item(Item(product.quantity, product.price, description=product.product_variant.prod_id.pr_name))
+
+
+    invoice.currency = "Rs."
+    if order.payment_mode=="razorpay":
+        invoice.number = order.razorpay_payment_id
+    else:
+        invoice.number =order.payment_mode
+
+    docu = SimpleInvoice(invoice)
+    invoice_file_path = "invoice2.pdf"
+    docu.gen(invoice_file_path, generate_qr_code=False) #you can put QR code by setting the #qr_code parameter to ‘True’
+    # Open and serve the generated invoice file as a response
+    with open(invoice_file_path, 'rb') as f:
+        response = HttpResponse(f.read(), content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="invoice.pdf"'
+        return response
+    #docu.gen("invoice.xml") ## We can also generate an XML file of this invoice
+
+    
+
+
 
 
 def cancel_order(request,order_id):

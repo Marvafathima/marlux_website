@@ -270,7 +270,11 @@
                     {% endif %}
                   
                   </div>
-                  
+                 <div class="row d-flex  m-5 justify-content-center align-content-center">
+                  <div class="col lg-4">
+                        <a class="btn btn-lg btn-outline-primary font-weight-bold" href="{% url 'invoice_generator' order.id %}">Download Invoice</a>
+                  </div>
+                 </div>  
                 </div>
                {% if delivered %}
                <p class="text-danger">**Once the order is returned you will get refund within 2-3 days after  package recieved to our warehouse</p>
