@@ -23,5 +23,9 @@ urlpatterns=[
     path('dashboard/products/update_product/<int:id>',category_views.update_product,name='update_product'),
     path('dashboard/products/product_list',category_views.list_product,name='list_product'),
     path('dashboard/sales',admin_views.sales,name='sales'),
-    path('download_pdf/',admin_views.download_pdf,name='download_pdf')
+    path('download_pdf/',admin_views.download_pdf,name='download_pdf'),
+    path('get_filter_options/',admin_views.get_filter_options,name='get_filter_options'),
+    path('get_sales_chart/<int:year>/',admin_views.get_sales_chart,name="get_sales_chart"),
+    path('spend_per_customer_chart/<int:year>/',admin_views.spend_per_customer_chart,name="spend_per_customer_chart"),
+    path('sale_statistics/',admin_views.sale_statistics,name="sale_statistics")
     ]

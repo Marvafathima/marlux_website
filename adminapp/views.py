@@ -1,9 +1,6 @@
-from django.shortcuts import render, get_object_or_404
-
-from django.http import HttpResponse
-from django.shortcuts import render,redirect
+from django.shortcuts import render, get_object_or_404,redirect
 from django.contrib.auth.models import User
-# from .models import Profiles,User
+from django.http import JsonResponse,FileResponse,HttpResponse
 import random
 from django.contrib import messages
 from django.contrib.auth import authenticate,login,logout
@@ -13,18 +10,20 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from home.models import UserAddress ,CustomUser,Address
 from order_mamngmnt .models import Order,OrderProduct
 from datetime import datetime, timedelta
-from django.db.models import Sum
+from django.db.models import Sum,Avg,F,Count
 from coupons .models import Coupon
 from decimal import Decimal
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import Table,TableStyle,SimpleDocTemplate
 from reportlab.lib.styles import getSampleStyleSheet
-
+from .utils  import months, colorPrimary, colorSuccess, colorDanger, generate_color_palette, get_year_dict
+from django.contrib.admin.views.decorators import staff_member_required
 from reportlab.lib.units import inch
 from reportlab.lib import colors
 from django.http import FileResponse
 import io
+from django.db.models.functions import ExtractYear, ExtractMonth
 # Create your views here.
 @ensure_csrf_cookie
 def custom_admin(request):
@@ -362,51 +361,68 @@ def download_pdf(request):
     return FileResponse(buf, as_attachment=True, filename='sales.pdf')
 
         
-# def download_pdf(request):
-   
-#     buf=io.BytesIO()
-#     c=canvas.Canvas(buf,pagesize=letter,bottomup=0)
-#     textob=c.beginText()
-#     textob.setTextOrigin(inch,inch)
-#     textob.setFont("Helvetica",14)
-  
-#     start_date_month=datetime.now()-timedelta(days=30)
-#     start_date_week=datetime.now()-timedelta(days=7)
-#     end_date=datetime.now()
-#     orders=Order.objects.filter(created_at__range=[start_date_month,end_date]).exclude(Q(status="Return")| Q(status="Cancelled")|Q(status="Pending") )
-#     print(orders.count())
-#     lines=[]
-#     for order in orders:
-        
-#         lines.append(str(order.tracking_number))
-#         lines.append(str(order.grand_total))
-#         lines.append(str(order.status))
-#         lines.append(str(order.user.email))
-#         lines.append("")
+@staff_member_required
+def get_filter_options(request):
+    grouped_purchases = Order.objects.annotate(year=ExtractYear("created_at")).values("year").order_by("-year").distinct()
+    options = [purchase["year"] for purchase in grouped_purchases]
 
-#     max_lines_per_page = 40
-#     current_line = 0
-#     for line in lines:
-#         textob.textLine(line)
-#         current_line += 1
-#         if current_line >= max_lines_per_page:
-#             c.drawText(textob)
-#             c.showPage()
-            
-#             buf.seek(0)
-#             textob = c.beginText()
-#             textob.setTextOrigin(inch, inch)
-#             textob.setFont("Helvetica", 14)
-#             current_line = 0 
-#     if current_line > 0:
-#         c.drawText(textob)
+    return JsonResponse({
+        "options": options,
+    })
 
-#     c.showPage()
-#     c.save()
-#     buf.seek(0)
-#     return FileResponse(buf,as_attachment=True,filename='sales.pdf')
+
+@staff_member_required
+def get_sales_chart(request, year):
+    purchases = Order.objects.filter(created_at__year=year)
+    grouped_purchases = purchases.annotate(price=F("grand_total")).annotate(month=ExtractMonth("created_at"))\
+        .values("month").annotate(average=Sum("grand_total")).values("month", "average").order_by("month")
+
+    sales_dict = get_year_dict()
+
+    for group in grouped_purchases:
+        sales_dict[months[group["month"]-1]] = round(group["average"], 2)
+
+    return JsonResponse({
+        "title": f"Sales in {year}",
+        "data": {
+            "labels": list(sales_dict.keys()),
+            "datasets": [{
+                "label": "Amount ($)",
+                "backgroundColor": colorPrimary,
+                "borderColor": colorPrimary,
+                "data": list(sales_dict.values()),
+            }]
+        },
+    })
+
+
+@staff_member_required
+def spend_per_customer_chart(request, year):
+    purchases = Order.objects.filter(created_at__year=year)
+    grouped_purchases = purchases.annotate(price=F("grand_total")).annotate(month=ExtractMonth("created_at"))\
+        .values("month").annotate(average=Avg("grand_total")).values("month", "average").order_by("month")
+
+    spend_per_customer_dict = get_year_dict()
+
+    for group in grouped_purchases:
+        spend_per_customer_dict[months[group["month"]-1]] = round(group["average"], 2)
+
+    return JsonResponse({
+        "title": f"Spend per customer in {year}",
+        "data": {
+            "labels": list(spend_per_customer_dict.keys()),
+            "datasets": [{
+                "label": "Amount ($)",
+                "backgroundColor": colorPrimary,
+                "borderColor": colorPrimary,
+                "data": list(spend_per_customer_dict.values()),
+            }]
+        },
+    })
    
-   
+@staff_member_required
+def sale_statistics(request):
+    return render(request,'sale_chart.html')
 
 
  
