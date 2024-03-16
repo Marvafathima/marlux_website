@@ -170,9 +170,9 @@
   <div class="col-6">
     <canvas id="salesChart"></canvas>
   </div>
-  <!-- <div class="col-6">
-    <canvas id="paymentSuccessChart"></canvas>
-  </div> -->
+  <div class="col-6">
+    <canvas id="bestSellerProduct"></canvas>
+  </div>
   <div class="col-6">
     <canvas id="spendPerCustomerChart"></canvas>
   </div>
@@ -203,27 +203,27 @@
         }
     }
   });
-  //let paymentSuccessCtx = document.getElementById("paymentSuccessChart").getContext("2d");
- // let paymentSuccessChart = new Chart(paymentSuccessCtx, {
-  //  type: "pie",
-  //  options: {
- //     responsive: true,
- //     maintainAspectRatio: false,
- //     aspectRatio: 1,
- //     title: {
- //       display: false,
- //       text: ""
- //     },
-  //    layout: {
-  //      padding: {
-  //        left: 0,
-  //        right: 0,
-   //       top: 0,
-  //        bottom: 25
-   //     }
-  //    }
- //   }
- // });
+  let paymentSuccessCtx = document.getElementById("bestSellerProduct").getContext("2d");
+ let paymentSuccessChart = new Chart(paymentSuccessCtx, {
+  type: "pie",
+ options: {
+      responsive: true,
+      maintainAspectRatio: false,
+    aspectRatio: 1,
+   title: {
+       display: false,
+       text: ""
+     },
+   layout: {
+    padding: {
+       left: 0,
+     right: 0,
+      top: 0,
+      bottom: 25
+      }
+    }
+  }
+ });
 //  let paymentMethodCtx = document.getElementById("paymentMethodChart").getContext("2d");
  // let paymentMethodChart = new Chart(paymentMethodCtx, {
  //   type: "pie",

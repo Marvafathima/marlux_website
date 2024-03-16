@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top Selling Products</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+</head>
+<body>
+    hello world
+    <div style="width: 600px; margin: auto;">
+        <canvas id="yearlyChart"></canvas>
+        <canvas id="monthlyChart"></canvas>
+        <canvas id="weeklyChart"></canvas>
+    </div>
+
+    <script>
+        function fetchChartData(period, chartId) {
+            fetch(`/top_selling_product/?period=${period}`)
+                .then(response => response.json())
+                .then(data => {
+                    const ctx = document.getElementById(chartId).getContext('2d');
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                label: `Top 5 Best-Selling Products (${period})`,
+                                data: data.data,
+                                backgroundColor: 'skyblue'
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                });
+        }
+
+        fetchChartData('yearly', 'yearlyChart');
+        fetchChartData('monthly', 'monthlyChart');
+        fetchChartData('weekly', 'weeklyChart');
+    </script>
+</body>
+</html>

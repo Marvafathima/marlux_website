@@ -425,4 +425,48 @@ def sale_statistics(request):
     return render(request,'sale_chart.html')
 
 
- 
+
+@staff_member_required
+def top_selling_product(request,period):
+    today=datetime.date.today()
+    print(today)
+    if period=="year":
+        start_date=today.replace(month=1,day=1)
+    elif period=="month":
+        start_date=today.replace(day=1)
+    elif period=="week":
+        start_date=today - datetime.timedelta(days=today.weekday())
+    else:
+        start_date=today
+    orders = Order.objects.filter(created_at__gte=start_date)
+    top_selling_products = OrderProduct.objects.filter(order__in=orders)\
+        .values('product_variant__pr_name')\
+        .annotate(total_quantity=Count('id'))\
+        .order_by('-total_quantity')[:5]
+
+    labels = [item['product_variant__pr_name'] for item in top_selling_products]
+    data = [item['total_quantity'] for item in top_selling_products]
+
+    return JsonResponse({'labels': labels, 'data': data})
+# @staff_member_required
+# def top_selling_product(request,period):
+#     today=datetime.date.today()
+#     print(today)
+#     if period=="year":
+#         start_date=today.replace(month=1,day=1)
+#     elif period=="month":
+#         start_date=today.replace(day=1)
+#     elif period=="week":
+#         start_date=today - datetime.timedelta(days=today.weekday())
+#     else:
+#         start_date=today
+#     orders = Order.objects.filter(created_at__gte=start_date)
+#     top_selling_products = OrderProduct.objects.filter(order__in=orders)\
+#         .values('product_variant__pr_name')\
+#         .annotate(total_quantity=Count('id'))\
+#         .order_by('-total_quantity')[:5]
+
+#     labels = [item['product_variant__pr_name'] for item in top_selling_products]
+#     data = [item['total_quantity'] for item in top_selling_products]
+
+#     return JsonResponse({'labels': labels, 'data': data})
