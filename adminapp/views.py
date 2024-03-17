@@ -23,7 +23,9 @@ from reportlab.lib.units import inch
 from reportlab.lib import colors
 from django.http import FileResponse
 import io
-from django.db.models.functions import ExtractYear, ExtractMonth
+from django.db.models.functions import ExtractYear, ExtractMonth, ExtractDay,ExtractHour
+from django.utils import timezone
+from datetime import timedelta
 # Create your views here.
 @ensure_csrf_cookie
 def custom_admin(request):
@@ -387,7 +389,7 @@ def get_sales_chart(request, year):
         "data": {
             "labels": list(sales_dict.keys()),
             "datasets": [{
-                "label": "Amount ($)",
+                "label": "Amount (₹)",
                 "backgroundColor": colorPrimary,
                 "borderColor": colorPrimary,
                 "data": list(sales_dict.values()),
@@ -423,13 +425,78 @@ def spend_per_customer_chart(request, year):
 @staff_member_required
 def sale_statistics(request):
     return render(request,'sale_chart.html')
+def get_recent_purchases(request):
+    # Get today's date
+    today = timezone.now().date()
 
+    # Past 30 days
+    past_30_days = today - timedelta(days=30)
 
+    # Past 7 days
+    past_7_days = today - timedelta(days=7)
 
+    # Filter purchases for the past 30 days
+    month_purchases = Order.objects.filter(created_at__date__gte=past_30_days)
+
+    # Filter purchases for the past 7 days
+    week_purchases = Order.objects.filter(created_at__date__gte=past_7_days)
+
+    # Today's purchases
+    purchases_today = Order.objects.filter(created_at__date=today)
+
+    # Calculate sales for the past 30 days
+    sales_30_days = month_purchases.annotate(day=ExtractDay("created_at")) \
+        .values("day").annotate(total=Sum("grand_total")).order_by("day")
+
+    # Calculate sales for the past 7 days
+    sales_7_days = week_purchases.annotate(day=ExtractDay("created_at")) \
+        .values("day").annotate(total=Sum("grand_total")).order_by("day")
+
+    # Calculate sales for today
+    sales_today = purchases_today.annotate(hour=ExtractHour("created_at")) \
+        .values("hour").annotate(total=Sum("grand_total")).order_by("hour")
+
+    # Construct sales data for the past 30 days
+    sales_data_30_days = {}
+    for sale in sales_30_days:
+        sales_data_30_days[sale["day"]] = round(sale["total"], 2)
+
+    # Construct sales data for the past 7 days
+    sales_data_7_days = {}
+    for sale in sales_7_days:
+        sales_data_7_days[sale["day"]] = round(sale["total"], 2)
+
+    # Construct sales data for today
+    sales_data_today = {}
+    for sale in sales_today:
+        sales_data_today[sale["hour"]] = round(sale["total"], 2)
+
+    # Prepare the response
+    response_data = {
+        "past_30_days": {
+            "labels": [str(day) for day in range(1, 31)],
+            "data": [sales_data_30_days.get(day, 0) for day in range(1, 31)]
+        },
+        "past_7_days": {
+            "labels": [str(day) for day in range(1, 8)],
+            "data": [sales_data_7_days.get(day, 0) for day in range(1, 8)]
+        },
+        "today": {
+            "labels": [str(hour) for hour in range(24)],
+            "data": [sales_data_today.get(hour, 0) for hour in range(24)]
+        }
+    }
+
+    return JsonResponse(response_data)
+
+import datetime
 @staff_member_required
-def top_selling_product(request,period):
+
+def top_selling_product(request):
     today=datetime.date.today()
     print(today)
+    period=request.POST.get('period')
+    print(period)
     if period=="year":
         start_date=today.replace(month=1,day=1)
     elif period=="month":
@@ -440,13 +507,14 @@ def top_selling_product(request,period):
         start_date=today
     orders = Order.objects.filter(created_at__gte=start_date)
     top_selling_products = OrderProduct.objects.filter(order__in=orders)\
-        .values('product_variant__pr_name')\
+        .values('product_variant__prod_id__pr_name')\
         .annotate(total_quantity=Count('id'))\
         .order_by('-total_quantity')[:5]
-
-    labels = [item['product_variant__pr_name'] for item in top_selling_products]
+    print("top selling coorect")
+    labels = [item['product_variant__prod_id__pr_name'] for item in top_selling_products]
+    print("labels coorect")
     data = [item['total_quantity'] for item in top_selling_products]
-
+    print(period,labels,data)
     return JsonResponse({'labels': labels, 'data': data})
 # @staff_member_required
 # def top_selling_product(request,period):
@@ -470,3 +538,6 @@ def top_selling_product(request,period):
 #     data = [item['total_quantity'] for item in top_selling_products]
 
 #     return JsonResponse({'labels': labels, 'data': data})
+@staff_member_required
+def top_seller(request):
+    return render(request,'top_seller.html')

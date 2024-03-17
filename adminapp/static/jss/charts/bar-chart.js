@@ -3,40 +3,127 @@
 	 /*----------------------------------------*/
 	/*  1.  Bar Chart
 	/*----------------------------------------*/
-
-	var ctx = document.getElementById("barchart1");
-	var barchart1 = new Chart(ctx, {
-		type: 'bar',
-		data: {
-			labels: ["Red", "Blue", "Yellow", "Green"],
-			datasets: [{
-				label: 'Bar Chart',
-				data: [12, 19, 3, 5, 2, 3],
-				backgroundColor: [
-					'rgba(255, 99, 132, 0.2)',
-					'rgb(50,205,50, 0.2)',
-					'rgba(255, 206, 86, 0.2)',
-					'rgba(75, 192, 192, 0.2)'
-				],
-				borderColor: [
-					'rgba(255,99,132,1)',
-					'rgba(54, 162, 235, 1)',
-					'rgba(255, 206, 86, 1)',
-					'rgba(75, 192, 192, 1)'
-				],
-				borderWidth: 1
-			}]
-		},
-		options: {
-			scales: {
-				yAxes: [{
-					ticks: {
-						beginAtZero:true
-					}
+	function updateBarChart(labels, data){ 
+		var ctx = document.getElementById("barchart1");
+		var barchart1 = new Chart(ctx, {
+			type: 'bar',
+			data: {
+				labels: labels,
+				datasets: [{
+					label: 'Bar Chart',
+					data: data,
+					backgroundColor: [
+						'rgba(255, 99, 132, 0.2)',
+						'rgb(50,205,50, 0.2)',
+						'rgba(255, 206, 86, 0.2)',
+						'rgba(75, 192, 192, 0.2)'
+					],
+					borderColor: [
+						'rgba(255,99,132,1)',
+						'rgba(54, 162, 235, 1)',
+						'rgba(255, 206, 86, 1)',
+						'rgba(75, 192, 192, 1)'
+					],
+					borderWidth: 1
 				}]
+			},
+			options: {
+				scales: {
+					yAxes: [{
+						ticks: {
+							beginAtZero:true
+						}
+					}]
+				}
 			}
-		}
-	});
+		}); }
+ 
+ 
+		document.addEventListener("DOMContentLoaded", function() {
+		 // Add click event listeners to the buttons
+		 document.getElementById("todayForm").addEventListener("submit", function(event) {
+			 event.preventDefault(); // Prevent form submission
+			 sendAjaxRequest("today");
+		 });
+	 
+		 document.getElementById("weekForm").addEventListener("submit", function(event) {
+			 event.preventDefault(); // Prevent form submission
+			 sendAjaxRequest("week");
+		 });
+ 
+		 document.getElementById("monthForm").addEventListener("submit", function(event) {
+			 event.preventDefault(); // Prevent form submission
+			 sendAjaxRequest("month");
+		 });
+		 document.getElementById("yearForm").addEventListener("submit", function(event) {
+			 event.preventDefault(); // Prevent form submission
+			 sendAjaxRequest("year");
+		 });
+	 
+		 // Function to send AJAX request
+		 function sendAjaxRequest(period) {
+			 // Get CSRF token from the hidden input field
+			 var csrfToken = $("[name='csrfmiddlewaretoken']").val();
+			 
+			 // Create AJAX request payload
+			 var data = {
+				 "period": period,
+				 "csrfmiddlewaretoken": csrfToken
+			 };
+	 
+			 // Send AJAX request
+			 $.ajax({
+				 type: "POST",
+				 url: "{% url 'adminapp:top_selling_product' %}",
+				 data: data,
+				 success: function(response) {
+					 console.log(response);
+					 var labels = response.labels;
+				 var data = response.data;
+				 updateBarChart(labels, data);
+					 // Handle successful response
+				 },
+				 error: function(xhr, status, error) {
+					 console.error("Error:", error);
+					 // Handle error
+				 }
+			 });
+		 }
+	 });    
+ 
+	// var ctx = document.getElementById("barchart1");
+	// var barchart1 = new Chart(ctx, {
+	// 	type: 'bar',
+	// 	data: {
+	// 		labels: ["Red", "Blue", "Yellow", "Green"],
+	// 		datasets: [{
+	// 			label: 'Bar Chart',
+	// 			data: [12, 19, 3, 5, 2, 3],
+	// 			backgroundColor: [
+	// 				'rgba(255, 99, 132, 0.2)',
+	// 				'rgb(50,205,50, 0.2)',
+	// 				'rgba(255, 206, 86, 0.2)',
+	// 				'rgba(75, 192, 192, 0.2)'
+	// 			],
+	// 			borderColor: [
+	// 				'rgba(255,99,132,1)',
+	// 				'rgba(54, 162, 235, 1)',
+	// 				'rgba(255, 206, 86, 1)',
+	// 				'rgba(75, 192, 192, 1)'
+	// 			],
+	// 			borderWidth: 1
+	// 		}]
+	// 	},
+	// 	options: {
+	// 		scales: {
+	// 			yAxes: [{
+	// 				ticks: {
+	// 					beginAtZero:true
+	// 				}
+	// 			}]
+	// 		}
+	// 	}
+	// });
 	/*----------------------------------------*/
 	/*  2.  Bar Chart vertical
 	/*----------------------------------------*/

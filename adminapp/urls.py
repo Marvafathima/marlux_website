@@ -28,5 +28,7 @@ urlpatterns=[
     path('get_sales_chart/<int:year>/',admin_views.get_sales_chart,name="get_sales_chart"),
     path('spend_per_customer_chart/<int:year>/',admin_views.spend_per_customer_chart,name="spend_per_customer_chart"),
     path('sale_statistics/',admin_views.sale_statistics,name="sale_statistics"),
-    path('top_selling_product/<int:period>',admin_views.top_selling_product,name="top_selling_product"),
+    path('top_selling_product/',admin_views.top_selling_product,name="top_selling_product"),
+    # path('get_recent_purchases/',admin_views.get_recent_purchases,name="get_recent_purchases"),
+    path('top_seller',admin_views.top_seller,name="top_seller"),
     ]

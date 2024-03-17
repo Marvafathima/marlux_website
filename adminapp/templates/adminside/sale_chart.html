@@ -9,7 +9,8 @@
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+   
     <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@4.2.1/dist/chart.umd.min.js"></script>
     <canvas id="chart" width="500" height="500"></canvas> -->
     
@@ -84,18 +85,22 @@
 
 
 
+<div class="row d-flex justify-content-between">
+  <div class="col-lg-9">
+
+<button class=" btn-success" id="yearbutton">Year</button>
+<button class="btn-success " id="monthbutton">Month</button>
+<button class="btn-success " id="weekbutton">Week</button>
+<button class="btn-success" id="todaybutton">Today</button>
+</div></div>
 
 
 
 
+<div class="row"><div class="col-lg-6">
 
-
-
-
-
-<div class="row"><div class="col-lg-12">
-
-  <form id="filterForm" >
+  <form id="filterForm">
+    
     <label for="year">Choose a year:</label>
     <select name="year" id="year"></select>
     <input type="submit" value="Load" name="_load">

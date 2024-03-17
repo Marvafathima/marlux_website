@@ -1,49 +1,363 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Top Selling Products</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
-</head>
-<body>
-    hello world
-    <div style="width: 600px; margin: auto;">
-        <canvas id="yearlyChart"></canvas>
-        <canvas id="monthlyChart"></canvas>
-        <canvas id="weeklyChart"></canvas>
-    </div>
+{% extends 'dashboard.html' %}
+{% load static %}
+{% block extra_link %}
+<!-- Data Table JS
+    ============================================ -->
+    <link rel="stylesheet" href="{% static 'csss/jquery.dataTables.min.css' %}">
 
-    <script>
-        function fetchChartData(period, chartId) {
-            fetch(`/top_selling_product/?period=${period}`)
-                .then(response => response.json())
-                .then(data => {
-                    const ctx = document.getElementById(chartId).getContext('2d');
-                    new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: data.labels,
-                            datasets: [{
-                                label: `Top 5 Best-Selling Products (${period})`,
-                                data: data.data,
-                                backgroundColor: 'skyblue'
-                            }]
-                        },
-                        options: {
-                            scales: {
-                                y: {
-                                    beginAtZero: true
-                                }
-                            }
-                        }
-                    });
-                });
+<!-- responsive CSS
+    ============================================ -->
+    <link rel="stylesheet" href="{% static 'csss/responsive.css' %}">
+    
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.ico' %}">
+    <!-- Google Fonts
+        ============================================ -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,700,900" rel="stylesheet">
+    <!-- Bootstrap CSS
+        ============================================ -->
+    <link rel="stylesheet" href="{% static 'csss/bootstrap.min.css' %}">
+    <!-- font awesome CSS
+        ============================================ -->
+    <link rel="stylesheet" href="{% static 'csss/font-awesome.min.css' %}">
+    <!-- owl.carousel CSS
+        ============================================ -->
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">
+    <link rel="stylesheet" href="{% static 'csss/owl.theme.css' %}">
+    <link rel="stylesheet" href="{% static 'csss/owl.transitions.css' %}">
+    <!-- meanmenu CSS
+        ============================================ -->
+    <link rel="stylesheet" href="{% static 'csss/meanmenu/meanmenu.min.css' %}">
+    <!-- animate CSS
+        ============================================ -->
+    <link rel="stylesheet" href="{% static 'csss/animate.css' %}">
+    <!-- normalize CSS
+        ============================================ -->
+    <link rel="stylesheet" href="{% static 'csss/normalize.css' %}">
+    <!-- wave CSS
+        ============================================ -->
+    <link rel="stylesheet" href="{% static 'csss/wave/waves.min.css' %}">
+    <link rel="stylesheet" href="{% static 'csss/wave/button.css' %}">
+    <!-- mCustomScrollbar CSS
+        ============================================ -->
+    <link rel="stylesheet" href="{% static 'csss/scrollbar/jquery.mCustomScrollbar.min.css' %}">
+    <!-- Notika icon CSS
+        ============================================ -->
+    <link rel="stylesheet" href="{% static 'csss/notika-custom-icon.css' %}">
+    <!-- Data Table JS
+        ============================================ -->
+    <link rel="stylesheet" href="{% static 'csss/jquery.dataTables.min.css' %}">
+    <!-- main CSS
+        ============================================ -->
+    <link rel="stylesheet" href="{% static 'csss/main.css' %}">
+     
+    <!-- style CSS
+        ============================================ -->
+    <link rel="stylesheet" href="{% static 'csss/style.css' %}">
+    <!-- responsive CSS
+        ============================================ -->
+    <link rel="stylesheet" href="{% static 'csss/responsive.css' %}">
+    <!-- modernizr JS
+        ============================================ -->
+    <script src="{% static 'js/vendor/modernizr-2.8.3.min.js' %}"></script>
+{% endblock extra_link %}
+{% block userlist %}
+      
+ <!-- Start Status area -->
+ <div class="notika-status-area">
+    <div class="container">
+        <div class="row">
+            <form id="todayForm" class="col-lg-3 col-md-6 col-sm-6 col-xs-12"  method="post" action="">
+                {%csrf_token %}
+                <input type="hidden" value="today" name="period">
+            <button type="submit" class="btn btn-success notika-btn-success m-5 ">
+                 
+                <h2><span class="counter">Best Seller </span></h2>
+                        <p>Today</p>
+                   
+            </button>
+        </form>
+        <form id="weekForm" class="col-lg-3 col-md-6 col-sm-6 col-xs-12"  method="post" action="">
+            {%csrf_token %}
+            <input type="hidden" value="week" name="period">
+            <button type="submit"  class="btn btn-info notika-btn-info m-5 ">
+                <h2><span class="counter">Best Seller </span></h2>
+                        <p>Last week</p>
+                   
+            </button> </form>
+            <form id="monthForm" class="col-lg-3 col-md-6 col-sm-6 col-xs-12" method="post" action="">
+                {%csrf_token %}
+                <input type="hidden" value="month" name="period">
+                
+            <button type="submit"  class="btn btn-warning notika-btn-warning  m-5">
+                <h2><span class="counter">Best Seller </span></h2>
+                        <p>Last Month</p>
+                   
+            </button> </form>
+
+            <form id="yearForm" class="col-lg-3 col-md-6 col-sm-6 col-xs-12"  method="post" action="">
+                {%csrf_token %}
+                <input type="hidden" value="year" name="period">
+
+            <button  type="submit" class="btn btn-primary notika-btn-primary  m-5">
+                <h2><span class="counter">Best Seller </span></h2>
+                        <p>Last Year</p>
+                   
+            </button></form>
+
+            <!-- <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30">
+                    <div class="website-traffic-ctn">
+                        <h2><span class="counter">90,000</span>k</h2>
+                        <p>Website Impressions</p>
+                    </div>
+                    <div class="sparkline-bar-stats2">1,4,8,3,5,6,4,8,3,3,9,5</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30 dk-res-mg-t-30">
+                    <div class="website-traffic-ctn">
+                        <h2>$<span class="counter">40,000</span></h2>
+                        <p>Total Online Sales</p>
+                    </div>
+                    <div class="sparkline-bar-stats3">4,2,8,2,5,6,3,8,3,5,9,5</div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                <div class="wb-traffic-inner notika-shadow sm-res-mg-t-30 tb-res-mg-t-30 dk-res-mg-t-30">
+                    <div class="website-traffic-ctn">
+                        <h2><span class="counter">1,000</span></h2>
+                        <p>Total Support Tickets</p>
+                    </div>
+                    <div class="sparkline-bar-stats4">2,4,8,4,5,7,4,7,3,5,7,5</div>
+                </div>
+            </div> -->
+        </div>
+    </div>
+</div>
+<!-- End Status area-->
+
+ <!-- Bar Chart area End-->
+ <div class="bar-chart-area">
+    <div class="container">
+        <div class="row d-flex justify-content-center">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 m-5">
+                <div class="bar-chart-wp">
+                    <canvas height="140vh" width="180vw" id="custombarchart1"></canvas>
+                </div>
+            </div>
+            <!-- <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <div class="bar-chart-wp sm-res-mg-t-30 chart-display-nn">
+                    <canvas height="140vh" width="180vw" id="barchart2"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <div class="bar-chart-wp mg-t-30 chart-display-nn">
+                    <canvas height="140vh" width="180vw" id="barchart3"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                <div class="bar-chart-wp mg-t-30 chart-display-nn">
+                    <canvas height="140vh" width="180vw" id="barchart4"></canvas>
+                </div>
+            </div> -->
+        </div>
+    </div>
+</div>
+<!-- Bar Chart area End-->
+
+
+
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+  
+
+<script>
+
+
+        /*----------------------------------------*/
+       /*  1.  Bar Chart
+       /*----------------------------------------*/
+       function updateBarChart(labels, data){ 
+       var ctx = document.getElementById("custombarchart1");
+       var barchart1 = new Chart(ctx, {
+           type: 'bar',
+           data: {
+               labels: labels,
+               datasets: [{
+                   label: 'Bar Chart',
+                   data: data,
+                   backgroundColor: [
+                       'rgba(255, 99, 132, 0.2)',
+                       'rgb(50,205,50, 0.2)',
+                       'rgba(255, 206, 86, 0.2)',
+                       'rgba(75, 192, 192, 0.2)'
+                   ],
+                   borderColor: [
+                       'rgba(255,99,132,1)',
+                       'rgba(54, 162, 235, 1)',
+                       'rgba(255, 206, 86, 1)',
+                       'rgba(75, 192, 192, 1)'
+                   ],
+                   borderWidth: 1
+               }]
+           },
+           options: {
+               scales: {
+                   yAxes: [{
+                       ticks: {
+                           beginAtZero:true
+                       }
+                   }]
+               }
+           }
+           
+       }); }
+
+
+       
+        // Function to send AJAX request
+        function sendAjaxRequest(period) {
+            // Get CSRF token from the hidden input field
+            var csrfToken = $("[name='csrfmiddlewaretoken']").val();
+            
+            // Create AJAX request payload
+            var data = {
+                "period": period,
+                "csrfmiddlewaretoken": csrfToken
+            };
+    
+            // Send AJAX request
+            $.ajax({
+                
+                type: "POST",
+                url: "{% url 'adminapp:top_selling_product' %}",
+                data: data,
+                success: function(response) {
+                    console.log(response);
+                    var labels = response.labels;
+                var data = response.data;
+                console.log("hellooo")
+                updateBarChart(labels, data);
+                    // Handle successful response
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                    // Handle error
+                }
+            });
         }
 
-        fetchChartData('yearly', 'yearlyChart');
-        fetchChartData('monthly', 'monthlyChart');
-        fetchChartData('weekly', 'weeklyChart');
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // Add click event listeners to the buttons
+            document.getElementById("todayForm").addEventListener("submit", function(event) {
+                event.preventDefault(); // Prevent form submission
+                sendAjaxRequest("today");
+            });
+        
+            document.getElementById("weekForm").addEventListener("submit", function(event) {
+                event.preventDefault(); // Prevent form submission
+                sendAjaxRequest("week");
+            });
+    
+            document.getElementById("monthForm").addEventListener("submit", function(event) {
+                event.preventDefault(); // Prevent form submission
+                sendAjaxRequest("month");
+            });
+            document.getElementById("yearForm").addEventListener("submit", function(event) {
+                event.preventDefault(); // Prevent form submission
+                sendAjaxRequest("year");
+            });
+           console.log("form submissiom domne")
+
+
+
+
+    });    
+
     </script>
-</body>
-</html>
+
+ <!-- jquery
+		============================================ -->
+        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> -->
+        <script src="{% static 'jss/vendor/jquery-1.12.4.min.js' %}"></script>
+<!-- Data Table area End-->
+<script src="{% static 'jss/data-table/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'jss/data-table/data-table-act.js' %}"></script>
+ <!-- Charts JS
+		============================================ -->
+        <!-- <script src="{% static 'jss/charts/Chart.js' %}"></script>
+        <script src="{% static 'jss/charts/bar-chart.js' %}"></script> -->
+         <!--  animation JS
+		============================================ -->
+    <script src="{% static 'jss/animation/animation-active.js' %}"></script>
+        <!-- bootstrap JS
+            ============================================ -->
+        <script src="{% static 'jss/bootstrap.min.js' %}"></script>
+        <!-- wow JS
+            ============================================ -->
+        <script src="{% static 'jss/wow.min.js' %}"></script>
+        <!-- price-slider JS
+            ============================================ -->
+        <script src="{% static 'jss/jquery-price-slider.js' %}"></script>
+        <!-- owl.carousel JS
+            ============================================ -->
+        <script src="{% static 'jss/owl.carousel.min.js' %}"></script>
+        <!-- scrollUp JS
+            ============================================ -->
+        <script src="{% static 'jss/jquery.scrollUp.min.js' %}"></script>
+        <!-- meanmenu JS
+            ============================================ -->
+        <script src="{% static 'jss/meanmenu/jquery.meanmenu.js' %}"></script>
+        <!-- counterup JS
+            ============================================ -->
+        <script src="{% static 'jss/counterup/jquery.counterup.min.js' %}"></script>
+        <script src="jss/counterup/waypoints.min.js' %}"></script>
+        <script src="{% static 'jss/counterup/counterup-active.js' %}"></script>
+        <!-- mCustomScrollbar JS
+            ============================================ -->
+        <script src="{% static 'jss/scrollbar/jquery.mCustomScrollbar.concat.min.js' %}"></script>
+        <!-- sparkline JS
+            ============================================ -->
+        <script src="{% static 'jss/sparkline/jquery.sparkline.min.js' %}"></script>
+        <script src="{% static 'jss/sparkline/sparkline-active.js' %}"></script>
+        <!-- flot JS
+            ============================================ -->
+        <script src="{% static 'jss/flot/jquery.flot.js' %}"></script>
+        <script src="{% static 'jss/flot/jquery.flot.resize.js' %}"></script>
+        <script src="{% static 'jss/flot/flot-active.js' %}"></script>
+        <!-- knob JS
+            ============================================ -->
+        <script src="{% static 'jss/knob/jquery.knob.js' %}"></script>
+        <script src="{% static 'jss/knob/jquery.appear.js' %}"></script>
+        <script src="{% static 'jss/knob/knob-active.js' %}"></script>
+        <!--  Chat JS
+            ============================================ -->
+        <script src="{% static 'jss/chat/jquery.chat.js' %}"></script>
+        <!--  todo JS
+            ============================================ -->
+        <script src="{% static 'jss/todo/jquery.todo.js' %}"></script>
+        <!--  wave JS
+            ============================================ -->
+        <script src="{% static 'jss/wave/waves.min.js' %}"></script>
+        <script src="{% static 'jss/wave/wave-active.js' %}"></script>
+        <!-- plugins JS
+            ============================================ -->
+        <script src="{% static 'jss/plugins.js' %}"></script>
+        <!-- Data Table JS
+            ============================================ -->
+        <script src="{% static 'jss/data-table/jquery.dataTables.min.js' %}"></script>
+        <script src="{% static 'jss/data-table/data-table-act.js' %}"></script>
+        <!-- main JS
+            ============================================ -->
+        <script src="{% static 'jss/main.js' %}"></script>
+        
+{% endblock userlist %}
+
+
