@@ -209,12 +209,35 @@
            },
            options: {
                scales: {
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Product Name',
+                        fontStyle: 'bold',
+                        fontSize: 20// X axis label
+                    }
+                }],
                    yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Units Sold',// Y axis label
+                        fontStyle: 'bold',
+                        fontSize: 20
+                    },
                        ticks: {
                            beginAtZero:true
                        }
                    }]
-               }
+               },
+
+               title: {
+                display: true,
+                text: 'Top Selling Products', // Chart title
+                fontSize: 20,
+                fontFamily: 'Arial',
+                fontStyle: 'normal'
+            }
+
            }
            
        }); }
