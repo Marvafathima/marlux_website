@@ -139,10 +139,15 @@
  <!-- Bar Chart area End-->
  <div class="bar-chart-area">
     <div class="container">
-        <div class="row d-flex justify-content-center">
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 m-5">
+        <div class="row d-flex justify-content-between">
+            <div class="col-lg-5 col-md-4 col-sm-6 col-xs-12 m-4">
                 <div class="bar-chart-wp">
                     <canvas height="140vh" width="180vw" id="custombarchart1"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-5 col-md-4 col-sm-6 col-xs-12">
+                <div class="line-chart-wp mg-t-30 chart-mg-nt">
+                    <canvas height="140vh" width="180vw" id="customlinechartpointcircle"></canvas>
                 </div>
             </div>
             <!-- <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -178,7 +183,43 @@
   
 
 <script>
-
+    function updateLineChart(labels1, data1){ 
+    var ctx = document.getElementById("customlinechartpointcircle");
+	var linechartpointcircle = new Chart(ctx, {
+		type: 'line',
+		data: {
+			labels:labels1 ,
+			datasets: [{
+				label: "units sold",
+				backgroundColor: '#00c292',
+				borderColor: '#00c292',
+				data: data1,
+				fill: false,
+				pointRadius: 4,
+				pointHoverRadius: 10,
+				showLine: false 
+			}]
+		},
+		options: {
+			responsive: true,
+			title:{
+				display:true,
+				text:'Best Selling Category',
+                fontSize: 20,
+                fontFamily: 'Arial',
+                fontStyle: 'normal'
+			},
+			legend: {
+				display: false
+			},
+			elements: {
+				point: {
+					pointStyle: 'circle',
+				}
+			}
+		}
+	});
+}
 
         /*----------------------------------------*/
        /*  1.  Bar Chart
@@ -242,7 +283,7 @@
            
        }); }
 
-
+  
        
         // Function to send AJAX request
         function sendAjaxRequest(period) {
@@ -264,9 +305,14 @@
                 success: function(response) {
                     console.log(response);
                     var labels = response.labels;
+                    var labels1 = response.labels1;
+                    var labels2 = response.labels2;
                 var data = response.data;
+                var data1 = response.data1;
+                var data2 = response.data2;
                 console.log("hellooo")
                 updateBarChart(labels, data);
+                updateLineChart(labels1, data1);
                     // Handle successful response
                 },
                 error: function(xhr, status, error) {
@@ -278,6 +324,7 @@
 
 
         document.addEventListener("DOMContentLoaded", function() {
+           
             // Add click event listeners to the buttons
             document.getElementById("todayForm").addEventListener("submit", function(event) {
                 event.preventDefault(); // Prevent form submission

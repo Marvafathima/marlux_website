@@ -494,6 +494,7 @@ import datetime
 
 def top_selling_product(request):
     today=datetime.date.today()
+
     print(today)
     period=request.POST.get('period')
     print(period)
@@ -510,13 +511,35 @@ def top_selling_product(request):
         .values('product_variant__prod_id__pr_name')\
         .annotate(total_quantity=Count('id'))\
         .order_by('-total_quantity')[:5]
+    top_selling_category= OrderProduct.objects.filter(order__in=orders)\
+        .values('product_variant__prod_id__subcat_id__sub_name')\
+        .annotate(total_quantity=Count('id'))\
+        .order_by('-total_quantity')[:5]
+    top_selling_brand= OrderProduct.objects.filter(order__in=orders)\
+        .values('product_variant__prod_id__brand_id__br_name')\
+        .annotate(total_quantity=Count('id'))\
+        .order_by('-total_quantity')[:5]
     print("top selling coorect")
+    print(top_selling_products)
+    print(top_selling_category)
+    print(top_selling_brand)
     labels = [item['product_variant__prod_id__pr_name'] for item in top_selling_products]
-    print("labels coorect")
     data = [item['total_quantity'] for item in top_selling_products]
-    print(period,labels,data)
-    return JsonResponse({'labels': labels, 'data': data})
-
+    labels1 = [item['product_variant__prod_id__subcat_id__sub_name'] for item in top_selling_category]
+    data1 = [item['total_quantity'] for item in top_selling_category]
+    labels2 = [item['product_variant__prod_id__brand_id__br_name'] for item in top_selling_brand]
+    data2 = [item['total_quantity'] for item in top_selling_brand]
+    
+    return JsonResponse({'labels': labels, 'data': data,
+                        'labels1': labels1, 'data1': data1,
+                         'labels2': labels2, 'data2': data2,
+                         
+                         })
+   
+      
 @staff_member_required
 def top_seller(request):
     return render(request,'top_seller.html')
+
+
+

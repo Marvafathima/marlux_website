@@ -31,4 +31,4 @@ urlpatterns=[
     path('top_selling_product/',admin_views.top_selling_product,name="top_selling_product"),
     # path('get_recent_purchases/',admin_views.get_recent_purchases,name="get_recent_purchases"),
     path('top_seller',admin_views.top_seller,name="top_seller"),
-    ]
+      ]
