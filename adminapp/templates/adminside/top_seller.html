@@ -150,6 +150,11 @@
                     <canvas height="140vh" width="180vw" id="customlinechartpointcircle"></canvas>
                 </div>
             </div>
+            <div class="col-lg-12 col-md-12 col-sm-6 col-xs-12 m-5 d-flex justify-content-lg-center align-content-center">
+                <div class="line-chart-wp sm-res-mg-t-30 chart-display-nn col-lg-5">
+                    <canvas height="140vh" width="180vw" id="customlinechartinterpolation"></canvas>
+                </div>
+            </div>
             <!-- <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                 <div class="bar-chart-wp sm-res-mg-t-30 chart-display-nn">
                     <canvas height="140vh" width="180vw" id="barchart2"></canvas>
@@ -183,6 +188,62 @@
   
 
 <script>
+    /*----------------------------------------*/
+	/*  2.  Line Chart Interpolation
+	/*----------------------------------------*/
+	function updateLineChartinterpolation(labels2, data2){
+	var ctx = document.getElementById("customlinechartinterpolation");
+	var linechartinterpolation = new Chart(ctx, {
+		type: 'line',
+		data: {
+			labels: labels2,
+			datasets: [{
+				label: "Unit Sold",
+				fill: false,
+                backgroundColor: '#00c292',
+				borderColor: '#00c292',
+				data:data2,
+				cubicInterpolationMode: 'monotone'
+            }]
+		},
+		options: {
+			responsive: true,
+			title:{
+				display:true,
+				text:'Best Selling Brands',
+                fontStyle: 'bold',
+                        fontSize: 20
+			},
+			tooltips: {
+				mode: 'index'
+			},
+			scales: {
+				xAxes: [{
+					display: true,
+					scaleLabel: {
+						display: true,
+                        labelString: 'Brand',
+                        fontStyle: 'bold',
+                        fontSize: 20 
+					}
+				}],
+				yAxes: [{
+					display: true,
+					scaleLabel: {
+						display: true,
+						labelString: 'Unit sold',
+                        fontStyle: 'bold',
+                        fontSize: 20
+					},
+					ticks: {
+						suggestedMin: -10,
+						suggestedMax: 200,
+					}
+				}]
+			}
+		}
+	});
+}
     function updateLineChart(labels1, data1){ 
     var ctx = document.getElementById("customlinechartpointcircle");
 	var linechartpointcircle = new Chart(ctx, {
@@ -216,7 +277,31 @@
 				point: {
 					pointStyle: 'circle',
 				}
-			}
+			},
+            scales: {
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Category Name',
+                        fontStyle: 'bold',
+                        fontSize: 20// X axis label
+                    }
+                }],
+                   yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Units Sold',// Y axis label
+                        fontStyle: 'bold',
+                        fontSize: 20
+                    },
+                       ticks: {
+                           beginAtZero:true
+                       }
+                   }]
+               },
+
+
+
 		}
 	});
 }
@@ -313,6 +398,8 @@
                 console.log("hellooo")
                 updateBarChart(labels, data);
                 updateLineChart(labels1, data1);
+                updateLineChartinterpolation(labels2, data2);
+
                     // Handle successful response
                 },
                 error: function(xhr, status, error) {
@@ -324,7 +411,15 @@
 
 
         document.addEventListener("DOMContentLoaded", function() {
-           
+            var defaultLabels = "{{ labels|safe }}";
+            var defaultData ="{{ data|safe }}";
+            var defaultLabels1 = "{{ labels1|safe }}";
+            var defaultData1 ="{{ data1|safe }}";
+            var defaultLabels2 = "{{ labels2|safe }}";
+            var defaultData2 ="{{ data2|safe }}";
+            updateLineChart(defaultLabels1,defaultData1);
+            updateLineChartinterpolation(defaultLabels2,defaultData2);
+            updateBarChart(defaultLabels, defaultData);
             // Add click event listeners to the buttons
             document.getElementById("todayForm").addEventListener("submit", function(event) {
                 event.preventDefault(); // Prevent form submission
@@ -346,7 +441,7 @@
             });
            console.log("form submissiom domne")
 
-
+            
 
 
     });    
