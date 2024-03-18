@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import ensure_csrf_cookie
 from home.models import UserAddress ,CustomUser,Address
 from order_mamngmnt .models import Order,OrderProduct
+
 from datetime import datetime, timedelta
 from django.db.models import Sum,Avg,F,Count
 from coupons .models import Coupon
@@ -25,7 +26,8 @@ from django.http import FileResponse
 import io
 from django.db.models.functions import ExtractYear, ExtractMonth, ExtractDay,ExtractHour
 from django.utils import timezone
-from datetime import timedelta
+
+
 # Create your views here.
 @ensure_csrf_cookie
 def custom_admin(request):
@@ -229,7 +231,7 @@ def sales(request):
                             })
     else:
 
-    
+      
         start_date_month=datetime.now()-timedelta(days=30)
         start_date_week=datetime.now()-timedelta(days=7)
         end_date=datetime.now()
@@ -489,11 +491,11 @@ def get_recent_purchases(request):
 
     return JsonResponse(response_data)
 
-import datetime
+import datetime as dt
 @staff_member_required
 
 def top_selling_product(request):
-    today=datetime.date.today()
+    today=dt.date.today()
 
     
     period=request.POST.get('period')
@@ -503,7 +505,7 @@ def top_selling_product(request):
     elif period=="month":
         start_date=today.replace(day=1)
     elif period=="week":
-        start_date=today - datetime.timedelta(days=today.weekday())
+        start_date=today - dt.timedelta(days=today.weekday())
     else:
         start_date=today
     orders = Order.objects.filter(created_at__gte=start_date)
@@ -536,7 +538,7 @@ def top_selling_product(request):
       
 @staff_member_required
 def top_seller(request):
-    start_date=datetime.date.today()
+    start_date=dt.date.today()
     orders = Order.objects.filter(created_at__gte=start_date)
     top_selling_products = OrderProduct.objects.filter(order__in=orders)\
         .values('product_variant__prod_id__pr_name')\
