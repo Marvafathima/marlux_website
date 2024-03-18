@@ -84,20 +84,38 @@ def sales(request):
             orders=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date]).exclude(Q(status="Return")| Q(status="Cancelled")|Q(status="Pending") )
             total_orders=orders.count()
             if total_orders !=0:
-                
+                # for order with both discount and non discount
+                # 1.all orders grand total without any discount
                 no_discount_sale=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date],applied_coupon__isnull=True).exclude(Q(status="Return")| Q(status="Cancelled")|Q(status="Pending")).aggregate(nondiscount_sale=Sum('grand_total'))
+                nondiscount_sale_value = no_discount_sale.get('nondiscount_sale')
+               # 2.all orders with  discount grand total
                 discount_sale=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date],applied_coupon__isnull=False).exclude(Q(status="Return")| Q(status="Cancelled")|Q(status="Pending")).aggregate(discount_sale=Sum('discount_grand_total'))
+                discount_sale_value =discount_sale.get('discount_sale')
+                # 3.fetching the grand total of discount orders without the discount 
                 actual_sale_price=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date],applied_coupon__isnull=False).exclude(Q(status="Return")| Q(status="Cancelled")|Q(status="Pending")).aggregate(sale=Sum('grand_total'))
-                print(actual_sale_price,"this is actual sale price+++++++++++")
-                try:
+              
+
+                if  nondiscount_sale_value is not None and discount_sale_value is None:
+                    total_discount=0
+                    no_discount_grand_total= sales_grand_total=actual_sale_price=no_discount_sale['nondiscount_sale']
+                
+                elif nondiscount_sale_value is None and  discount_sale_value is not None :
+                    total_discount=Decimal(actual_sale_price['sale'])-discount_sale['discount_sale']
+                    no_discount_grand_total=Decimal(actual_sale_price['sale'])
+                    sales_grand_total=discount_sale['discount_sale'] 
+            
+
+
+
+
+                # for order with both discount and non discount
+                elif nondiscount_sale_value is not None   and discount_sale_value  is not None :
                     total_discount=Decimal(actual_sale_price['sale'])-discount_sale['discount_sale']
                     no_discount_grand_total=Decimal(actual_sale_price['sale'])+Decimal(no_discount_sale['nondiscount_sale'])
                     sales_grand_total=discount_sale['discount_sale'] + Decimal(no_discount_sale['nondiscount_sale'])
-                except:
-                    actual_sale_price=0
-                    total_discount=0
-                    no_discount_grand_total=Decimal(no_discount_sale['nondiscount_sale'])
-                    sales_grand_total=no_discount_sale['nondiscount_sale']
+                # for order with non discount only
+                 # for order with discount only
+                
                 total_quantity=Order.objects.filter(created_at__range=[formatted_start_date,formatted_end_date]).aggregate(total_quantity=Sum('total_qnty'))
                 print(no_discount_grand_total,"this is the grand total without discount+++++++++++")
                 
