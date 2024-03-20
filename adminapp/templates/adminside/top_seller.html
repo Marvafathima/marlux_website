@@ -374,6 +374,7 @@
         function sendAjaxRequest(period) {
             // Get CSRF token from the hidden input field
             var csrfToken = $("[name='csrfmiddlewaretoken']").val();
+            console.log("function working")
             
             // Create AJAX request payload
             var data = {
@@ -422,6 +423,7 @@
             updateBarChart(defaultLabels, defaultData);
             // Add click event listeners to the buttons
             document.getElementById("todayForm").addEventListener("submit", function(event) {
+                console.log("form submitted")
                 event.preventDefault(); // Prevent form submission
                 sendAjaxRequest("today");
             });

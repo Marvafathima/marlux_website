@@ -515,7 +515,7 @@ import datetime as dt
 def top_selling_product(request):
     today=dt.date.today()
 
-    
+    print("function is working*************")
     period=request.POST.get('period')
   
     if period=="year":
@@ -556,6 +556,7 @@ def top_selling_product(request):
       
 @staff_member_required
 def top_seller(request):
+    print("called top seller")
     start_date=dt.date.today()
     orders = Order.objects.filter(created_at__gte=start_date)
     top_selling_products = OrderProduct.objects.filter(order__in=orders)\
