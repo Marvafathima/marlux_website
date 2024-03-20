@@ -229,26 +229,29 @@ def update_status(request,order_id):
                     order.payment_status=payment
                     
                     order.save() 
-        if order.status=="Cancelled" and order.payment_status=="successful" or order.payment_status=="wallet":
+        if order.status=="Cancelled":
+            if order.payment_status=="successful" or order.payment_status=="wallet":
            
-            user=order.user.id
-           
-            wallet,created=Wallet.objects.get_or_create(user=user)
+                us=order.user.id
+                user=CustomUser.objects.get(id=us)
             
-            if order.applied_coupon:
-                wallet.balance += order.discount_grand_total
-                wallet.save()
-                amount=order.discount_grand_total
-                transaction=Transaction.objects.create(wallet=wallet,amount=order.discount_grand_total,transaction_type="Refund")
-                print(transaction.id)
-            else:
-                wallet.balance += Decimal(order.grand_total)
-                wallet.save()
-                amount=order.grand_total
-                transaction=Transaction.objects.create(wallet=wallet,amount=amount,transaction_type="Refund")
-                print(transaction.id)
-            order.payment_status="refunded"
-            order.save()
+                wallet,created=Wallet.objects.get_or_create(user=user)
+                
+                if order.applied_coupon:
+                    wallet.balance += order.discount_grand_total
+                    wallet.save()
+                    amount=order.discount_grand_total
+                    transaction=Transaction.objects.create(wallet=wallet,amount=order.discount_grand_total,transaction_type="Refund")
+                    print(transaction.id)
+                else:
+                    grand_total=Decimal(order.grand_total)
+                    wallet.balance += grand_total
+                    wallet.save()
+                    amount=order.grand_total
+                    transaction=Transaction.objects.create(wallet=wallet,amount=amount,transaction_type="Refund")
+                    print(transaction.id)
+                order.payment_status="refunded"
+                order.save()
     return redirect('admin_orderlist')
 
 

@@ -186,15 +186,16 @@
                                                 <td>{{order.created_at}}</td>
                                                 <td>{{order.total_qnty}}</td>
                                                 <td>₹{{order.grand_total}}</td>
+                                                <td>₹{{order.discount_amount}}</td>
                                                 {% if order.applied_coupon %}
-                                                {% if order.applied_coupon.discount_amount%}
+                                                <!-- {% if order.applied_coupon.discount_amount%}
                                                 <td>₹{{order.applied_coupon.discount_amount}}</td>
                                                {% else %}
                                                <td>{{order.applied_coupon.discount_percentage}}%</td>
-                                               {% endif %}
+                                               {% endif %} -->
                                                 <td>₹{{order.discount_grand_total}}</td>
                                                 {% else %}
-                                                <td>-</td>
+                                                
                                                 <td>₹{{order.grand_total}}</td>
                                                 {% endif %}
                                             </tr>
