@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'weasyprint',
     'wallet',
     'wishlist',
+    'forgot_password',
     
 ]
 CRISPY_TEMPLATE_PACK='bootstrap5'

@@ -29,7 +29,7 @@ urlpatterns = [
     path('',include('rarazorpayment.urls')),
     path('',include('wallet.urls')),
     path('',include('wishlist.urls')),
-
+    path('',include('forgot_password.urls')),
     # path('', include('django.contrib.auth.urls')),
 
 
