@@ -20,6 +20,7 @@ urlpatterns=[
     path('dashboard/category/add_subcategory',category_views.add_subcategory,name='add_subcategory'),
     path('dashboard/products/add_product',category_views.add_product,name='add_product'),
     path('product_variant_list/<int:id>',category_views.product_variant_list,name='product_variant_list'), 
+    path('add_product_variant/<int:id>',category_views.add_product_variant,name="add_product_variant"),
     path('update_product_variant/<int:id>',category_views.update_product_variant,name='update_product_variant'),
     path('delete_product_variant/<int:id>',category_views.delete_product_variant,name='delete_product_variant'),
     path('dashboard/products/delete_product/<int:id>',category_views.delete_product,name='delete_product'),

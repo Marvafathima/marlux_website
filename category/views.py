@@ -184,8 +184,21 @@ def delete_product_variant(request,id):
     product_variant=ProductVar.objects.filter(prod_id=product)
     messages.info(request,"Variant deleted successfully!")
     return redirect('adminapp:product_variant_list',id=product.id)
-def add_product_variant(request):
-    pass
+def add_product_variant(request,id):
+    product=Products.objects.get(id=id)
+    if request.method=="POST":
+        color=request.POST.get("color")
+        size=request.POST.get("size")
+        price=request.POST.get("price")
+        stock=request.POST.get("stock") 
+        colors,created=Color.objects.get_or_create(color=color.lower())
+        sizes,created=Size.objects.get_or_create(size=size.upper())
+        ProductVar.objects.create(color=colors,size=sizes,stock=stock,prod_id=product,price=price)
+        messages.success(request,"new variant added successfully")
+        return redirect("adminapp:product_variant_list",product.id)
+    
+    
+    return render(request,"add_product_variant.html",{"product":product})
 
 def update_product(request,id):
     product=Products.objects.get(id=id)
@@ -198,10 +211,10 @@ def update_product(request,id):
         is_available=request.POST.get('is_available',False)
 
     
-              #working code
+              
         image1=request.FILES.get('image1')
         print(image1)
-         #end of working code
+         
         
 
 
