@@ -1,0 +1,76 @@
+{% extends 'dashboard.html' %}
+ {% block userlist %}
+ <style>
+    .content_body_hc {
+        background-color: hsl(217, 25%, 94%);
+    }
+
+    
+</style>
+{% if messages %}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    {% for message in messages%}
+    <strong>SUCCESS:</strong> {{ message }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  {% endfor %}
+</div>
+{% endif %}
+<div style="margin-left: 500px;">
+<div class="content_body " id="content_body">
+    <div class="wrapper_content_body">
+        <h4>Update Variant </h4>
+
+        <div class="row">
+            
+            <div class="col-lg-7">
+                <div class="content_box_border">
+
+                    <!-- <h5>Upload Logo </h5>
+                    <div class="current_logo">
+                        <img src="assets/images/banner-1.jpg" alt="">
+                    </div>  -->
+
+                    <form action="{% url 'adminapp:update_product_variant' id=variant.id %}" method="post" enctype="multipart/form-data">
+                       {%csrf_token%}
+                       <div class="col-md-12">
+                        <div class="form_group">
+                            <label for="name">Color</label>
+                            <input type="text" placeholder="Color" name="color" value="{{variant.color.color}}">
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form_group">
+                            <label for="name">Size</label>
+                            <input type="text" placeholder="Size" name="size" value="{{variant.size.size}}">
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form_group">
+                            <label for="name">Stock</label>
+                            <input type="text" placeholder="Stock" name="stock" value="{{variant.stock}}">
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form_group">
+                            <label for="name">Price</label>
+                            <input type="text" placeholder="price" name="price" value="{{variant.price}}">
+                        </div>
+                    </div>
+                      
+
+                       
+         
+                      
+
+                        <div class="col-12 text-center">
+                            <button class="form_btn btn_green" type="submit"href="{% url 'adminapp:product_variant_list' id=product.id %}">update</button>
+                             </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+ {% endblock userlist %}

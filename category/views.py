@@ -145,6 +145,48 @@ def list_product(request):
     products=Products.objects.all()
     return render (request,'product_list.html',{'products':products})
 
+def product_variant_list(request,id):
+    product=Products.objects.get(id=id)
+    product_variant=ProductVar.objects.filter(prod_id=product)
+    return render(request,"product_variant.html",{"product_variants":product_variant,"product":product}) 
+
+
+def update_product_variant(request,id):
+    
+        
+    variant=ProductVar.objects.get(id= id)
+    product=Products.objects.get(id=variant.prod_id.id)
+    print(product.pr_name)
+    if request.method=="POST":
+        size=request.POST.get("size")
+        color=request.POST.get("color")
+        price=request.POST.get("price")
+        stock=request.POST.get("stock")
+        color_instance, _ = Color.objects.get_or_create(color=color.lower())
+        size_instance, _ = Size.objects.get_or_create(size=size.upper())
+        variant.size=size_instance
+        variant.color=color_instance
+        variant.price=price
+        variant.stock=stock
+        variant.save()
+        product_variant=ProductVar.objects.filter(prod_id=product)
+        messages.success(request,"Product variant updated succesfully")
+        return redirect("adminapp:product_variant_list",id=product.id)
+
+    return render (request,"update_variant.html",{"variant":variant,"product":product})
+
+
+
+def delete_product_variant(request,id):
+    variant=ProductVar.objects.get(id = id)
+    product=Products.objects.get(id=variant.prod_id.id)
+    variant.delete()
+    product_variant=ProductVar.objects.filter(prod_id=product)
+    messages.info(request,"Variant deleted successfully!")
+    return redirect('adminapp:product_variant_list',id=product.id)
+def add_product_variant(request):
+    pass
+
 def update_product(request,id):
     product=Products.objects.get(id=id)
     image_ids=list(ProductImage.objects.filter(img_id=id).values_list('id', flat=True))
@@ -155,11 +197,6 @@ def update_product(request,id):
         sub_category=request.POST.get('sub_category')
         is_available=request.POST.get('is_available',False)
 
-        print(pr_name)
-        print(category)
-        print(brand)
-        print(sub_category)
-        print(is_available)
     
               #working code
         image1=request.FILES.get('image1')
