@@ -209,54 +209,32 @@ def update_product(request,id):
         brand=request.POST.get('brand')
         sub_category=request.POST.get('sub_category')
         is_available=request.POST.get('is_available',False)
-
-    
-              
         image1=request.FILES.get('image1')
-        print(image1)
-         
-        
-
-
         if 'image2' in request.FILES:
             image2=request.FILES.get('image2')
-            
-        
         else:
             image2=None  
         if 'image3' in request.FILES:
             image3=request.FILES.get('image3')
         else:
             image3=None
-        print(image2)
-        print(image3)
+        
         if pr_name:
             product.pr_name=pr_name
-            print('yes')
-        else:
-            print('no')
         if category:
             product.cat_id=category
-            print('yes')
-        else:
-            print('no')
         if brand:
             product.brand_id=brand
-            print('yes')
-        else:
-            print('no')
+
         if sub_category:
             product.subcat_id=sub_category 
         if is_available:
-            product.is_available=is_available 
-            print('yes')
-        else:
-            print('no')  
+            product.is_available=is_available   
         product.save()
        
         if  image1 and image_ids:
             first_image_id = image_ids[0]
-            print(image_ids)
+            
             obj=ProductImage.objects.get(id=first_image_id)
             obj.image.delete(False)
             obj.image=image1
@@ -285,7 +263,6 @@ def update_product(request,id):
             ProductImage.objects.create(img_id=product,image=image3)
         else:
             image3=None
-        print(image1,image2,image3)
         return redirect('adminapp:list_product')
     
     else:
@@ -310,9 +287,7 @@ def update_product(request,id):
             image3=None
 
 # Access individual images if needed
-        print(image1)
-        print(image2)
-        print(image3)
+       
         context = {
             'id':product.id,
             'pr_name':product.pr_name,
@@ -334,7 +309,6 @@ def update_product(request,id):
             # 'brands_id':brands.id,
             # 'subcat_name':subcategories.sub_name,
         }
-        print(context['brand_id'])
     return render(request, 'update_product.html', {'context':context})
 def delete_product(request, id):
     product = get_object_or_404(Products, id=id)
