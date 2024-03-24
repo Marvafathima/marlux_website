@@ -31,9 +31,9 @@ $(document).ready(function () {
     
             success: function (response) {
               console.log(response); 
-               
+              console.log(response.razorpay_key)
               var options = {
-                "key": "rzp_test_ZCCSyrCe5ZqrEH",
+                "key": response.razorpay_key,
                 "amount": response.total_price * 100,
                 "currency": "INR",
                 "name": "MARLUX",

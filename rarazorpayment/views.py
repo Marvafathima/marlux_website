@@ -28,11 +28,11 @@ from decimal import Decimal
 
 
 import random
-
+import os
 
 
 def razorpaycheck(request):
-    print("razoraja calleddd")
+  
     try:
         cart=Cart.objects.get(user=request.user)
         cart_total=0
@@ -47,11 +47,16 @@ def razorpaycheck(request):
         user_name=user_detail.user_name
         email=user.email
         phone_number=user_detail.phone_number
+        razorpay_key=os.environ.get('RAZORPAY_ID')
+        razorpay_secret=os.environ.get('RAZORPAY_SECRET')
+       
         return JsonResponse({
             'total_price':cart_total,
             'user_name':user_name,
             'email':email,
-            'phone_number': phone_number
+            'phone_number': phone_number,
+            'razorpay_key':razorpay_key,
+            'razorpay_secret':razorpay_secret
 
         })
     except:
@@ -64,19 +69,23 @@ def razorpaycheck(request):
             order_total=order.discount_grand_total
         else:
             order_total=order.grand_total
-        print(order_total)
+       
         user=CustomUser.objects.get(id=request.user.id)
         address=OrderAddress.objects.get(id=order.address.id)
         user_detail=UserAddress.objects.get(user=request.user)
         user_name=user_detail.user_name
         email=user.email
         phone_number=user_detail.phone_number
+        razorpay_key=os.environ.get('RAZORPAY_ID')
+        razorpay_secret=os.environ.get('RAZORPAY_SECRET')
         
         return JsonResponse({
             'total_price':order_total,
             'user_name':user_name,
             'email':email,
-            'phone_number': phone_number
+            'phone_number': phone_number,
+            'razorpay_secret':razorpay_secret,
+            'razorpay_key':razorpay_key
 
         })
 
@@ -97,7 +106,7 @@ def place_order(request):
         amount=request.POST.get('amount')
         payment_mode=request.POST.get('payment_mode')
         
-        print(cartid,"this is the cart id")
+       
         if payment_mode=='cod' and float(amount)>1000:
             messages.error(request,"Sorry,No COD available for purchase above 1000")
             return redirect('checkout',cartid)
@@ -148,7 +157,7 @@ def place_order(request):
                 order.save()
             except:
                 print("no coupon applied")
-            print(order.discount_amount,"this is the discount amount  in order")
+            
             for item in items:
                 ox=OrderProduct.objects.create(
                             order=order,
@@ -158,11 +167,10 @@ def place_order(request):
                             
                         )
                 product_var=item.product_variant
-                print(product_var.stock," stock")
+               
                 product_var.stock -=item.quantity
                 product_var.save()
-                print(product_var.stock,"decreased stock")
-                print(ox.item_total_price,"this is the total price of the vaariant")
+               
                 
                 # ox.item_total_price=ox.quantity* ox.price
 
@@ -172,7 +180,7 @@ def place_order(request):
             cart.delete()
             items.delete()
             if cart is None:
-                print("order placed successfully")
+                
                 messages.success(request,"order placed succesfully.")
                 return redirect(reverse('my_orders', args=[order.id]))
             
@@ -223,14 +231,13 @@ def place_order(request):
                                         )
                 try:
                     coupon=Coupon.objects.get(id=cart.applied_coupon.id)
-                    print(coupon.id)
-                    print(cart.discount_amount,"cart coupon price")
+                   
                     order.discount_total=cart.coupon_price
                     order.discount_grand_total=cart.coupon_cart_total
                     order.is_ordered=True
                     order.applied_coupon=coupon
                     order.discount_amount=cart.discount_amount
-                    print(order.discount_amount)
+                   
                     order.save()
                 except:
                     print("no coupon applied")
@@ -244,11 +251,10 @@ def place_order(request):
                                 
                             )
                     product_var=item.product_variant
-                    print(product_var.stock,"stock")
+                    
                     product_var.stock -=item.quantity
                     product_var.save()
-                    print(product_var.stock,"decreased stock")
-                    print(ox.item_total_price,"this is the total price of the vaariant")
+                  
                     
                     # ox.item_total_price=ox.quantity* ox.price
 
@@ -258,7 +264,7 @@ def place_order(request):
                 cart.delete()
                 items.delete()
                 if cart is None:
-                    print("order placed successfully")
+                    
                     messages.success(request,"order placed succesfully using your wallet balance.")
                     return redirect(reverse('my_orders', args=[order.id]))
                 
@@ -305,14 +311,10 @@ def place_order(request):
                                         status=st,
                                         razorpay_payment_id=payment_id
                                         )
-                print(order.tracking_number)
-                print(order.payment_mode)
-                print(order.payment_status)
+                
                 try:
                     coupon=Coupon.objects.get(id=cart.applied_coupon.id)
-                    print(coupon.id,"coupon selected")
-                
-                    print(cart.discount_amount,"this is the cart dixoijt")
+                    
                     order.discount_total=cart.coupon_price
                     order.discount_grand_total=cart.coupon_cart_total
                     order.is_ordered=True
@@ -321,7 +323,7 @@ def place_order(request):
                     order.save()
                 except:
                     print("no coupon applied")
-                print(order.discount_amount,"this is the dicount_amount n order")
+                
                 for item in items:
                     ox=OrderProduct.objects.create(
                                 order=order,
@@ -331,11 +333,10 @@ def place_order(request):
                                 
                             )
                     product_var=item.product_variant
-                    print(product_var.stock,"actual stock")
+                    
                     product_var.stock -=item.quantity
                     product_var.save()
-                    print(ox.item_total_price,"this is the total price of the vaariant")
-                    print(product_var.stock,"decreased stock")
+                  
                     # ox.item_total_price=ox.quantity* ox.price
 
 
@@ -343,7 +344,7 @@ def place_order(request):
                 
                 cart.delete()
                 items.delete()
-                print(order.id,"order id passed as my ajax response")
+               
                 return JsonResponse({'status':"Your order has been placed succesfully",'order':order.id})
            
            
@@ -376,7 +377,7 @@ def place_order(request):
     else:
         return redirect('home')
 def failure_order(request):
-    print("failure called in view")
+  
     if request.method=="POST":
         user=request.user
         cart=Cart.objects.get(user=user.id)
@@ -408,9 +409,7 @@ def failure_order(request):
                                     payment_status=pay_status,
                                     tracking_number=track_no
                                     )
-        print(order.tracking_number)
-        print(order.payment_mode)
-        print(order.payment_status)
+      
         try:
             coupon=Coupon.objects.get(id=cart.applied_coupon.id)
             order.discount_total=cart.coupon_price
@@ -421,7 +420,7 @@ def failure_order(request):
             order.save()
         except:
             print("no coupon applied")
-        print(order.discount_amount,"this is the discount amount")
+      
         for item in items:
             ox=OrderProduct.objects.create(
                         order=order,
@@ -431,11 +430,10 @@ def failure_order(request):
                         
                     )
             product_var=item.product_variant
-            print(product_var.stock,"actual stock")
+           
             product_var.stock -=item.quantity  
             product_var.save()
-            print(product_var.stock,"decreased stock")
-            print(ox.item_total_price,"this is the total price of the vaariant")
+           
         request.session['order_id'] = order.id
         cart.delete()
         items.delete()

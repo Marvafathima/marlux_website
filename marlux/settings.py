@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import dotenv
+dotenv.load_dotenv()
 from pathlib import Path
 import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -96,11 +97,11 @@ WSGI_APPLICATION = 'marlux.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'marva',
-        'HOST':'localhost',
-        'PORT':'5433',
-        'USER':'postgres',
-        'PASSWORD':'botanist62',
+        'NAME': os.environ.get('DB_NAME'),
+        'HOST':os.environ.get('DB_HOST'),
+        'PORT':os.environ.get('DB_PORT'),
+        'USER':os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD'),
     }
 }
 
@@ -162,14 +163,14 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # TWILIO_PHONE_NUMBER='+16029623589'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'marvafathima62@gmail.com'
-EMAIL_HOST_PASSWORD = 'choa kmab vgur armg'
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS') == 'True'
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT'))
 
 
-RAZORPAY_ID = "rzp_test_ZCCSyrCe5ZqrEH"
-RAZORPAY_SECRET = "0jXHYc59iwAKVWDMphgnXlh"
+RAZORPAY_ID = os.environ.get('RAZORPAY_ID')
+RAZORPAY_SECRET = os.environ.get('RAZORPAY_SECRET')
 #For To Enable Popus in Django or else it will block the payment popup
 SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
